@@ -1,0 +1,24 @@
+################
+# Sublime Text #
+################
+*.sublime-project
+*.sublime-workspace
+
+######################
+# Visual Studio Code #
+######################
+.vscode/
+
+###########
+# OS Junk #
+###########
+.DS_Store
+.DS_Store?
+._*
+*.swp
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+$RECYCLE.BIN/
