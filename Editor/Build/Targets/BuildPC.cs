@@ -1,10 +1,8 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
 
 namespace UnityBuild
 {
 
-[InitializeOnLoad]
 public class BuildPC : BuildPlatform
 {
     #region Constants (SET VALUES)
@@ -13,15 +11,6 @@ public class BuildPC : BuildPlatform
     private const string _name = "PC";
     private const string _binaryNameFormat = "{0}.exe";
     private const string _dataDirNameFormat = "{0}_Data";
-
-    #endregion
-
-    #region Constructor (SET CLASS NAME)
-
-    static BuildPC()
-    {
-        BuildProject.RegisterPlatform(new BuildPC());
-    }
 
     #endregion
 
@@ -52,12 +41,12 @@ public class BuildPC : BuildPlatform
         get { return _dataDirNameFormat; }
     }
 
-    [MenuItem("Build/" + _name)]
+    [MenuItem("Build/Platforms/" + _name)]
     private static void Toggle()
     {
         Toggle(_name);
     }
-    [MenuItem("Build/" + _name, true)]
+    [MenuItem("Build/Platforms/" + _name, true)]
     private static bool ToggleValidate()
     {
         return ToggleValidate(_name);
