@@ -1,5 +1,5 @@
 # UnityBuild
-> An expandable and customizable platform for multiplatform builds with Unity.
+> An expandable and customizable framework for multiplatform builds with Unity.
 
 The primary goal of this project is to take build scripts that I've already used on some projects and make them slightly more generic, expandable, and customizable. This includes supporting the generation of AssetBundles as well as preparing/uploading builds for services like itch.io and Steam.
 
