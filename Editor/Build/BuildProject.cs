@@ -28,9 +28,12 @@ public static class BuildProject
 
         for (int i = 0; i < platforms.Count; i++)
         {
-            if (platforms[i].buildEnabled)
+            BuildPlatform platform = platforms[i];
+            if (platform.buildEnabled)
             {
-                platforms[i].Build();
+                PerformPreBuild(platform);
+                platform.Build();
+                PerformPostBuild(platform);
             }
         }
 
@@ -147,6 +150,32 @@ public static class BuildProject
             for (int i = 0; i < postBuildActions.Count; i++)
             {
                 postBuildActions[i].Execute();
+            }
+        }
+    }
+
+    private static void PerformPreBuild(BuildPlatform platform)
+    {
+        settings.PreBuild(platform);
+
+        if (preBuildActions != null)
+        {
+            for (int i = 0; i < preBuildActions.Count; i++)
+            {
+                preBuildActions[i].Execute(platform);
+            }
+        }
+    }
+
+    private static void PerformPostBuild(BuildPlatform platform)
+    {
+        settings.PostBuild(platform);
+
+        if (postBuildActions != null)
+        {
+            for (int i = 0; i < postBuildActions.Count; i++)
+            {
+                postBuildActions[i].Execute(platform);
             }
         }
     }

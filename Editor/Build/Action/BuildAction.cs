@@ -6,7 +6,13 @@ namespace UnityBuild
 
 public abstract class BuildAction
 {
-    public abstract void Execute();
+    public virtual void Execute()
+    {
+    }
+
+    public virtual void Execute(BuildPlatform platform)
+    {
+    }
 }
 
 }

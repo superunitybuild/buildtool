@@ -18,6 +18,14 @@ public abstract class BuildSettings
     public virtual void PostBuild()
     {
     }
+
+    public virtual void PreBuild(BuildPlatform platform)
+    {
+    }
+
+    public virtual void PostBuild(BuildPlatform platform)
+    {
+    }
 }
 
 }
