@@ -10,11 +10,20 @@ namespace UnityBuild
 
 public static class BuildProject
 {
+    #region Public Variables & Auto-Properties
+
     public static BuildSettings settings { get; private set; }
     public static List<BuildPlatform> platforms { get; private set; }
     public static List<BuildAction> preBuildActions { get; private set; }
     public static List<BuildAction> postBuildActions { get; private set; }
 
+    #endregion
+
+    #region MenuItems
+
+    /// <summary>
+    /// Build all enabled platforms.
+    /// </summary>
     [MenuItem("Build/Run Build", false, 1)]
     public static void BuildAll()
     {
@@ -40,20 +49,32 @@ public static class BuildProject
         PerformPostBuild();
     }
 
+    /// <summary>
+    /// Enable building of all platforms.
+    /// </summary>
     [MenuItem("Build/Platforms/Enable All", false, 50)]
     private static void EnableAllPlatforms()
     {
         SetAllBuildPlatforms(true);
     }
 
+    /// <summary>
+    /// Disable building of all platforms.
+    /// </summary>
     [MenuItem("Build/Platforms/Disable All", false, 50)]
     private static void DisableAllPlatforms()
     {
         SetAllBuildPlatforms(false);
     }
 
+    #endregion
+
     #region Register Methods
 
+    /// <summary>
+    /// Register the project's BuildSettings.
+    /// </summary>
+    /// <param name="settings"></param>
     public static void RegisterSettings(BuildSettings settings)
     {
         if (BuildProject.settings != null)
@@ -62,6 +83,10 @@ public static class BuildProject
         BuildProject.settings = settings;
     }
 
+    /// <summary>
+    /// Register a platform that can be built.
+    /// </summary>
+    /// <param name="platform"></param>
     public static void RegisterPlatform(BuildPlatform platform)
     {
         if (platforms == null)
@@ -70,6 +95,10 @@ public static class BuildProject
         platforms.Add(platform);
     }
 
+    /// <summary>
+    /// Register a pre-build action.
+    /// </summary>
+    /// <param name="action"></param>
     public static void RegisterPreBuildAction(BuildAction action)
     {
         if (preBuildActions == null)
@@ -78,6 +107,10 @@ public static class BuildProject
         preBuildActions.Add(action);
     }
 
+    /// <summary>
+    /// Register a post-build action.
+    /// </summary>
+    /// <param name="action"></param>
     public static void RegisterPostBuildAction(BuildAction action)
     {
         if (postBuildActions == null)
@@ -88,17 +121,31 @@ public static class BuildProject
 
     #endregion
 
+    #region Public Methods
+
+    /// <summary>
+    /// Perform build of a platform.
+    /// </summary>
+    /// <param name="platform"></param>
     public static void PerformBuild(BuildPlatform platform)
     {
-        // Build player
+        // Build player.
         FileUtil.DeleteFileOrDirectory(platform.buildPath);
         BuildPipeline.BuildPlayer(settings.scenesInBuild, platform.buildPath + platform.exeName, platform.target, BuildOptions.None);
 
-        // Copy any other data
+        // Copy any other data.
         for (int i = 0; i < settings.copyToBuild.Length; i++)
         {
             string item = settings.copyToBuild[i];
 
+            // Log an error if file/directory does not exist.
+            if (!File.Exists(item) && !Directory.Exists(item))
+            {
+                Debug.LogError("Item to copy does not exist: " + item);
+                continue;
+            }
+
+            // Copy the file/directory.
             if (Path.HasExtension(item))
             {
                 string filename = Path.GetFileName(item);
@@ -111,6 +158,10 @@ public static class BuildProject
             }
         }
     }
+
+    #endregion
+
+    #region Private Methods
 
     private static void SetAllBuildPlatforms(bool enabled)
     {
@@ -179,6 +230,8 @@ public static class BuildProject
             }
         }
     }
+
+    #endregion
 }
 
 }
