@@ -7,28 +7,9 @@ using System.IO;
 namespace UnityBuild
 {
 
-public static class UnityBuildSettingsGenerator
+public static class BuildSettingsGenerator
 {
-    //static UnityBuildSettingsGenerator()
-    //{
-    //    Type ti = typeof(BuildSettings);
-
-    //    foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
-    //    {
-    //        foreach (Type t in asm.GetTypes())
-    //        {
-    //            if (ti.IsAssignableFrom(t) && ti != t)
-    //            {
-    //                return;
-    //            }
-    //        }
-    //    }
-
-    //    // No implementation of BuildSettings found, so generate one.
-    //    GenerateBuildSettings();
-    //}
-
-    [MenuItem("Edit/Generate BuildSettings")]
+    [MenuItem("Build/Generate/BuildSettings")]
     public static void GenerateBuildSettings()
     {
         string directory = EditorUtility.OpenFolderPanel("Choose location for ProjectBuildSettings.cs (MUST BE AN EDITOR DIRECTORY)", Application.dataPath, "");
