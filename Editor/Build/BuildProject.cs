@@ -24,8 +24,23 @@ public class BuildProject
 
         for (int i = 0; i < platforms.Count; i++)
         {
-            platforms[i].Build();
+            if (EditorPrefs.GetBool("buildGame" + platforms[i].name, false))
+            {
+                platforms[i].Build();
+            }
         }
+    }
+
+    [MenuItem("Build/Platforms/Enable All", false, 50)]
+    public static void EnableAllPlatforms()
+    {
+        SetAllBuildPlatforms(true);
+    }
+
+    [MenuItem("Build/Platforms/Disable All", false, 50)]
+    public static void DisableAllPlatforms()
+    {
+        SetAllBuildPlatforms(false);
     }
 
     public static void RegisterSettings(BuildSettings settings)
@@ -41,8 +56,14 @@ public class BuildProject
         platforms.Add(platform);
     }
 
+    //public static void PerformBuild(BuildTarget target, string binaryNameFormat, string dataDirNameFormat, string platform)
+    //{
+    //}
+
     public static void PerformBuild(BuildTarget target, string binaryNameFormat, string dataDirNameFormat, string platform)
     {
+        settings.PreBuild();
+
         StringBuilder binPath =
             new StringBuilder(settings.binPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
 
@@ -70,6 +91,16 @@ public class BuildProject
                 string dirname = Path.GetFileName(item.TrimEnd('/'));
                 FileUtil.CopyFileOrDirectory(item, dataDestination + dirname);
             }
+        }
+
+        settings.PostBuild();
+    }
+
+    private static void SetAllBuildPlatforms(bool enabled)
+    {
+        for (int i = 0; i < platforms.Count; i++)
+        {
+            EditorPrefs.SetBool("buildGame" + platforms[i].name, enabled);
         }
     }
 }
