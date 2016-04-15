@@ -10,17 +10,18 @@ Do one of the following:
 * [Download](https://github.com/Chaser324/unity-build/archive/master.zip) this project and copy the `Editor` dirctory into your project's assets directory.
 * Make this repository a git submodule within your project's assets directory.
 
-* This project is designed to be highly modular, so you can delete any parts you don't need for your project. I may break these out into separate GitHub repositories at some point but for now just delete what you don't need.:
-    * `AssetBundles` - AssetBundle building. Delete this directory if you aren't using AssetBundles or have your own AssetBundle workflow.
-    * `Build` - The core build functionality. Don't delete this directory. If you don't need a particular platform, you can delete that individual class.
-    * `Upload` - *TODO*
-
 #### Generate BuildSettings
 * Generate a BuildSettings file by clicking `Build > Generate > BuildSettings` and selecting an Editor directory within your project.
 * Customize the new BuildSettings class to suit your project.
 
 #### Build
 * Click `Build > Run Build` to build the project. You can select which platforms to build in the `Build > Platforms` menu.
+
+## Project Contents
+This project is designed to be highly modular, so you can delete any parts you don't need for your project. I may break these out into separate GitHub repositories at some point but for now just delete what you don't need.
+* `AssetBundles` - AssetBundle building. Delete this directory if you aren't using AssetBundles or have your own AssetBundle workflow.
+* `Build` - The core build functionality. Don't delete this directory. If you don't need a particular platform, you can delete that individual class.
+* `Upload` - *TODO*
 
 ## Customizing and Expanding
 
