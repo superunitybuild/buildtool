@@ -29,8 +29,6 @@ public class ProjectBuildSettings : BuildSettings
         // ...
     };
 
-	private const string _butlerPath = @"";
-
     #region Constructor (SET CLASS NAME)
 
     static ProjectBuildSettings()
@@ -49,7 +47,7 @@ public class ProjectBuildSettings : BuildSettings
 
     public override string binPath
     {
-        get { return _binPath; }
+        get { return _binPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar); }
     }
 
     public override string[] scenesInBuild
@@ -60,11 +58,6 @@ public class ProjectBuildSettings : BuildSettings
     public override string[] copyToBuild
     {
         get { return _copyToBuild; }
-    }
-
-	public override string butlerPath
-    {
-        get { return _butlerPath; }
     }
 
     #endregion

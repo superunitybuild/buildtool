@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 using UnityEditor;
 
@@ -14,8 +15,6 @@ public abstract class BuildPlatform
     public abstract string name { get; }
     public abstract string binaryNameFormat { get; }
     public abstract string dataDirNameFormat { get; }
-
-    public abstract void Build();
 
     #endregion
 
@@ -43,6 +42,18 @@ public abstract class BuildPlatform
 
     #endregion
 
+    #region Public Methods
+
+    /// <summary>
+    /// Perform build for platform.
+    /// </summary>
+    public void Build()
+    {
+        BuildProject.PerformBuild(this);
+    }
+
+    #endregion
+
     #region Protected Methods
 
     /// <summary>
@@ -65,16 +76,40 @@ public abstract class BuildPlatform
         return true;
     }
 
-    /// <summary>
-    /// Perform build for platform.
-    /// </summary>
-    /// <param name="targetType">Platform type. Passed in from descendant class.</param>
-    /// <param name="targetName">Platform name. Passed in from descendant class.</param>
-    /// <param name="binaryNameFormat">Binary name format. Passed in from descendant class.</param>
-    /// <param name="dataDirNameFormat">Data directory name format. Passed in from descendant class.</param>
-    protected static void Build(BuildTarget targetType, string targetName, string binaryNameFormat, string dataDirNameFormat)
+    #endregion
+
+    #region Public Properties
+
+    public bool buildEnabled
     {
-        BuildProject.PerformBuild(targetType, binaryNameFormat, dataDirNameFormat, targetName);
+        get
+        {
+            return EditorPrefs.GetBool("buildGame" + name, false);
+        }
+    }
+
+    public string buildPath
+    {
+        get
+        {
+            return BuildProject.settings.binPath + Path.DirectorySeparatorChar + name + Path.DirectorySeparatorChar;
+        }
+    }
+
+    public string dataDirectory
+    {
+        get
+        {
+            return buildPath + string.Format(dataDirNameFormat, BuildProject.settings.binName) + Path.DirectorySeparatorChar;
+        }
+    }
+
+    public string exeName
+    {
+        get
+        {
+            return string.Format(binaryNameFormat, BuildProject.settings.binName);
+        }
     }
 
     #endregion

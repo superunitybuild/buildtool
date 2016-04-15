@@ -3,23 +3,18 @@
 namespace UnityBuild
 {
 
-public class BuildPC : BuildPlatform
+public class BuildOSX : BuildPlatform
 {
     #region Constants (SET VALUES)
 
-    private const BuildTarget _target = BuildTarget.StandaloneWindows;
-    private const string _name = "PC";
-    private const string _binaryNameFormat = "{0}.exe";
-    private const string _dataDirNameFormat = "{0}_Data";
+    private const BuildTarget _target = BuildTarget.StandaloneOSXIntel;
+    private const string _name = "OSX";
+    private const string _binaryNameFormat = "{0}.app";
+    private const string _dataDirNameFormat = "{0}.app/Contents";
 
     #endregion
 
     #region Methods & Properties (DO NOT EDIT)
-
-    public override void Build()
-    {
-        Build(target, name, binaryNameFormat, dataDirNameFormat);
-    }
 
     public override BuildTarget target
     {

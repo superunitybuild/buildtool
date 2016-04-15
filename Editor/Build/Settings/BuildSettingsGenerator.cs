@@ -9,8 +9,8 @@ namespace UnityBuild
 
 public static class BuildSettingsGenerator
 {
-    [MenuItem("Build/Generate/BuildSettings")]
-    public static void GenerateBuildSettings()
+    [MenuItem("Build/Generate/BuildSettings", false, 100)]
+    private static void GenerateBuildSettings()
     {
         string directory = EditorUtility.OpenFolderPanel("Choose location for ProjectBuildSettings.cs (MUST BE AN EDITOR DIRECTORY)", Application.dataPath, "");
 

@@ -8,12 +8,14 @@ using System.Text;
 namespace UnityBuild
 {
 
-public class BuildProject
+public static class BuildProject
 {
-    private static BuildSettings settings;
-    private static List<BuildPlatform> platforms = new List<BuildPlatform>();
+    public static BuildSettings settings { get; private set; }
+    public static List<BuildPlatform> platforms { get; private set; }
+    public static List<BuildAction> preBuildActions { get; private set; }
+    public static List<BuildAction> postBuildActions { get; private set; }
 
-    [MenuItem("Build/Run Build", false, 50)]
+    [MenuItem("Build/Run Build", false, 1)]
     public static void BuildAll()
     {
         if (settings == null)
@@ -22,26 +24,32 @@ public class BuildProject
             return;
         }
 
+        PerformPreBuild();
+
         for (int i = 0; i < platforms.Count; i++)
         {
-            if (EditorPrefs.GetBool("buildGame" + platforms[i].name, false))
+            if (platforms[i].buildEnabled)
             {
                 platforms[i].Build();
             }
         }
+
+        PerformPostBuild();
     }
 
     [MenuItem("Build/Platforms/Enable All", false, 50)]
-    public static void EnableAllPlatforms()
+    private static void EnableAllPlatforms()
     {
         SetAllBuildPlatforms(true);
     }
 
     [MenuItem("Build/Platforms/Disable All", false, 50)]
-    public static void DisableAllPlatforms()
+    private static void DisableAllPlatforms()
     {
         SetAllBuildPlatforms(false);
     }
+
+    #region Register Methods
 
     public static void RegisterSettings(BuildSettings settings)
     {
@@ -53,28 +61,35 @@ public class BuildProject
 
     public static void RegisterPlatform(BuildPlatform platform)
     {
+        if (platforms == null)
+            platforms = new List<BuildPlatform>();
+
         platforms.Add(platform);
     }
 
-    //public static void PerformBuild(BuildTarget target, string binaryNameFormat, string dataDirNameFormat, string platform)
-    //{
-    //}
-
-    public static void PerformBuild(BuildTarget target, string binaryNameFormat, string dataDirNameFormat, string platform)
+    public static void RegisterPreBuildAction(BuildAction action)
     {
-        settings.PreBuild();
+        if (preBuildActions == null)
+            preBuildActions = new List<BuildAction>();
 
-        StringBuilder binPath =
-            new StringBuilder(settings.binPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+        preBuildActions.Add(action);
+    }
 
-        binPath.Append(Path.DirectorySeparatorChar + platform + Path.DirectorySeparatorChar);
+    public static void RegisterPostBuildAction(BuildAction action)
+    {
+        if (postBuildActions == null)
+            postBuildActions = new List<BuildAction>();
 
-        string exeName = string.Format(binaryNameFormat, settings.binName);
-        string dataDestination = string.Format(dataDirNameFormat, settings.binName);
+        postBuildActions.Add(action);
+    }
 
+    #endregion
+
+    public static void PerformBuild(BuildPlatform platform)
+    {
         // Build player
-        FileUtil.DeleteFileOrDirectory(binPath.ToString());
-        BuildPipeline.BuildPlayer(settings.scenesInBuild, binPath.ToString() + exeName, target, BuildOptions.None);
+        FileUtil.DeleteFileOrDirectory(platform.buildPath);
+        BuildPipeline.BuildPlayer(settings.scenesInBuild, platform.buildPath + platform.exeName, platform.target, BuildOptions.None);
 
         // Copy any other data
         for (int i = 0; i < settings.copyToBuild.Length; i++)
@@ -84,16 +99,14 @@ public class BuildProject
             if (Path.HasExtension(item))
             {
                 string filename = Path.GetFileName(item);
-                FileUtil.CopyFileOrDirectory(item, dataDestination + filename);
+                FileUtil.CopyFileOrDirectory(item, platform.dataDirectory + filename);
             }
             else
             {
                 string dirname = Path.GetFileName(item.TrimEnd('/'));
-                FileUtil.CopyFileOrDirectory(item, dataDestination + dirname);
+                FileUtil.CopyFileOrDirectory(item, platform.dataDirectory + dirname);
             }
         }
-
-        settings.PostBuild();
     }
 
     private static void SetAllBuildPlatforms(bool enabled)
@@ -101,6 +114,40 @@ public class BuildProject
         for (int i = 0; i < platforms.Count; i++)
         {
             EditorPrefs.SetBool("buildGame" + platforms[i].name, enabled);
+        }
+    }
+
+    private static void BuildAssetBundle(string path, BuildTarget target)
+    {
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
+        BuildPipeline.BuildAssetBundles(path, BuildAssetBundleOptions.None, target);
+    }
+
+    private static void PerformPreBuild()
+    {
+        settings.PreBuild();
+
+        if (preBuildActions != null)
+        {
+            for (int i = 0; i < preBuildActions.Count; i++)
+            {
+                preBuildActions[i].Execute();
+            }
+        }
+    }
+
+    private static void PerformPostBuild()
+    {
+        settings.PostBuild();
+
+        if (postBuildActions != null)
+        {
+            for (int i = 0; i < postBuildActions.Count; i++)
+            {
+                postBuildActions[i].Execute();
+            }
         }
     }
 }

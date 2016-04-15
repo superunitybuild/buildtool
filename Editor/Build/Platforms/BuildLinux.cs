@@ -16,11 +16,6 @@ public class BuildLinux : BuildPlatform
 
     #region Methods & Properties (DO NOT EDIT)
 
-    public override void Build()
-    {
-        Build(target, name, binaryNameFormat, dataDirNameFormat);
-    }
-
     public override BuildTarget target
     {
         get { return _target; }
