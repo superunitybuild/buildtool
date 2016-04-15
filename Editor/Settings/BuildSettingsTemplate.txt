@@ -15,19 +15,21 @@ public class ProjectBuildSettings : BuildSettings
     private const string _binPath = "bin";
 
     // A list of scenes to include in the build. The first listed scene will be loaded first.
-    private static string[] _scenesInBuild = new string[] {
-        // "Assets/Scenes/scene1.unity",
-        // "Assets/Scenes/scene2.unity",
+    private readonly string[] _scenesInBuild = new string[] {
+        // @"Assets/Scenes/scene1.unity",
+        // @"Assets/Scenes/scene2.unity",
         // ...
     };
 
     // A list of files/directories to include with the build. 
     // Paths are relative to Unity project's base folder unless an absolute path is given.
-    private static string[] _copyToBuild = new string[] {
-        // "DirectoryToInclude/",
-        // "FileToInclude.txt",
+    private readonly string[] _copyToBuild = new string[] {
+        // @"DirectoryToInclude/",
+        // @"FileToInclude.txt",
         // ...
     };
+
+	private const string _butlerPath = @"";
 
     #region Constructor (SET CLASS NAME)
 
@@ -58,6 +60,11 @@ public class ProjectBuildSettings : BuildSettings
     public override string[] copyToBuild
     {
         get { return _copyToBuild; }
+    }
+
+	public override string butlerPath
+    {
+        get { return _butlerPath; }
     }
 
     #endregion
