@@ -58,8 +58,14 @@ public sealed class BuildAssetBundles : PostBuildAction
         // Copy AssetBundles to data directory.
         if (Directory.Exists(platformBundlePath))
         {
-            Directory.CreateDirectory(platform.dataDirectory + "Bundles/");
-            FileUtil.CopyFileOrDirectory(platformBundlePath + "/", platform.dataDirectory + "Bundles/" + platform.name);
+            string bundleDirectory = platform.dataDirectory + "Bundles/";
+            string targetPath = bundleDirectory + platform.name;
+
+            if (Directory.Exists(bundleDirectory))
+                FileUtil.DeleteFileOrDirectory(bundleDirectory);
+
+            Directory.CreateDirectory(bundleDirectory);
+            FileUtil.CopyFileOrDirectory(platformBundlePath + "/", targetPath);
         }
     }
 }
