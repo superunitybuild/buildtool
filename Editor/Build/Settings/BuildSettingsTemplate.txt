@@ -29,15 +29,6 @@ public class ProjectBuildSettings : BuildSettings
         // ...
     };
 
-    #region Constructor (SET CLASS NAME)
-
-    static ProjectBuildSettings()
-    {
-        BuildProject.RegisterSettings(new ProjectBuildSettings());
-    }
-
-    #endregion
-
     #region Methods & Properties (DO NOT EDIT)
 
     public override string binName
