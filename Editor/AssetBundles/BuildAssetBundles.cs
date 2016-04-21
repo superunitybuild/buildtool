@@ -1,12 +1,14 @@
-﻿using UnityEngine;
+﻿using System.IO;
 using UnityEditor;
-using System.IO;
+using UnityEngine;
 
 namespace UnityBuild
 {
 
 public sealed class BuildAssetBundles : PostBuildAction
 {
+    #region MenuItems
+
     [MenuItem("Build/AssetBundles/Build AssetBundles", false, 50)]
     private static void BuildAllAssetBundles()
     {
@@ -22,15 +24,22 @@ public sealed class BuildAssetBundles : PostBuildAction
     [MenuItem("Build/AssetBundles/Delete Bundles", false, 52)]
     private static void DeleteBundles()
     {
-        string path = BuildProject.settings.binPath + Path.DirectorySeparatorChar + "Bundles";
-        if (Directory.Exists(path))
-            FileUtil.DeleteFileOrDirectory(path);
+        if (Directory.Exists(BuildAssetBundlesSettings.buildPath))
+            FileUtil.DeleteFileOrDirectory(BuildAssetBundlesSettings.buildPath);
     }
+
+    #endregion
+
+    #region Public Methods
 
     public override void Execute(BuildPlatform platform)
     {
         Build(platform);
     }
+
+    #endregion
+
+    #region Private Methods
 
     private static void BuildAll()
     {
@@ -46,28 +55,31 @@ public sealed class BuildAssetBundles : PostBuildAction
         if (!platform.buildEnabled)
             return;
 
-        string path = BuildProject.settings.binPath + Path.DirectorySeparatorChar + "Bundles";
-        string platformBundlePath = path + Path.DirectorySeparatorChar + platform.name;
+        // Path where this platform's AssetBundles will be built.
+        string platformBundlePath = BuildAssetBundlesSettings.buildPath + Path.DirectorySeparatorChar + platform.name;
 
+        // Create build destination directory if it does not exist.
         if (!Directory.Exists(platformBundlePath))
             Directory.CreateDirectory(platformBundlePath);
 
         // Build AssetBundles.
         BuildPipeline.BuildAssetBundles(platformBundlePath, BuildAssetBundleOptions.None, platform.target);
 
-        // Copy AssetBundles to data directory.
-        if (Directory.Exists(platformBundlePath))
+        // Copy AssetBundles to platform's data directory.
+        if (BuildAssetBundlesSettings.copyToBuild && Directory.Exists(platformBundlePath))
         {
-            string bundleDirectory = platform.dataDirectory + "Bundles/";
+            string bundleDirectory = platform.dataDirectory + "Bundles" + Path.DirectorySeparatorChar;
             string targetPath = bundleDirectory + platform.name;
 
             if (Directory.Exists(bundleDirectory))
                 FileUtil.DeleteFileOrDirectory(bundleDirectory);
 
             Directory.CreateDirectory(bundleDirectory);
-            FileUtil.CopyFileOrDirectory(platformBundlePath + "/", targetPath);
+            FileUtil.CopyFileOrDirectory(platformBundlePath + Path.DirectorySeparatorChar, targetPath);
         }
     }
+
+    #endregion
 }
 
 }
