@@ -136,6 +136,7 @@ public static class BuildProject
     public static void PerformBuild(BuildPlatform platform)
     {
         // Build player.
+        Debug.Log("Building " + platform.name);
         FileUtil.DeleteFileOrDirectory(platform.buildPath);
         BuildPipeline.BuildPlayer(settings.scenesInBuild, platform.buildPath + platform.exeName, platform.target, BuildOptions.None);
 
@@ -159,7 +160,7 @@ public static class BuildProject
             }
             else
             {
-                string dirname = Path.GetFileName(item.TrimEnd('/'));
+                string dirname = Path.GetFileName(item.TrimEnd('/').TrimEnd('\\'));
                 FileUtil.CopyFileOrDirectory(item, platform.dataDirectory + dirname);
             }
         }
@@ -177,14 +178,6 @@ public static class BuildProject
         }
     }
 
-    private static void BuildAssetBundle(string path, BuildTarget target)
-    {
-        if (!Directory.Exists(path))
-            Directory.CreateDirectory(path);
-
-        BuildPipeline.BuildAssetBundles(path, BuildAssetBundleOptions.None, target);
-    }
-
     private static void PerformPreBuild()
     {
         settings.PreBuild();
@@ -193,6 +186,7 @@ public static class BuildProject
         {
             for (int i = 0; i < preBuildActions.Count; i++)
             {
+                Debug.Log("Executing PreBuild: " + preBuildActions[i].GetType().Name + " (" + preBuildActions[i].priority + ")");
                 preBuildActions[i].Execute();
             }
         }
@@ -206,6 +200,7 @@ public static class BuildProject
         {
             for (int i = 0; i < postBuildActions.Count; i++)
             {
+                Debug.Log("Executing PostBuild: " + postBuildActions[i].GetType().Name + " (" + postBuildActions[i].priority + ")");
                 postBuildActions[i].Execute();
             }
         }
@@ -219,6 +214,7 @@ public static class BuildProject
         {
             for (int i = 0; i < preBuildActions.Count; i++)
             {
+                Debug.Log("Executing PreBuild (" + platform.name + "): " + preBuildActions[i].GetType().Name + " (" + preBuildActions[i].priority + ")");
                 preBuildActions[i].Execute(platform);
             }
         }
@@ -232,6 +228,7 @@ public static class BuildProject
         {
             for (int i = 0; i < postBuildActions.Count; i++)
             {
+                Debug.Log("Executing PostBuild (" + platform.name + "): " + postBuildActions[i].GetType().Name + " (" + postBuildActions[i].priority + ")");
                 postBuildActions[i].Execute(platform);
             }
         }
