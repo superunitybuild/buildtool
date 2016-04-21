@@ -33,6 +33,12 @@ public static class BuildProject
             return;
         }
 
+        if (preBuildActions != null)
+            preBuildActions.Sort();
+
+        if (postBuildActions != null)
+            postBuildActions.Sort();
+
         PerformPreBuild();
 
         for (int i = 0; i < platforms.Count; i++)
