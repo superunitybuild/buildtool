@@ -83,7 +83,7 @@ public static class BuildProject
     /// <param name="settings"></param>
     public static void RegisterSettings(BuildSettings settings)
     {
-        if (BuildProject.settings != null)
+        if (BuildProject.settings != null && BuildProject.settings.GetType() != settings.GetType())
             Debug.LogError("Multiple BuildSettings classes. There can be only one!");
 
         BuildProject.settings = settings;
