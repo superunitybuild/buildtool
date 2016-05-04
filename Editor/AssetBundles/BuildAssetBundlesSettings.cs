@@ -1,21 +1,60 @@
 ﻿using System.IO;
+using UnityEditor;
+using UnityEngine;
 
 namespace UnityBuild
 {
 
-public class BuildAssetBundlesSettings
+[InitializeOnLoad]
+public class BuildAssetBundlesSettings : BaseSettings
 {
-    #region Constants
+    #region Singleton
+
+    private static BuildAssetBundlesSettings instance = null;
+
+    public static BuildAssetBundlesSettings Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = CreateAsset<BuildAssetBundlesSettings>("BuildAssetBundlesSettings");
+            }
+
+            return instance;
+        }
+    }
+
+    #endregion
+
+    #region MenuItems
+
+    [MenuItem("Build/AssetBundles/Edit Settings", priority = 0)]
+    public static void EditSettings()
+    {
+        Selection.activeObject = Instance;
+        EditorApplication.ExecuteMenuItem("Window/Inspector");
+    }
+
+    #endregion
+    
+    #region Variables
+
+    [Header("AssetBundle Build Settings (Field Info in Tooltips)")]
 
     /// <summary>
     /// The path where AssetBundles are built. {0} = binPath
     /// </summary>
-    private const string _buildPath = "{0}/Bundles";
+    [SerializeField]
+    [Tooltip("The path where AssetBundles are built. {0} = binPath")]
+    private string _buildPath = "{0}/Bundles";
 
     /// <summary>
     /// Flag indicating if the AssetBundles should be copied into the game's data directory.
     /// </summary>
-    private const bool _copyToBuild = true;
+    [SerializeField]
+    [Tooltip("Flag indicating if the AssetBundles should be copied into the game's data directory.")]
+    private bool _copyToBuild = true;
 
     #endregion
 
@@ -25,7 +64,7 @@ public class BuildAssetBundlesSettings
     {
         get
         {
-            return string.Format(_buildPath, BuildProject.settings.binPath);
+            return string.Format(Instance._buildPath, BuildSettings.binPath);
         }
     }
 
@@ -33,7 +72,7 @@ public class BuildAssetBundlesSettings
     {
         get
         {
-            return _copyToBuild;
+            return Instance._copyToBuild;
         }
     }
 

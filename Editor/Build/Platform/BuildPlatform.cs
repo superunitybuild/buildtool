@@ -107,7 +107,7 @@ public abstract class BuildPlatform
     {
         get
         {
-            return BuildProject.settings.binPath + Path.DirectorySeparatorChar + name + Path.DirectorySeparatorChar;
+            return BuildSettings.binPath + Path.DirectorySeparatorChar + name + Path.DirectorySeparatorChar;
         }
     }
 
@@ -115,7 +115,7 @@ public abstract class BuildPlatform
     {
         get
         {
-            return buildPath + string.Format(dataDirNameFormat, BuildProject.settings.binName) + Path.DirectorySeparatorChar;
+            return buildPath + string.Format(dataDirNameFormat, BuildSettings.binName) + Path.DirectorySeparatorChar;
         }
     }
 
@@ -123,7 +123,7 @@ public abstract class BuildPlatform
     {
         get
         {
-            return string.Format(binaryNameFormat, BuildProject.settings.binName);
+            return string.Format(binaryNameFormat, BuildSettings.binName);
         }
     }
 

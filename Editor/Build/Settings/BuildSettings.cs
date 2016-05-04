@@ -2,91 +2,100 @@
 using System.IO;
 using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 
 namespace UnityBuild
 {
 
 [InitializeOnLoad]
-public abstract class BuildSettings
+public class BuildSettings : BaseSettings
 {
-    #region Abstract
+    #region Singleton
 
-    /// <summary>
-    /// The name of executable file (e.g. mygame.exe, mygame.app)
-    /// </summary>
-    public abstract string binName { get; }
+    private static BuildSettings instance = null;
 
-    /// <summary>
-    /// The base path where builds are output. Relative to the Unity project's base folder.
-    /// </summary>
-    public abstract string binPath { get; }
-
-    /// <summary>
-    /// A list of scenes to include in the build. The first listed scene will be loaded first.
-    /// </summary>
-    public abstract string[] scenesInBuild { get; }
-
-    /// <summary>
-    /// A list of files/directories to include with the build. Relative to the Unity project's base folder.
-    /// </summary>
-    public abstract string[] copyToBuild { get; }
-
-    #endregion
-
-    #region Contructor
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    static BuildSettings()
+    public static BuildSettings Instance
     {
-        // Find all classes that inherit from BuildPlatform and register them with BuildProject.
-        Type ti = typeof(BuildSettings);
-
-        foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+        get
         {
-            foreach (Type t in asm.GetTypes())
+            if (instance == null)
             {
-                if (ti.IsAssignableFrom(t) && ti != t)
-                {
-                    BuildProject.RegisterSettings((BuildSettings)Activator.CreateInstance(t));
-                }
+                instance = CreateAsset<BuildSettings>("BuildSettings");
             }
+
+            return instance;
         }
     }
 
     #endregion
 
-    #region Public Methods
+    #region MenuItems
 
-    /// <summary>
-    /// Method executed before doing any build actions.
-    /// </summary>
-    public virtual void PreBuild()
+    [MenuItem("Build/Edit Settings", priority = 0)]
+    public static void EditSettings()
     {
+        Selection.activeObject = Instance;
+        EditorApplication.ExecuteMenuItem("Window/Inspector");
     }
 
-    /// <summary>
-    /// Method executed after performing all standard build actions.
-    /// </summary>
-    public virtual void PostBuild()
+    #endregion
+
+    #region Variables
+
+    [Header("Build Settings (Field Info in Tooltips)")]
+
+    // The name of executable file (e.g. mygame.exe, mygame.app)
+    [SerializeField]
+    [Tooltip("The name of executable file (e.g. mygame.exe, mygame.app)")]
+    private string _binName = Application.productName;
+
+    // The base path where builds are output.
+    // Path is relative to the Unity project's base folder unless an absolute path is given.
+    [SerializeField]
+    [Tooltip("The base path where builds are output.")]
+    private string _binPath = "bin";
+
+    // A list of scenes (filepaths) to include in the build. The first listed scene will be loaded first.
+    [SerializeField]
+    [Tooltip("A list of scenes to include in the build. First listed scene will be loaded first. ")]
+    private string[] _scenesInBuild = new string[] {
+        // @"Assets/Scenes/scene1.unity",
+        // @"Assets/Scenes/scene2.unity",
+        // ...
+    };
+
+    // A list of files/directories to include with the build. 
+    // Paths are relative to Unity project's base folder unless an absolute path is given.
+    [SerializeField]
+    [Tooltip("A list of files/directories to include with the build.")]
+    private string[] _copyToBuild = new string[] {
+        // @"DirectoryToInclude/",
+        // @"FileToInclude.txt",
+        // ...
+    };
+
+    #endregion
+
+    #region Methods & Properties
+
+    public static string binName
     {
+        get { return Instance._binName; }
     }
 
-    /// <summary>
-    /// Method executed prior to doing the build for a particular platform.
-    /// </summary>
-    /// <param name="platform"></param>
-    public virtual void PreBuild(BuildPlatform platform)
+    public static string binPath
     {
+        get { return Instance._binPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar); }
     }
 
-    /// <summary>
-    /// Method executed after doing the build for a particular platform.
-    /// </summary>
-    /// <param name="platform"></param>
-    public virtual void PostBuild(BuildPlatform platform)
+    public static string[] scenesInBuild
     {
+        get { return Instance._scenesInBuild; }
+    }
+
+    public static string[] copyToBuild
+    {
+        get { return Instance._copyToBuild; }
     }
 
     #endregion

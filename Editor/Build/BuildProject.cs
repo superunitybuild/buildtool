@@ -12,7 +12,6 @@ public static class BuildProject
 {
     #region Public Variables & Auto-Properties
 
-    public static BuildSettings settings { get; private set; }
     public static List<BuildPlatform> platforms { get; private set; }
     public static List<BuildAction> preBuildActions { get; private set; }
     public static List<BuildAction> postBuildActions { get; private set; }
@@ -27,12 +26,6 @@ public static class BuildProject
     [MenuItem("Build/Run Build", false, 1)]
     public static void BuildAll()
     {
-        if (settings == null)
-        {
-            Debug.LogError("No BuildSettings found. Please run Edit/Generate BuildSettings.");
-            return;
-        }
-
         if (preBuildActions != null)
             preBuildActions.Sort();
 
@@ -76,18 +69,6 @@ public static class BuildProject
     #endregion
 
     #region Register Methods
-
-    /// <summary>
-    /// Register the project's BuildSettings.
-    /// </summary>
-    /// <param name="settings"></param>
-    public static void RegisterSettings(BuildSettings settings)
-    {
-        if (BuildProject.settings != null && BuildProject.settings.GetType() != settings.GetType())
-            Debug.LogError("Multiple BuildSettings classes. There can be only one!");
-
-        BuildProject.settings = settings;
-    }
 
     /// <summary>
     /// Register a platform that can be built.
@@ -138,12 +119,12 @@ public static class BuildProject
         // Build player.
         Debug.Log("Building " + platform.name);
         FileUtil.DeleteFileOrDirectory(platform.buildPath);
-        BuildPipeline.BuildPlayer(settings.scenesInBuild, platform.buildPath + platform.exeName, platform.target, BuildOptions.None);
+        BuildPipeline.BuildPlayer(BuildSettings.scenesInBuild, platform.buildPath + platform.exeName, platform.target, BuildOptions.None);
 
         // Copy any other data.
-        for (int i = 0; i < settings.copyToBuild.Length; i++)
+        for (int i = 0; i < BuildSettings.copyToBuild.Length; i++)
         {
-            string item = settings.copyToBuild[i];
+            string item = BuildSettings.copyToBuild[i];
 
             // Log an error if file/directory does not exist.
             if (!File.Exists(item) && !Directory.Exists(item))
@@ -180,8 +161,6 @@ public static class BuildProject
 
     private static void PerformPreBuild()
     {
-        settings.PreBuild();
-
         if (preBuildActions != null)
         {
             for (int i = 0; i < preBuildActions.Count; i++)
@@ -194,8 +173,6 @@ public static class BuildProject
 
     private static void PerformPostBuild()
     {
-        settings.PostBuild();
-
         if (postBuildActions != null)
         {
             for (int i = 0; i < postBuildActions.Count; i++)
@@ -208,8 +185,6 @@ public static class BuildProject
 
     private static void PerformPreBuild(BuildPlatform platform)
     {
-        settings.PreBuild(platform);
-
         if (preBuildActions != null)
         {
             for (int i = 0; i < preBuildActions.Count; i++)
@@ -222,8 +197,6 @@ public static class BuildProject
 
     private static void PerformPostBuild(BuildPlatform platform)
     {
-        settings.PostBuild(platform);
-
         if (postBuildActions != null)
         {
             for (int i = 0; i < postBuildActions.Count; i++)
