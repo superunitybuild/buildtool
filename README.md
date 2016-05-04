@@ -10,9 +10,10 @@ Do one of the following:
 * [Download](https://github.com/Chaser324/unity-build/archive/master.zip) this project and copy the `Editor` dirctory into your project's assets directory.
 * Make this repository a git submodule within your project's assets directory.
 
-#### Generate BuildSettings
-* Generate a BuildSettings file by clicking `Build > Generate > BuildSettings` and selecting an Editor directory within your project.
-* Customize the new BuildSettings class to suit your project.
+#### Generate Settings
+* Click `Build > Edit Settings`.
+* If you're using AssetBundles, click `Build > AssetBundles > Edit Settings` to edit the applicable settings.
+* If you're using itch.io uploading, click `Build > Upload > itch.io > Edit Settings` to edit the applicable settings.
 
 #### Build
 * Click `Build > Run Build` to build the project. You can select which platforms to build in the `Build > Platforms` menu.
@@ -30,9 +31,7 @@ This project is designed to be highly modular, so you can delete any parts you d
 * Set the constant values.
 
 #### Creating Pre/Post BuildActions.
-There are two options here:
-* If your pre/post build actions are very specific to your project, you may want to just override the `PreBuild` and `PostBuild` actions in your project's BuildSettings class.
-* If you want the pre/post build actions to be easier to reuse on new projects, create an editor class that inherits from `PreBuildAction` or `PostBuildAction` and overrides the `Execute` method.
+Create an editor class that inherits from `PreBuildAction` or `PostBuildAction` and overrides the `Execute` method. You can override the "priority" property to control the order actions execute (lower values runs earlier).
 
 ## Command Line Interface
 
