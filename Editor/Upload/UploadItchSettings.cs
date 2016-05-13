@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace UnityBuild
+namespace SuperSystems.UnityBuild
 {
 
 public class UploadItchSettings : BaseSettings

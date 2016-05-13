@@ -2,58 +2,52 @@
 using System.IO;
 using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 
-namespace UnityBuild
+namespace SuperSystems.UnityBuild
 {
 
-[InitializeOnLoad]
-public abstract class BuildPlatform
+[System.Serializable]
+public class BuildPlatform
 {
+    public class BuildArchitecture
+    {
+        public BuildTarget target;
+        public string name;
+        public bool enabled;
+
+        public BuildArchitecture(BuildTarget target, string name, bool enabled)
+        {
+            this.target = target;
+            this.name = name;
+            this.enabled = enabled;
+        }
+    }
+
+    public bool enabled = false;
+
     #region Abstract
 
     /// <summary>
     /// Unity build target definition.
     /// </summary>
-    public abstract BuildTarget target { get; }
+    //public abstract BuildTarget target { get; }
+    public virtual BuildArchitecture[] architectures { get { return null; } }
 
     /// <summary>
     /// Platform name.
     /// </summary>
-    public abstract string name { get; }
+    public string platformName;
 
     /// <summary>
-    /// The format of the binary executable name (e.g. {0}.exe). {0} = Executable name specified in BuildSettings.
+    /// The format of the binary executable name (e.g. {0}.exe). {0} = Executable name specified in BuildSettings.basicSettings.
     /// </summary>
-    public abstract string binaryNameFormat { get; }
+    public virtual string binaryNameFormat { get { return ""; } }
 
     /// <summary>
-    /// The format of the data directory (e.g. {0}_Data). {0} = Executable name specified in BuildSettings.
+    /// The format of the data directory (e.g. {0}_Data). {0} = Executable name specified in BuildSettings.basicSettings.
     /// </summary>
-    public abstract string dataDirNameFormat { get; }
-
-    #endregion
-
-    #region Contructor
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    static BuildPlatform()
-    {
-        // Find all classes that inherit from BuildPlatform and register them with BuildProject.
-        Type ti = typeof(BuildPlatform);
-
-        foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
-        {
-            foreach (Type t in asm.GetTypes())
-            {
-                if (ti.IsAssignableFrom(t) && ti != t)
-                {
-                    BuildProject.RegisterPlatform((BuildPlatform)Activator.CreateInstance(t));
-                }
-            }
-        }
-    }
+    public virtual string dataDirNameFormat { get { return ""; } }
 
     #endregion
 
@@ -69,45 +63,13 @@ public abstract class BuildPlatform
 
     #endregion
 
-    #region Protected Methods
-
-    /// <summary>
-    /// Toggle if a target platform should be built.
-    /// </summary>
-    /// <param name="targetName">Platform name. Passed in from descendant class.</param>
-    protected static void Toggle(string targetName)
-    {
-        EditorPrefs.SetBool("buildGame" + targetName, !EditorPrefs.GetBool("buildGame" + targetName, false));
-    }
-
-    /// <summary>
-    /// UI Validation for platform build setting.
-    /// </summary>
-    /// <param name="targetName">Platform name. Passed in from descendant class.</param>
-    /// <returns></returns>
-    protected static bool ToggleValidate(string targetName)
-    {
-        Menu.SetChecked("Build/Platforms/" + targetName, EditorPrefs.GetBool("buildGame" + targetName, false));
-        return true;
-    }
-
-    #endregion
-
     #region Public Properties
-
-    public bool buildEnabled
-    {
-        get
-        {
-            return EditorPrefs.GetBool("buildGame" + name, false);
-        }
-    }
 
     public string buildPath
     {
         get
         {
-            return BuildSettings.binPath + Path.DirectorySeparatorChar + name + Path.DirectorySeparatorChar;
+            return BuildSettings.basicSettings.buildPath + Path.DirectorySeparatorChar + platformName + Path.DirectorySeparatorChar;
         }
     }
 
@@ -115,7 +77,7 @@ public abstract class BuildPlatform
     {
         get
         {
-            return buildPath + string.Format(dataDirNameFormat, BuildSettings.binName) + Path.DirectorySeparatorChar;
+            return buildPath + string.Format(dataDirNameFormat, BuildSettings.basicSettings.executableName) + Path.DirectorySeparatorChar;
         }
     }
 
@@ -123,7 +85,7 @@ public abstract class BuildPlatform
     {
         get
         {
-            return string.Format(binaryNameFormat, BuildSettings.binName);
+            return string.Format(binaryNameFormat, BuildSettings.basicSettings.executableName);
         }
     }
 

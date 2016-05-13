@@ -1,50 +1,50 @@
 ﻿using UnityEditor;
 
-namespace UnityBuild
+namespace SuperSystems.UnityBuild
 {
 
+[System.Serializable]
 public class BuildOSX : BuildPlatform
 {
     #region Constants (SET VALUES)
 
-    private const BuildTarget _target = BuildTarget.StandaloneOSXIntel;
     private const string _name = "OSX";
     private const string _binaryNameFormat = "{0}.app";
     private const string _dataDirNameFormat = "{0}.app/Contents";
 
     #endregion
 
+    public BuildOSX()
+    {
+        enabled = false;
+        platformName = _name;
+    }
+
+    #region Variables
+
+    private BuildArchitecture[] _architectures = new BuildArchitecture[] { 
+        new BuildArchitecture(BuildTarget.StandaloneOSXUniversal, "OSX Universal", true),
+        new BuildArchitecture(BuildTarget.StandaloneOSXIntel, "OSX x86", false),
+        new BuildArchitecture(BuildTarget.StandaloneOSXIntel64, "OSX x64", false)
+    };
+
+    #endregion
+
     #region Methods & Properties (DO NOT EDIT)
 
-    public override BuildTarget target
+    public BuildArchitecture[] architectures
     {
-        get { return _target; }
+        get { return _architectures; }
     }
 
-    public override string name
-    {
-        get { return _name; }
-    }
-
-    public override string binaryNameFormat
+    public string binaryNameFormat
     {
         get { return _binaryNameFormat; }
     }
 
-    public override string dataDirNameFormat
+    public string dataDirNameFormat
     {
         get { return _dataDirNameFormat; }
-    }
-
-    [MenuItem("Build/Platforms/" + _name)]
-    private static void Toggle()
-    {
-        Toggle(_name);
-    }
-    [MenuItem("Build/Platforms/" + _name, true)]
-    private static bool ToggleValidate()
-    {
-        return ToggleValidate(_name);
     }
 
     #endregion

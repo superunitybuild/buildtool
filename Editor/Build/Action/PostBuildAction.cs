@@ -2,7 +2,7 @@
 using System.Reflection;
 using UnityEditor;
 
-namespace UnityBuild
+namespace SuperSystems.UnityBuild
 {
 
 [InitializeOnLoad]
@@ -15,7 +15,7 @@ public abstract class PostBuildAction : BuildAction
     /// </summary>
     static PostBuildAction()
     {
-        // Find all classes that inherit from BuildPlatform and register them with BuildProject.
+        // Find all classes that inherit from IBuildPlatform and register them with BuildProject.
         Type ti = typeof(PostBuildAction);
 
         foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())

@@ -2,7 +2,7 @@
 using UnityEditor;
 using System.IO;
 
-namespace UnityBuild
+namespace SuperSystems.UnityBuild
 {
 
 public class UploadItch : PostBuildAction
@@ -52,38 +52,38 @@ public class UploadItch : PostBuildAction
 
     private static void PerformUpload(BuildPlatform platform)
     {
-        if (!platform.buildEnabled)
-            return;
+        //if (!platform.buildEnabled)
+        //    return;
 
-        string absolutePath = Path.GetFullPath(platform.buildPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        //string absolutePath = Path.GetFullPath(platform.buildPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-        if (File.Exists(absolutePath))
-        {
-            Debug.Log("UploadItch: Upload Failed - Build does not exist for platform " + platform.name + " - " + absolutePath);
-            return;
-        }
+        //if (File.Exists(absolutePath))
+        //{
+        //    Debug.Log("UploadItch: Upload Failed - Build does not exist for platform " + platform.name + " - " + absolutePath);
+        //    return;
+        //}
 
-        string channel = GetChannelName(platform.target);
-        if (string.IsNullOrEmpty(channel))
-        {
-            Debug.Log("UploadItch: Upload Failed - Unknown platform " + platform.name);
-            return;
-        }
+        //string channel = GetChannelName(platform.target);
+        //if (string.IsNullOrEmpty(channel))
+        //{
+        //    Debug.Log("UploadItch: Upload Failed - Unknown platform " + platform.name);
+        //    return;
+        //}
 
-        string arguments = "push \"" + absolutePath + "\" " + UploadItchSettings.itchUserName + "/" + UploadItchSettings.itchGameName + ":" + channel;
+        //string arguments = "push \"" + absolutePath + "\" " + UploadItchSettings.itchUserName + "/" + UploadItchSettings.itchGameName + ":" + channel;
 
-        if (!string.IsNullOrEmpty(UploadItchSettings.versionNumber))
-        {
-            arguments += "--userversion " + UploadItchSettings.versionNumber;
-        }
+        //if (!string.IsNullOrEmpty(UploadItchSettings.versionNumber))
+        //{
+        //    arguments += "--userversion " + UploadItchSettings.versionNumber;
+        //}
 
-        System.Diagnostics.Process uploadProc = new System.Diagnostics.Process();
-        uploadProc.StartInfo.FileName = UploadItchSettings.butlerPath;
-        uploadProc.StartInfo.Arguments =
-            arguments;
-        uploadProc.StartInfo.CreateNoWindow = false;
-        uploadProc.StartInfo.UseShellExecute = false;
-        uploadProc.Start();
+        //System.Diagnostics.Process uploadProc = new System.Diagnostics.Process();
+        //uploadProc.StartInfo.FileName = UploadItchSettings.butlerPath;
+        //uploadProc.StartInfo.Arguments =
+        //    arguments;
+        //uploadProc.StartInfo.CreateNoWindow = false;
+        //uploadProc.StartInfo.UseShellExecute = false;
+        //uploadProc.Start();
     }
 
     private static string GetChannelName(BuildTarget target)

@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace UnityBuild
+namespace SuperSystems.UnityBuild
 {
 
 [InitializeOnLoad]
@@ -64,7 +64,7 @@ public class BuildAssetBundlesSettings : BaseSettings
     {
         get
         {
-            return string.Format(Instance._buildPath, BuildSettings.binPath);
+            return string.Format(Instance._buildPath, BuildSettings.basicSettings.buildPath);
         }
     }
 

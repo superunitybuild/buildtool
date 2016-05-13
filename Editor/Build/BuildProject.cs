@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 
-namespace UnityBuild
+namespace SuperSystems.UnityBuild
 {
 
 public static class BuildProject
@@ -26,26 +26,26 @@ public static class BuildProject
     [MenuItem("Build/Run Build", false, 1)]
     public static void BuildAll()
     {
-        if (preBuildActions != null)
-            preBuildActions.Sort();
+        //if (preBuildActions != null)
+        //    preBuildActions.Sort();
 
-        if (postBuildActions != null)
-            postBuildActions.Sort();
+        //if (postBuildActions != null)
+        //    postBuildActions.Sort();
 
-        PerformPreBuild();
+        //PerformPreBuild();
 
-        for (int i = 0; i < platforms.Count; i++)
-        {
-            BuildPlatform platform = platforms[i];
-            if (platform.buildEnabled)
-            {
-                PerformPreBuild(platform);
-                platform.Build();
-                PerformPostBuild(platform);
-            }
-        }
+        //for (int i = 0; i < platforms.Count; i++)
+        //{
+        //    IBuildPlatform platform = platforms[i];
+        //    if (platform.buildEnabled)
+        //    {
+        //        PerformPreBuild(platform);
+        //        platform.Build();
+        //        PerformPostBuild(platform);
+        //    }
+        //}
 
-        PerformPostBuild();
+        //PerformPostBuild();
     }
 
     /// <summary>
@@ -116,35 +116,35 @@ public static class BuildProject
     /// <param name="platform"></param>
     public static void PerformBuild(BuildPlatform platform)
     {
-        // Build player.
-        Debug.Log("Building " + platform.name);
-        FileUtil.DeleteFileOrDirectory(platform.buildPath);
-        BuildPipeline.BuildPlayer(BuildSettings.scenesInBuild, platform.buildPath + platform.exeName, platform.target, BuildOptions.None);
+        //// Build player.
+        //Debug.Log("Building " + platform.name);
+        //FileUtil.DeleteFileOrDirectory(platform.buildPath);
+        //BuildPipeline.BuildPlayer(BuildSettings.basicSettings.scenesInBuild, platform.buildPath + platform.exeName, platform.target, BuildOptions.None);
 
-        // Copy any other data.
-        for (int i = 0; i < BuildSettings.copyToBuild.Length; i++)
-        {
-            string item = BuildSettings.copyToBuild[i];
+        //// Copy any other data.
+        //for (int i = 0; i < BuildSettings.basicSettings.copyToBuild.Length; i++)
+        //{
+        //    string item = BuildSettings.basicSettings.copyToBuild[i];
 
-            // Log an error if file/directory does not exist.
-            if (!File.Exists(item) && !Directory.Exists(item))
-            {
-                Debug.LogError("Item to copy does not exist: " + item);
-                continue;
-            }
+        //    // Log an error if file/directory does not exist.
+        //    if (!File.Exists(item) && !Directory.Exists(item))
+        //    {
+        //        Debug.LogError("Item to copy does not exist: " + item);
+        //        continue;
+        //    }
 
-            // Copy the file/directory.
-            if (Path.HasExtension(item))
-            {
-                string filename = Path.GetFileName(item);
-                FileUtil.CopyFileOrDirectory(item, platform.dataDirectory + filename);
-            }
-            else
-            {
-                string dirname = Path.GetFileName(item.TrimEnd('/').TrimEnd('\\'));
-                FileUtil.CopyFileOrDirectory(item, platform.dataDirectory + dirname);
-            }
-        }
+        //    // Copy the file/directory.
+        //    if (Path.HasExtension(item))
+        //    {
+        //        string filename = Path.GetFileName(item);
+        //        FileUtil.CopyFileOrDirectory(item, platform.dataDirectory + filename);
+        //    }
+        //    else
+        //    {
+        //        string dirname = Path.GetFileName(item.TrimEnd('/').TrimEnd('\\'));
+        //        FileUtil.CopyFileOrDirectory(item, platform.dataDirectory + dirname);
+        //    }
+        //}
     }
 
     #endregion
@@ -155,7 +155,7 @@ public static class BuildProject
     {
         for (int i = 0; i < platforms.Count; i++)
         {
-            EditorPrefs.SetBool("buildGame" + platforms[i].name, enabled);
+            EditorPrefs.SetBool("buildGame" + platforms[i].platformName, enabled);
         }
     }
 
@@ -189,7 +189,7 @@ public static class BuildProject
         {
             for (int i = 0; i < preBuildActions.Count; i++)
             {
-                Debug.Log("Executing PreBuild (" + platform.name + "): " + preBuildActions[i].GetType().Name + " (" + preBuildActions[i].priority + ")");
+                Debug.Log("Executing PreBuild (" + platform.platformName + "): " + preBuildActions[i].GetType().Name + " (" + preBuildActions[i].priority + ")");
                 preBuildActions[i].Execute(platform);
             }
         }
@@ -201,7 +201,7 @@ public static class BuildProject
         {
             for (int i = 0; i < postBuildActions.Count; i++)
             {
-                Debug.Log("Executing PostBuild (" + platform.name + "): " + postBuildActions[i].GetType().Name + " (" + postBuildActions[i].priority + ")");
+                Debug.Log("Executing PostBuild (" + platform.platformName + "): " + postBuildActions[i].GetType().Name + " (" + postBuildActions[i].priority + ")");
                 postBuildActions[i].Execute(platform);
             }
         }
