@@ -12,6 +12,12 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
     {
         EditorGUI.BeginProperty(position, label, property);
 
+        char chr = Event.current.character;
+        if ((chr < 'a' || chr > 'z') && (chr < 'A' || chr > 'Z') && (chr < '0' || chr > '9') && chr != '-' && chr != '_' && chr != ' ')
+        {
+            Event.current.character = '\0';
+        }
+
         bool show = false;
         UnityBuildGUIUtility.DropdownHeader(property.FindPropertyRelative("typeName").stringValue, ref show);
 

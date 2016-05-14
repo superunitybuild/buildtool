@@ -76,6 +76,56 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                 {
                     EditorGUILayout.HelpBox("Click a build configuration above in \"Configurations\" to view full details.", MessageType.Info);
                 }
+                else
+                {
+                    BuildReleaseType releaseType;
+                    BuildPlatform platform;
+                    BuildArchitecture arch;
+                    BuildDistribution dist;
+
+                    BuildSettings.projectConfigurations.ParseKeychain(selectedKeyChain, out releaseType, out platform, out arch, out dist);
+
+                    EditorGUILayout.LabelField("Misc Info", UnityBuildGUIUtility.midHeaderStyle);
+                    EditorGUILayout.LabelField("Defines:");
+                    EditorGUILayout.LabelField(BuildProject.GenerateDefaultDefines(releaseType, platform, arch, dist), EditorStyles.wordWrappedLabel);
+                    EditorGUILayout.LabelField("Output Build Directory:");
+
+                    if (releaseType != null)
+                    {
+                        EditorGUILayout.LabelField("Release Type", UnityBuildGUIUtility.midHeaderStyle);
+                        EditorGUILayout.LabelField("Type Name:\t" + releaseType.typeName);
+                        EditorGUILayout.LabelField("Bundle Identifier:\t" + releaseType.bundleIndentifier);
+                        EditorGUILayout.LabelField("Product Name:\t" + releaseType.productName);
+                    }
+
+                    if (platform != null)
+                    {
+                        EditorGUILayout.LabelField("Platform", UnityBuildGUIUtility.midHeaderStyle);
+                        EditorGUILayout.LabelField("Name:\t\t" + platform.platformName);
+                    }
+
+                    if (arch != null)
+                    {
+                        EditorGUILayout.LabelField("Architecture", UnityBuildGUIUtility.midHeaderStyle);
+                        EditorGUILayout.LabelField("Name:\t\t" + arch.name);
+                    }
+
+                    if (dist != null)
+                    {
+                        EditorGUILayout.LabelField("Distribution", UnityBuildGUIUtility.midHeaderStyle);
+                        EditorGUILayout.LabelField("Name:\t\t" + dist.distributionName);
+                    }
+
+                    GUILayout.Space(20);
+                    GUILayout.BeginHorizontal();
+                    GUILayout.FlexibleSpace();
+                    if (GUILayout.Button("Build This Config Now", GUILayout.MaxWidth(200)))
+                    {
+
+                    }
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndHorizontal();
+                }
 
                 EditorGUILayout.EndVertical();
             }

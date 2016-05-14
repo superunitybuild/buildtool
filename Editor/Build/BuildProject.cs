@@ -147,6 +147,25 @@ public static class BuildProject
         //}
     }
 
+    public static string GenerateDefaultDefines(BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist)
+    {
+        List<string> defines = new List<string>();
+
+        if (releaseType != null)
+            defines.Add("BUILD_TYPE_" + releaseType.typeName.ToUpper().Replace(" ", ""));
+
+        if (buildPlatform != null)
+            defines.Add("BUILD_PLATFORM_" + buildPlatform.platformName.ToUpper().Replace(" ", ""));
+
+        if (arch != null)
+            defines.Add("BUILD_ARCH_" + arch.name.ToUpper().Replace(" ", ""));
+
+        if (dist != null)
+            defines.Add("BUILD_DIST_" + dist.distributionName.ToUpper().Replace(" ", ""));
+
+        return string.Join(";", defines.ToArray());
+    }
+
     #endregion
 
     #region Private Methods

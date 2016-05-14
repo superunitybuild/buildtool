@@ -38,6 +38,40 @@ public class ProjectConfigurations
         configSet = refreshedConfigSet;
     }
 
+    public string[] BuildAllKeychains()
+    {
+        List<string> keychains = new List<string>();
+
+        foreach (string key in configSet.Keys)
+        {
+            Configuration config = configSet[key];
+            BuildKeychainsRecursive(ref keychains, config, key, "", 0);
+        }
+
+        return keychains.ToArray();
+    }
+
+    private void BuildKeychainsRecursive(ref List<string> keychains, Configuration config, string key, string currentKeychain, int depth)
+    {
+        if (depth >= 2 && (config.childConfigurations == null || config.childConfigurations.Count == 0))
+        {
+            keychains.Add(currentKeychain + "/" + key);
+        }
+        else if (config.childConfigurations != null && config.childConfigurations.Count > 0 && config.enabled)
+        {
+            if (string.IsNullOrEmpty(currentKeychain))
+                currentKeychain = key;
+            else
+                currentKeychain += "/" + key;
+
+            foreach (string childKey in config.childConfigurations.Keys)
+            {
+                Configuration childConfig = config.childConfigurations[childKey];
+                BuildKeychainsRecursive(ref keychains, childConfig, childKey, currentKeychain, depth + 1);
+            }
+        }
+    }
+
     public bool ParseKeychain(string keychain, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture architecture, out BuildDistribution distribution)
     {
         bool success = false;
