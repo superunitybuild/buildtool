@@ -8,13 +8,6 @@ namespace SuperSystems.UnityBuild
 [System.Serializable]
 public class ProjectConfigurations
 {
-    [System.Serializable]
-    public class Configuration
-    {
-        public bool enabled = true;
-        public SerializableDictionary<string, Configuration> childConfigurations;
-    }
-
     public SerializableDictionary<string, Configuration> configSet;
 
     public void Refresh()
@@ -43,6 +36,83 @@ public class ProjectConfigurations
         }
 
         configSet = refreshedConfigSet;
+    }
+
+    public bool ParseKeychain(string keychain, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture architecture, out BuildDistribution distribution)
+    {
+        bool success = false;
+        string[] keys = keychain.Split('/');
+        int keyCount = keys.Length;
+        int targetKey = 0;
+        Configuration childConfig = null;
+
+        releaseType = null;
+        platform = null;
+        architecture = null;
+        distribution = null;
+
+        if (keyCount > targetKey && configSet.ContainsKey(keys[targetKey]))
+        {
+            for (int i = 0; i < BuildSettings.releaseTypeList.releaseTypes.Length; i++)
+            {
+                BuildReleaseType rt = BuildSettings.releaseTypeList.releaseTypes[i];
+
+                if (keys[targetKey] == rt.typeName)
+                {
+                    releaseType = rt;
+                    childConfig = configSet[keys[targetKey]];
+                }
+            }
+        }
+
+        ++targetKey;
+        if (keyCount > targetKey && childConfig != null && childConfig.childConfigurations != null && childConfig.childConfigurations.ContainsKey(keys[targetKey]))
+        {
+            for (int i = 0; i < BuildSettings.platformList.platforms.Length; i++)
+            {
+                BuildPlatform p = BuildSettings.platformList.platforms[i];
+
+                if (keys[targetKey] == p.platformName)
+                {
+                    platform = p;
+                    childConfig = childConfig.childConfigurations[keys[targetKey]];
+                }
+            }
+        }
+
+        ++targetKey;
+        if (keyCount > targetKey && childConfig != null && childConfig.childConfigurations != null && childConfig.childConfigurations.ContainsKey(keys[targetKey]))
+        {
+            for (int i = 0; i < platform.architectures.Length; i++)
+            {
+                BuildArchitecture arch = platform.architectures[i];
+
+                if (keys[targetKey] == arch.name)
+                {
+                    architecture = arch;
+                    childConfig = childConfig.childConfigurations[keys[targetKey]];
+                    success = true;
+                }
+            }
+        }
+
+        ++targetKey;
+        if (keyCount > targetKey && childConfig != null && childConfig.childConfigurations != null && childConfig.childConfigurations.ContainsKey(keys[targetKey]))
+        {
+            success = false;
+            for (int i = 0; i < platform.distributionList.distributions.Length; i++)
+            {
+                BuildDistribution dist = platform.distributionList.distributions[i];
+
+                if (keys[targetKey] == dist.distributionName)
+                {
+                    distribution = dist;
+                    success = true;
+                }
+            }
+        }
+
+        return success;
     }
 
     private SerializableDictionary<string, Configuration> RefreshPlatforms(SerializableDictionary<string, Configuration> prevConfigSet)
