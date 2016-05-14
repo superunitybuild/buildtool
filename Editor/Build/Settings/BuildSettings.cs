@@ -7,7 +7,6 @@ using UnityEngine;
 namespace SuperSystems.UnityBuild
 {
 
-[InitializeOnLoad]
 [Serializable]
 public class BuildSettings : BaseSettings
 {
@@ -30,22 +29,16 @@ public class BuildSettings : BaseSettings
 
     #endregion
 
-    [SerializeField]
-    public BasicSettings _basicSettings = new BasicSettings();
+    #region Variables
 
-    [SerializeField]
+    public BasicSettings _basicSettings = new BasicSettings();
+    public ProductParameters _productParameters = new ProductParameters();
+    public BuildReleaseTypeList _releaseTypeList = new BuildReleaseTypeList();
     public BuildPlatformList _platformList = new BuildPlatformList();
 
-    #region MenuItems
-
-    //[MenuItem("Build/Edit Settings", priority = 0)]
-    //public static void EditSettings()
-    //{
-    //    Selection.activeObject = Instance;
-    //    EditorApplication.ExecuteMenuItem("Window/Inspector");
-    //}
-
     #endregion
+
+    #region Properties
 
     public static BasicSettings basicSettings
     {
@@ -54,6 +47,32 @@ public class BuildSettings : BaseSettings
             return Instance._basicSettings;
         }
     }
+
+    public static ProductParameters productParameters
+    {
+        get
+        {
+            return Instance._productParameters;
+        }
+    }
+
+    public static BuildReleaseTypeList releaseTypeList
+    {
+        get
+        {
+            return Instance._releaseTypeList;
+        }
+    }
+
+    public static BuildPlatformList platformList
+    {
+        get
+        {
+            return Instance._platformList;
+        }
+    }
+
+    #endregion
 }
 
 }

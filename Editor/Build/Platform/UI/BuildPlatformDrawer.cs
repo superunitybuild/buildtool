@@ -12,12 +12,12 @@ public class BuildPlatformDrawer : PropertyDrawer
         EditorGUI.BeginProperty(position, GUIContent.none, property);
 
         bool show = property.isExpanded;
-        UnityBuildGUIStyles.DropdownHeader(property.FindPropertyRelative("platformName").stringValue, ref show);
+        UnityBuildGUIUtility.DropdownHeader(property.FindPropertyRelative("platformName").stringValue, ref show);
         property.isExpanded = show;
 
         if (show)
         {
-            EditorGUILayout.BeginVertical(UnityBuildGUIStyles.dropdownContentStyle);
+            EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
             SerializedProperty archList = property.FindPropertyRelative("architectures");
 

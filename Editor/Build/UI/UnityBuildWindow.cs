@@ -8,8 +8,7 @@ public class UnityBuildWindow : EditorWindow
 {
     #region MenuItems
 
-    [MenuItem("Window/UnityBuild")]
-    [MenuItem("Build/Edit Settings")]
+    [MenuItem("Window/SuperUnityBuild")]
     public static void ShowWindow()
     {
         EditorWindow.GetWindow<UnityBuildWindow>();
@@ -19,7 +18,7 @@ public class UnityBuildWindow : EditorWindow
 
     protected void OnEnable()
     {
-        GUIContent title = new GUIContent("UnityBuild");
+        GUIContent title = new GUIContent("SuperUnityBuild");
         titleContent = title;
     }
 
@@ -38,7 +37,10 @@ public class UnityBuildWindow : EditorWindow
 
         EditorGUILayout.LabelField("Super Unity Build", mainTitleStyle);
         EditorGUILayout.LabelField("by Super Systems Softworks", subTitleStyle);
+
         EditorGUILayout.PropertyField(obj.FindProperty("_basicSettings"), GUILayout.MaxHeight(20));
+        EditorGUILayout.PropertyField(obj.FindProperty("_productParameters"), GUILayout.MaxHeight(10));
+        EditorGUILayout.PropertyField(obj.FindProperty("_releaseTypeList"), GUILayout.MaxHeight(10));
         EditorGUILayout.PropertyField(obj.FindProperty("_platformList"), GUILayout.MaxHeight(10));
 
         obj.ApplyModifiedProperties();

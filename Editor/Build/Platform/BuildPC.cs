@@ -26,12 +26,12 @@ public class BuildPC : BuildPlatform
 
     #region Methods & Properties (DO NOT EDIT)
 
-    public string binaryNameFormat
+    public override string binaryNameFormat
     {
         get { return _binaryNameFormat; }
     }
 
-    public string dataDirNameFormat
+    public override string dataDirNameFormat
     {
         get { return _dataDirNameFormat; }
     }

@@ -8,7 +8,7 @@ namespace SuperSystems.UnityBuild
 [CustomPropertyDrawer(typeof(BuildPlatformList))]
 public class BuildPlatformListDrawer : PropertyDrawer
 {
-    private bool show = true;
+    private bool show = false;
     private int index = 0;
     private SerializedProperty list = null;
     private BuildPlatformList platformList = null;
@@ -18,7 +18,10 @@ public class BuildPlatformListDrawer : PropertyDrawer
     {
         EditorGUI.BeginProperty(position, label, property);
 
-        UnityBuildGUIStyles.DropdownHeader("Build Platforms", ref show);
+        EditorGUILayout.BeginHorizontal();
+        UnityBuildGUIUtility.DropdownHeader("Build Platforms", ref show, GUILayout.ExpandWidth(true));
+        UnityBuildGUIUtility.HelpButton("Parameter-Details#Build-Platforms");
+        EditorGUILayout.EndHorizontal();
 
         if (list == null)
         {
@@ -28,7 +31,7 @@ public class BuildPlatformListDrawer : PropertyDrawer
 
         if (show)
         {
-            EditorGUILayout.BeginVertical(UnityBuildGUIStyles.dropdownContentStyle);
+            EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
             for (int i = 0; i < list.arraySize; i++)
             {
@@ -54,7 +57,7 @@ public class BuildPlatformListDrawer : PropertyDrawer
                 GUILayout.Space(20);
                 GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
-                index = EditorGUILayout.Popup(index, availablePlatformList.ToArray(), UnityBuildGUIStyles.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));
+                index = EditorGUILayout.Popup(index, availablePlatformList.ToArray(), UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));
                 if (GUILayout.Button("Add Platform", GUILayout.ExpandWidth(false), GUILayout.MaxWidth(150)))
                 {
                     for (int i = 0; i < list.arraySize; i++)

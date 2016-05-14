@@ -25,13 +25,7 @@ public abstract class BuildAction : IComparable<BuildAction>
     /// <summary>
     /// Priority of this build action. Lower values execute earlier.
     /// </summary>
-    public virtual int priority
-    {
-        get
-        {
-            return 100;
-        }
-    }
+    public int priority = 100;
 
     #region IComparable
 

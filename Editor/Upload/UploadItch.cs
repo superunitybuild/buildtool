@@ -118,18 +118,6 @@ public class UploadItch : PostBuildAction
     }
 
     #endregion
-
-    #region Public Properties
-
-    public override int priority
-    {
-        get
-        {
-            return 1000;
-        }
-    }
-
-    #endregion
 }
 
 }

@@ -13,21 +13,28 @@ public class BasicSettingsDrawer : PropertyDrawer
     {
         EditorGUI.BeginProperty(position, GUIContent.none, property);
 
-        UnityBuildGUIStyles.DropdownHeader("Basic Settings", ref show);
+        EditorGUILayout.BeginHorizontal();
+        UnityBuildGUIUtility.DropdownHeader("Basic Settings", ref show, GUILayout.ExpandWidth(true));
+        UnityBuildGUIUtility.HelpButton("Parameter-Details#Basic-Settings");
+        EditorGUILayout.EndHorizontal();
 
         if (show)
         {
-            EditorGUILayout.BeginVertical(UnityBuildGUIStyles.dropdownContentStyle);
+            EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("executableName"));
+            GUILayout.Label("Build Path Options", UnityBuildGUIUtility.midHeaderStyle);
+
             EditorGUILayout.PropertyField(property.FindPropertyRelative("baseBuildFolder"));
-            EditorGUILayout.HelpBox("Valid tokens for build path: $YEAR, $MONTH, $DAY, $TIME, $RELEASE_TYPE, $PLATFORM, $ARCHITECTURE, $VERSION", MessageType.Info);
             EditorGUILayout.PropertyField(property.FindPropertyRelative("buildPath"));
-            //EditorGUILayout.PropertyField(property.FindPropertyRelative("scenesInBuild"));
-            //EditorGUILayout.PropertyField(property.FindPropertyRelative("copyToBuild"));
 
-            //SerializedProperty openBuildFolderAfterBuild = property.FindPropertyRelative("openBuildFolderAfterBuild");
-            //openBuildFolderAfterBuild.boolValue = EditorGUILayout.ToggleLeft("  Open build folder after build", openBuildFolderAfterBuild.boolValue);
+            
+            GUILayout.Space(20);
+            GUILayout.Label("Post-Build Options", UnityBuildGUIUtility.midHeaderStyle);
+
+            SerializedProperty openBuildFolderAfterBuild = property.FindPropertyRelative("openFolderPostBuild");
+            openBuildFolderAfterBuild.boolValue = EditorGUILayout.ToggleLeft(" Open output folder after build", openBuildFolderAfterBuild.boolValue);
+
+            property.serializedObject.ApplyModifiedProperties();
 
             EditorGUILayout.EndVertical();
         }
