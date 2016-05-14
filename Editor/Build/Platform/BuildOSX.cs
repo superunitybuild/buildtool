@@ -18,24 +18,14 @@ public class BuildOSX : BuildPlatform
     {
         enabled = false;
         platformName = _name;
+        architectures = new BuildArchitecture[] { 
+            new BuildArchitecture(BuildTarget.StandaloneOSXUniversal, "OSX Universal", true),
+            new BuildArchitecture(BuildTarget.StandaloneOSXIntel, "OSX x86", false),
+            new BuildArchitecture(BuildTarget.StandaloneOSXIntel64, "OSX x64", false)
+        };
     }
-
-    #region Variables
-
-    private BuildArchitecture[] _architectures = new BuildArchitecture[] { 
-        new BuildArchitecture(BuildTarget.StandaloneOSXUniversal, "OSX Universal", true),
-        new BuildArchitecture(BuildTarget.StandaloneOSXIntel, "OSX x86", false),
-        new BuildArchitecture(BuildTarget.StandaloneOSXIntel64, "OSX x64", false)
-    };
-
-    #endregion
 
     #region Methods & Properties (DO NOT EDIT)
-
-    public BuildArchitecture[] architectures
-    {
-        get { return _architectures; }
-    }
 
     public string binaryNameFormat
     {

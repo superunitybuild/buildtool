@@ -39,7 +39,7 @@ public class BuildPlatformListDrawer : PropertyDrawer
 
                 if (platformEnabled.boolValue)
                 {
-                    EditorGUILayout.PropertyField(platformProperty);
+                    EditorGUILayout.PropertyField(platformProperty, GUILayout.MaxHeight(0));
                     if (availablePlatformList.Contains(platformName))
                         availablePlatformList.Remove(platformName);
                 }
@@ -49,22 +49,32 @@ public class BuildPlatformListDrawer : PropertyDrawer
                 }
             }
 
-            index = EditorGUILayout.Popup(index, availablePlatformList.ToArray());
-            if (GUILayout.Button("Add Platform"))
+            if (availablePlatformList.Count > 0)
             {
-                for (int i = 0; i < list.arraySize; i++)
+                GUILayout.Space(20);
+                GUILayout.BeginHorizontal();
+                GUILayout.FlexibleSpace();
+                index = EditorGUILayout.Popup(index, availablePlatformList.ToArray(), UnityBuildGUIStyles.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));
+                if (GUILayout.Button("Add Platform", GUILayout.ExpandWidth(false), GUILayout.MaxWidth(150)))
                 {
-                    SerializedProperty platformProperty = list.GetArrayElementAtIndex(i);
-                    string platformName = platformList.platforms[i].platformName;
+                    for (int i = 0; i < list.arraySize; i++)
+                    {
+                        SerializedProperty platformProperty = list.GetArrayElementAtIndex(i);
+                        string platformName = platformList.platforms[i].platformName;
 
-                    if (availablePlatformList[index] == platformName)
-                    {   
-                        SerializedProperty platformEnabled = platformProperty.FindPropertyRelative("enabled");
-                        platformEnabled.boolValue = true;
+                        if (availablePlatformList[index] == platformName)
+                        {
+                            SerializedProperty platformEnabled = platformProperty.FindPropertyRelative("enabled");
+                            platformEnabled.boolValue = true;
 
-                        platformProperty.serializedObject.ApplyModifiedProperties();
+                            platformProperty.serializedObject.ApplyModifiedProperties();
+                        }
                     }
+
+                    index = 0;
                 }
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
             }
 
             EditorGUILayout.EndVertical();

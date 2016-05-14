@@ -18,23 +18,13 @@ public class BuildPC : BuildPlatform
     {
         enabled = false;
         platformName = _name;
+        architectures = new BuildArchitecture[] { 
+            new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true),
+            new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false)
+        };
     }
-
-    #region Variables
-
-    private BuildArchitecture[] _architectures = new BuildArchitecture[] { 
-        new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true),
-        new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false)
-    };
-
-    #endregion
 
     #region Methods & Properties (DO NOT EDIT)
-
-    public BuildArchitecture[] architectures
-    {
-        get { return _architectures; }
-    }
 
     public string binaryNameFormat
     {

@@ -33,8 +33,8 @@ public class UnityBuildWindow : EditorWindow
         SerializedObject obj = new SerializedObject(BuildSettings.Instance);
 
         EditorGUILayout.LabelField("UnityBuild", mainTitleStyle);
-        EditorGUILayout.PropertyField(obj.FindProperty("_basicSettings"));
-        EditorGUILayout.PropertyField(obj.FindProperty("_platformList"));
+        EditorGUILayout.PropertyField(obj.FindProperty("_basicSettings"), GUILayout.MaxHeight(20));
+        EditorGUILayout.PropertyField(obj.FindProperty("_platformList"), GUILayout.MaxHeight(10));
 
         obj.ApplyModifiedProperties();
     }

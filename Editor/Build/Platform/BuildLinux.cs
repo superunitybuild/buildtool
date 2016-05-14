@@ -18,24 +18,14 @@ public class BuildLinux : BuildPlatform
     {
         enabled = false;
         platformName = _name;
+        architectures = new BuildArchitecture[] { 
+            new BuildArchitecture(BuildTarget.StandaloneLinuxUniversal, "Linux Universal", true),
+            new BuildArchitecture(BuildTarget.StandaloneLinux, "Linux x86", false),
+            new BuildArchitecture(BuildTarget.StandaloneLinux64, "Linux x64", false)
+        };
     }
-
-    #region Variables
-
-    private BuildArchitecture[] _architectures = new BuildArchitecture[] { 
-        new BuildArchitecture(BuildTarget.StandaloneLinuxUniversal, "Linux Universal", true),
-        new BuildArchitecture(BuildTarget.StandaloneLinux, "Linux x86", false),
-        new BuildArchitecture(BuildTarget.StandaloneLinux64, "Linux x64", false)
-    };
-
-    #endregion
 
     #region Methods & Properties (DO NOT EDIT)
-
-    public BuildArchitecture[] architectures
-    {
-        get { return _architectures; }
-    }
 
     public string binaryNameFormat
     {

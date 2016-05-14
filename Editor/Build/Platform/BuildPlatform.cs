@@ -10,6 +10,7 @@ namespace SuperSystems.UnityBuild
 [System.Serializable]
 public class BuildPlatform
 {
+    [System.Serializable]
     public class BuildArchitecture
     {
         public BuildTarget target;
@@ -32,7 +33,7 @@ public class BuildPlatform
     /// Unity build target definition.
     /// </summary>
     //public abstract BuildTarget target { get; }
-    public virtual BuildArchitecture[] architectures { get { return null; } }
+    public BuildArchitecture[] architectures;
 
     /// <summary>
     /// Platform name.

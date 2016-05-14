@@ -25,6 +25,7 @@ public class UnityBuildGUIStyles
     private GUIStyle _dropdownHeaderStyle;
     private GUIStyle _dropdownHeaderCollapsedStyle;
     private GUIStyle _dropdownContentStyle;
+    private GUIStyle _popupStyle;
 
     private UnityBuildGUIStyles()
     {
@@ -32,6 +33,12 @@ public class UnityBuildGUIStyles
         _dropdownHeaderStyle.alignment = TextAnchor.MiddleLeft;
         _dropdownHeaderStyle.fontStyle = FontStyle.Bold;
         _dropdownHeaderStyle.margin = new RectOffset(5, 5, 0, 0);
+
+        _popupStyle = new GUIStyle(EditorStyles.popup);
+        _popupStyle.fontSize = 11;
+        _popupStyle.alignment = TextAnchor.MiddleLeft;
+        _popupStyle.margin = new RectOffset(0, 0, 4, 0);
+        _popupStyle.fixedHeight = 18;
 
         _dropdownHeaderCollapsedStyle = new GUIStyle(_dropdownHeaderStyle);
 
@@ -61,6 +68,14 @@ public class UnityBuildGUIStyles
         get
         {
             return Instance._dropdownContentStyle;
+        }
+    }
+
+    public static GUIStyle popupStyle
+    {
+        get
+        {
+            return Instance._popupStyle;
         }
     }
 }
