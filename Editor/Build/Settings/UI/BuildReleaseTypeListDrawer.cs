@@ -20,7 +20,7 @@ public class BuildReleaseTypeListDrawer : PropertyDrawer
         UnityBuildGUIUtility.HelpButton("Parameter-Details#Release-Types");
         EditorGUILayout.EndHorizontal();
 
-        list = property.FindPropertyRelative("releastTypes");
+        list = property.FindPropertyRelative("releaseTypes");
 
         if (show)
         {

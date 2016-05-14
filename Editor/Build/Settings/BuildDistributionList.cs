@@ -5,9 +5,9 @@ namespace SuperSystems.UnityBuild
 {
 
 [System.Serializable]
-public class BuildReleaseTypeList
+public class BuildDistributionList
 {
-    public BuildReleaseType[] releaseTypes = new BuildReleaseType[] {
+    public BuildDistribution[] distributions = new BuildDistribution[] {
     };
 }
 

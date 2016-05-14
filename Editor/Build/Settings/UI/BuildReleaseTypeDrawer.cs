@@ -29,12 +29,12 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Delete", GUILayout.MaxWidth(150)))
             {
-                BuildReleaseType[] types = BuildSettings.Instance._releaseTypeList.releastTypes;
+                BuildReleaseType[] types = BuildSettings.Instance._releaseTypeList.releaseTypes;
                 for (int i = 0; i < types.Length; i++)
                 {
                     if (types[i].typeName == property.FindPropertyRelative("typeName").stringValue)
                     {
-                        ArrayUtility.RemoveAt<BuildReleaseType>(ref BuildSettings.Instance._releaseTypeList.releastTypes, i);
+                        ArrayUtility.RemoveAt<BuildReleaseType>(ref BuildSettings.Instance._releaseTypeList.releaseTypes, i);
                         GUIUtility.keyboardControl = 0;
                         break;
                     }

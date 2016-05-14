@@ -26,6 +26,7 @@ public class BuildPlatform
     }
 
     public bool enabled = false;
+    public BuildDistributionList distributionList;
 
     #region Abstract
 
