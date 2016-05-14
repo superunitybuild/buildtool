@@ -35,6 +35,7 @@ public class BuildSettings : BaseSettings
     public ProductParameters _productParameters = new ProductParameters();
     public BuildReleaseTypeList _releaseTypeList = new BuildReleaseTypeList();
     public BuildPlatformList _platformList = new BuildPlatformList();
+    public ProjectConfigurations _projectConfigurations = new ProjectConfigurations();
 
     #endregion
 
@@ -69,6 +70,14 @@ public class BuildSettings : BaseSettings
         get
         {
             return Instance._platformList;
+        }
+    }
+
+    public static ProjectConfigurations projectConfigurations
+    {
+        get
+        {
+            return Instance._projectConfigurations;
         }
     }
 

@@ -48,6 +48,9 @@ public class UnityBuildWindow : EditorWindow
         EditorGUILayout.PropertyField(obj.FindProperty("_releaseTypeList"), GUILayout.MaxHeight(10));
         EditorGUILayout.PropertyField(obj.FindProperty("_platformList"), GUILayout.MaxHeight(10));
 
+        BuildSettings.projectConfigurations.Refresh();
+        EditorGUILayout.PropertyField(obj.FindProperty("_projectConfigurations"), GUILayout.MaxHeight(10));
+
         EditorGUILayout.EndScrollView();
 
         obj.ApplyModifiedProperties();
