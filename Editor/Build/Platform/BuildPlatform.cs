@@ -10,21 +10,6 @@ namespace SuperSystems.UnityBuild
 [System.Serializable]
 public class BuildPlatform
 {
-    [System.Serializable]
-    public class BuildArchitecture
-    {
-        public BuildTarget target;
-        public string name;
-        public bool enabled;
-
-        public BuildArchitecture(BuildTarget target, string name, bool enabled)
-        {
-            this.target = target;
-            this.name = name;
-            this.enabled = enabled;
-        }
-    }
-
     public bool enabled = false;
     public BuildDistributionList distributionList;
 
@@ -66,6 +51,34 @@ public class BuildPlatform
     #endregion
 
     #region Public Properties
+
+    public bool atLeastOneArch
+    {
+        get
+        {
+            bool atLeastOneArch = false;
+            for (int i = 0; i < architectures.Length && !atLeastOneArch; i++)
+            {
+                atLeastOneArch |= architectures[i].enabled;
+            }
+
+            return atLeastOneArch;
+        }
+    }
+
+    public bool atLeastOneDistribution
+    {
+        get
+        {
+            bool atLeastOneDist = false;
+            for (int i = 0; i < distributionList.distributions.Length && !atLeastOneDist; i++)
+            {
+                atLeastOneDist |= distributionList.distributions[i].enabled;
+            }
+
+            return atLeastOneDist;
+        }
+    }
 
     public string buildPath
     {
