@@ -51,6 +51,9 @@ public class UnityBuildWindow : EditorWindow
         BuildSettings.projectConfigurations.Refresh();
         EditorGUILayout.PropertyField(obj.FindProperty("_projectConfigurations"), GUILayout.MaxHeight(10));
 
+        GUILayout.Space(30);
+
+
         EditorGUILayout.EndScrollView();
 
         obj.ApplyModifiedProperties();

@@ -50,6 +50,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
             UnityBuildGUIUtility.DropdownHeader("Configurations", ref showConfigs, GUILayout.ExpandWidth(true));
             EditorGUILayout.EndHorizontal();
 
+
             if (showConfigs)
             {
                 EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
@@ -57,8 +58,11 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                 foreach (string key in BuildSettings.projectConfigurations.configSet.Keys)
                 {
                     Configuration config = BuildSettings.projectConfigurations.configSet[key];
-                    DisplayConfigTree(key, config, 0);
+                    DisplayConfigTree(key, ref config, 0);
+
+                    BuildSettings.projectConfigurations.configSet[key] = config;
                 }
+
 
                 EditorGUILayout.EndVertical();
             }
@@ -138,7 +142,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
         EditorGUI.EndProperty();
     }
 
-    private void DisplayConfigTree(string key, Configuration config, int depth, bool enabled = true, string keychain = "")
+    private void DisplayConfigTree(string key, ref Configuration config, int depth, bool enabled = true, string keychain = "")
     {
         EditorGUILayout.BeginHorizontal();
         EditorGUI.BeginDisabledGroup(!enabled);
@@ -192,7 +196,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
             foreach (string childKey in config.childConfigurations.Keys)
             {
                 Configuration childConfig = config.childConfigurations[childKey];
-                DisplayConfigTree(childKey, childConfig, depth + 1, config.enabled && enabled, keychain);
+                DisplayConfigTree(childKey, ref childConfig, depth + 1, config.enabled && enabled, keychain);
             }
         }
     }
