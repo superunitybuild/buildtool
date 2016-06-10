@@ -119,6 +119,14 @@ public static class BuildProject
         // Build player.
         Debug.Log("Building " + platform.name);
         FileUtil.DeleteFileOrDirectory(platform.buildPath);
+
+        switch (platform.target)
+        {
+            case BuildTarget.Android:
+                Directory.CreateDirectory(platform.buildPath + platform.exeName);
+                break;
+        }
+
         BuildPipeline.BuildPlayer(BuildSettings.scenesInBuild, platform.buildPath + platform.exeName, platform.target, BuildOptions.None);
 
         // Copy any other data.
