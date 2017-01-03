@@ -33,6 +33,7 @@ public class BuildPlatformListDrawer : PropertyDrawer
         {
             EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
+            int enabledCount = 0;
             for (int i = 0; i < list.arraySize; i++)
             {
                 SerializedProperty platformProperty = list.GetArrayElementAtIndex(i);
@@ -42,6 +43,7 @@ public class BuildPlatformListDrawer : PropertyDrawer
 
                 if (platformEnabled.boolValue)
                 {
+                    ++enabledCount;
                     EditorGUILayout.PropertyField(platformProperty, GUILayout.MaxHeight(0));
                     if (availablePlatformList.Contains(platformName))
                         availablePlatformList.Remove(platformName);
@@ -54,7 +56,11 @@ public class BuildPlatformListDrawer : PropertyDrawer
 
             if (availablePlatformList.Count > 0)
             {
-                GUILayout.Space(20);
+                if (enabledCount > 0)
+                {
+                    GUILayout.Space(20);
+                }
+
                 GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
                 index = EditorGUILayout.Popup(index, availablePlatformList.ToArray(), UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));

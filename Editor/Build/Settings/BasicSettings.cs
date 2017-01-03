@@ -11,7 +11,7 @@ public class BasicSettings
     // The name of executable file (e.g. mygame.exe, mygame.app)
     // TODO: Remove
     [Tooltip("The name of executable file (e.g. mygame.exe, mygame.app)")]
-    public string executableName = Application.productName;
+    public string executableName = "";
 
     // The base path where builds are output.
     // Path is relative to the Unity project's base folder unless an absolute path is given.

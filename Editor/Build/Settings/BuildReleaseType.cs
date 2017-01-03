@@ -7,9 +7,15 @@ namespace SuperSystems.UnityBuild
 [System.Serializable]
 public class BuildReleaseType
 {
-    public string typeName = "Type Name";
-    public string bundleIndentifier = Application.bundleIdentifier;
-    public string productName = Application.productName;
+    public string typeName = string.Empty;
+    public string bundleIndentifier = string.Empty;
+    public string productName = string.Empty;
+
+    public bool developmentBuild = false;
+    public bool allowDebugging = false;
+    public string customDefines = string.Empty;
+
+    public SceneList sceneList = new SceneList();
 }
 
 }
