@@ -51,6 +51,35 @@ public class ProjectConfigurations
         return keychains.ToArray();
     }
 
+    public int GetEnabledBuildsCount()
+    {
+        int count = 0;
+
+        foreach (string key in configSet.Keys)
+        {
+            Configuration config = configSet[key];
+            NavigateTree(key, ref config, 0, ref count);
+        }
+
+        return count;
+    }
+
+    private void NavigateTree(string key, ref Configuration config, int depth, ref int count)
+    {
+        if (depth >= 2 && config.enabled && (config.childConfigurations == null || config.childConfigurations.Count == 0))
+        {
+            ++count;
+        }
+        else if (config.enabled)
+        {
+            foreach (string childKey in config.childConfigurations.Keys)
+            {
+                Configuration childConfig = config.childConfigurations[childKey];
+                NavigateTree(childKey, ref childConfig, depth + 1, ref count);
+            }
+        }
+    }
+
     private void BuildKeychainsRecursive(ref List<string> keychains, Configuration config, string key, string currentKeychain, int depth)
     {
         if (depth >= 2 && (config.childConfigurations == null || config.childConfigurations.Count == 0))
@@ -101,6 +130,9 @@ public class ProjectConfigurations
             }
         }
 
+        if (releaseType == null)
+            return false;
+
         // Parse platform.
         ++targetKey;
         if (keyCount > targetKey && childConfig != null && childConfig.childConfigurations != null && childConfig.childConfigurations.ContainsKey(keys[targetKey]))
@@ -117,6 +149,9 @@ public class ProjectConfigurations
                 }
             }
         }
+
+        if (platform == null)
+            return false;
 
         // Parse architecture.
         if (platform.architectures.Length == 1)
@@ -153,6 +188,9 @@ public class ProjectConfigurations
                 }
             }
         }
+
+        if (architecture == null)
+            return false;
 
         // TODO: Parse variants.
 
