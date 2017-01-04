@@ -1,6 +1,8 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
 
 namespace SuperSystems.UnityBuild
 {
@@ -23,11 +25,14 @@ public class BuildPlatformListDrawer : PropertyDrawer
         UnityBuildGUIUtility.HelpButton("Parameter-Details#Build-Platforms");
         EditorGUILayout.EndHorizontal();
 
-        if (list == null)
-        {
-            list = property.FindPropertyRelative("platforms");
+        //if (list == null)
+        //{
             platformList = fieldInfo.GetValue(property.serializedObject.targetObject) as BuildPlatformList;
-        }
+            PopulateList();
+            list = property.FindPropertyRelative("platforms");
+        //}
+
+        
 
         if (show)
         {
@@ -90,6 +95,38 @@ public class BuildPlatformListDrawer : PropertyDrawer
         }
 
         EditorGUI.EndProperty();
+    }
+
+    private void PopulateList()
+    {
+        Type ti = typeof(BuildPlatform);
+        List<BuildPlatform> platforms = new List<BuildPlatform>(platformList.platforms);
+        foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            foreach (Type t in asm.GetTypes())
+            {
+                if (ti.IsAssignableFrom(t) && ti != t)
+                {
+                    BuildPlatform instance = (BuildPlatform)Activator.CreateInstance(t);
+                    bool alreadyPresent = false;
+                    for (int i = 0; i < platforms.Count; i++)
+                    {
+                        if (platforms[i].platformName.Equals(instance.platformName))
+                        {
+                            alreadyPresent = true;
+                            break;
+                        }
+                    }
+
+                    if (!alreadyPresent)
+                    {
+                        platforms.Add(instance);
+                    }
+                }
+            }
+        }
+
+        platformList.platforms = platforms.ToArray();
     }
 }
 

@@ -12,18 +12,18 @@ public class BuildSettings : BaseSettings
 {
     #region Singleton
 
-    private static BuildSettings instance = null;
+    private static BuildSettings _instance = null;
 
-    public static BuildSettings Instance
+    public static BuildSettings instance
     {
         get
         {
-            if (instance == null)
+            if (_instance == null)
             {
-                instance = CreateAsset<BuildSettings>("UnityBuildSettings");
+                _instance = CreateAsset<BuildSettings>("UnityBuildSettings");
             }
 
-            return instance;
+            return _instance;
         }
     }
 
@@ -45,7 +45,7 @@ public class BuildSettings : BaseSettings
     {
         get
         {
-            return Instance._basicSettings;
+            return instance._basicSettings;
         }
     }
 
@@ -53,7 +53,7 @@ public class BuildSettings : BaseSettings
     {
         get
         {
-            return Instance._productParameters;
+            return instance._productParameters;
         }
     }
 
@@ -61,7 +61,7 @@ public class BuildSettings : BaseSettings
     {
         get
         {
-            return Instance._releaseTypeList;
+            return instance._releaseTypeList;
         }
     }
 
@@ -69,7 +69,7 @@ public class BuildSettings : BaseSettings
     {
         get
         {
-            return Instance._platformList;
+            return instance._platformList;
         }
     }
 
@@ -77,7 +77,7 @@ public class BuildSettings : BaseSettings
     {
         get
         {
-            return Instance._projectConfigurations;
+            return instance._projectConfigurations;
         }
     }
 

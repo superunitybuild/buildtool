@@ -27,6 +27,8 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
         UnityBuildGUIUtility.HelpButton("Parameter-Details#Release-Types");
         EditorGUILayout.EndHorizontal();
 
+        Color defaultBackgroundColor = GUI.backgroundColor;
+
         if (show)
         {
             EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
@@ -123,10 +125,11 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                     GUILayout.Space(20);
                     GUILayout.BeginHorizontal();
                     GUILayout.FlexibleSpace();
+                    GUI.backgroundColor = Color.green;
                     if (GUILayout.Button("Build This Config Now", GUILayout.MaxWidth(200)))
                     {
-
                     }
+                    GUI.backgroundColor = defaultBackgroundColor;
                     GUILayout.FlexibleSpace();
                     GUILayout.EndHorizontal();
                 }

@@ -8,11 +8,7 @@ namespace SuperSystems.UnityBuild
 public class BuildPlatformList
 {
     [SerializeField]
-    public BuildPlatform[] platforms = new BuildPlatform[] {
-        new BuildPC(),
-        new BuildOSX(),
-        new BuildLinux()
-    };
+    public BuildPlatform[] platforms = new BuildPlatform[0];
 }
 
 }

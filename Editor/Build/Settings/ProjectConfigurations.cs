@@ -85,6 +85,7 @@ public class ProjectConfigurations
         architecture = null;
         distribution = null;
 
+        // Parse release type.
         if (keyCount > targetKey && configSet.ContainsKey(keys[targetKey]))
         {
             for (int i = 0; i < BuildSettings.releaseTypeList.releaseTypes.Length; i++)
@@ -95,10 +96,12 @@ public class ProjectConfigurations
                 {
                     releaseType = rt;
                     childConfig = configSet[keys[targetKey]];
+                    break;
                 }
             }
         }
 
+        // Parse platform.
         ++targetKey;
         if (keyCount > targetKey && childConfig != null && childConfig.childConfigurations != null && childConfig.childConfigurations.ContainsKey(keys[targetKey]))
         {
@@ -110,26 +113,50 @@ public class ProjectConfigurations
                 {
                     platform = p;
                     childConfig = childConfig.childConfigurations[keys[targetKey]];
+                    break;
                 }
             }
         }
 
-        ++targetKey;
-        if (keyCount > targetKey && childConfig != null && childConfig.childConfigurations != null && childConfig.childConfigurations.ContainsKey(keys[targetKey]))
+        // Parse architecture.
+        if (platform.architectures.Length == 1)
         {
-            for (int i = 0; i < platform.architectures.Length; i++)
-            {
-                BuildArchitecture arch = platform.architectures[i];
+            // Only one architecture, so it won't even appear in dictionary. Just get it directly.
+            architecture = platform.architectures[0];
+            success = true;
 
-                if (keys[targetKey] == arch.name)
+            if (childConfig.childConfigurations.ContainsKey(keys[targetKey]))
+            {
+                childConfig = childConfig.childConfigurations[keys[targetKey]];
+            }
+            else
+            {
+                childConfig = null;
+            }
+        }
+        else
+        {
+            ++targetKey;
+            if (keyCount > targetKey && childConfig != null && childConfig.childConfigurations != null && childConfig.childConfigurations.ContainsKey(keys[targetKey]))
+            {
+                for (int i = 0; i < platform.architectures.Length; i++)
                 {
-                    architecture = arch;
-                    childConfig = childConfig.childConfigurations[keys[targetKey]];
-                    success = true;
+                    BuildArchitecture arch = platform.architectures[i];
+
+                    if (keys[targetKey] == arch.name)
+                    {
+                        architecture = arch;
+                        childConfig = childConfig.childConfigurations[keys[targetKey]];
+                        success = true;
+                        break;
+                    }
                 }
             }
         }
 
+        // TODO: Parse variants.
+
+        // Parse distribution.
         ++targetKey;
         if (keyCount > targetKey && childConfig != null && childConfig.childConfigurations != null && childConfig.childConfigurations.ContainsKey(keys[targetKey]))
         {
@@ -142,6 +169,7 @@ public class ProjectConfigurations
                 {
                     distribution = dist;
                     success = true;
+                    break;
                 }
             }
         }
@@ -174,10 +202,14 @@ public class ProjectConfigurations
 
             BuildArchitecture[] architectures = platforms[i].architectures;
 
-            if (architectures.Length > 1)
-            {
+            //if (architectures.Length > 1)
+            //{
                 relConfig.childConfigurations = RefreshArchitectures(architectures, platforms[i].distributionList.distributions, prevChildConfig);
-            }
+            //}
+            //else
+            //{
+            //    relConfig.childConfigurations = RefreshDistributions(platforms[i].distributionList.distributions, prevChildConfig);
+            //}
 
             refreshedConfigSet.Add(key, relConfig);
         }

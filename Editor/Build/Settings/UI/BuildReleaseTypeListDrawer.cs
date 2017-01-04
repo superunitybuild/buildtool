@@ -9,7 +9,6 @@ public class BuildReleaseTypeListDrawer : PropertyDrawer
 {
     private bool show = false;
     private SerializedProperty list = null;
-    private BuildReleaseTypeList typeList = null;
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {

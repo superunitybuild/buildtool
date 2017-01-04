@@ -18,8 +18,9 @@ public class BuildPlatform
     /// <summary>
     /// Unity build target definition.
     /// </summary>
-    //public abstract BuildTarget target { get; }
     public BuildArchitecture[] architectures;
+
+    public BuildVariant[] variants;
 
     /// <summary>
     /// Platform name.
@@ -43,7 +44,7 @@ public class BuildPlatform
     /// <summary>
     /// Perform build for platform.
     /// </summary>
-    public void Build()
+    public virtual void Build()
     {
         BuildProject.PerformBuild(this);
     }
