@@ -54,7 +54,7 @@ public static class BuildConstantsGenerator
             writer.WriteLine("    public enum ReleaseType");
             writer.WriteLine("    {");
             writer.WriteLine("        None,");
-            foreach (BuildReleaseType releaseType in BuildSettings.instance._releaseTypeList.releaseTypes)
+            foreach (BuildReleaseType releaseType in BuildSettings.releaseTypeList.releaseTypes)
             {
                 string addedString = SanitizeString(releaseType.typeName);
 
@@ -72,7 +72,7 @@ public static class BuildConstantsGenerator
             writer.WriteLine("    public enum Platform");
             writer.WriteLine("    {");
             writer.WriteLine("        None,");
-            foreach (BuildPlatform platform in BuildSettings.instance._platformList.platforms)
+            foreach (BuildPlatform platform in BuildSettings.platformList.platforms)
             {
                 string addedString = SanitizeString(platform.platformName);
 
@@ -90,7 +90,7 @@ public static class BuildConstantsGenerator
             writer.WriteLine("    public enum Architecture");
             writer.WriteLine("    {");
             writer.WriteLine("        None,");
-            foreach (BuildPlatform platform in BuildSettings.instance._platformList.platforms)
+            foreach (BuildPlatform platform in BuildSettings.platformList.platforms)
             {
                 if (platform.enabled)
                 {
@@ -114,7 +114,7 @@ public static class BuildConstantsGenerator
             writer.WriteLine("    public enum Distribution");
             writer.WriteLine("    {");
             writer.WriteLine("        None,");
-            foreach (BuildPlatform platform in BuildSettings.instance._platformList.platforms)
+            foreach (BuildPlatform platform in BuildSettings.platformList.platforms)
             {
                 if (platform.enabled)
                 {

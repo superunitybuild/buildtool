@@ -77,7 +77,7 @@ public class UnityBuildWindow : EditorWindow
     {
         Color defaultBackgroundColor = GUI.backgroundColor;
 
-        int totalBuildCount = BuildSettings.instance._projectConfigurations.GetEnabledBuildsCount();
+        int totalBuildCount = BuildSettings.projectConfigurations.GetEnabledBuildsCount();
 
         EditorGUI.BeginDisabledGroup(totalBuildCount < 1);
         GUI.backgroundColor = Color.green;

@@ -91,7 +91,7 @@ public class BuildNotificationList
             BuildNotification.Category.Error,
             "No ReleaseType Found",
             "At least one ReleaseType is required to perform a build.",
-            () => BuildSettings.instance._releaseTypeList.releaseTypes.Length == 0));
+            () => BuildSettings.releaseTypeList.releaseTypes.Length == 0));
 
         AddNotification(new BuildNotification(
             BuildNotification.Category.Error,
@@ -100,12 +100,12 @@ public class BuildNotificationList
             () => {
                 bool validError = true;
 
-                int platformCount = BuildSettings.instance._platformList.platforms.Length;
+                int platformCount = BuildSettings.platformList.platforms.Length;
                 if (platformCount > 0)
                 {
                     for (int i = 0; i < platformCount; i++)
                     {
-                        BuildPlatform platform = BuildSettings.instance._platformList.platforms[i];
+                        BuildPlatform platform = BuildSettings.platformList.platforms[i];
                         if (platform.enabled && platform.atLeastOneArch)
                         {
                             validError = false;

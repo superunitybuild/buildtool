@@ -48,12 +48,12 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Delete", GUILayout.MaxWidth(150)))
             {
-                BuildReleaseType[] types = BuildSettings.instance._releaseTypeList.releaseTypes;
+                BuildReleaseType[] types = BuildSettings.releaseTypeList.releaseTypes;
                 for (int i = 0; i < types.Length; i++)
                 {
                     if (types[i].typeName == property.FindPropertyRelative("typeName").stringValue)
                     {
-                        ArrayUtility.RemoveAt<BuildReleaseType>(ref BuildSettings.instance._releaseTypeList.releaseTypes, i);
+                        ArrayUtility.RemoveAt<BuildReleaseType>(ref BuildSettings.releaseTypeList.releaseTypes, i);
                         GUIUtility.keyboardControl = 0;
                         break;
                     }

@@ -41,7 +41,7 @@ public class ProductParametersDrawer : PropertyDrawer
 
             if (!autoGenerate.boolValue && GUILayout.Button("Generate Version String Now", GUILayout.ExpandWidth(true)))
             {
-                BuildProject.GenerateVersionString(BuildSettings.instance._productParameters, DateTime.Now);
+                BuildProject.GenerateVersionString(BuildSettings.productParameters, DateTime.Now);
             }
 
             property.serializedObject.ApplyModifiedProperties();

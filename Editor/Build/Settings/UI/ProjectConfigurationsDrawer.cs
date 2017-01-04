@@ -154,7 +154,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                         {
                             EditorUserBuildSettings.SwitchActiveBuildTarget(arch.target);
                             PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, defines);
-                            BuildConstantsGenerator.Generate(BuildSettings.instance._productParameters.lastGeneratedVersion, releaseType, platform, arch, dist);
+                            BuildConstantsGenerator.Generate(BuildSettings.productParameters.lastGeneratedVersion, releaseType, platform, arch, dist);
                         }
                     }
                     else
