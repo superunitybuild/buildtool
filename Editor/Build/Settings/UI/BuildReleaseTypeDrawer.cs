@@ -7,8 +7,6 @@ namespace SuperSystems.UnityBuild
 [CustomPropertyDrawer(typeof(BuildReleaseType))]
 public class BuildReleaseTypeDrawer : PropertyDrawer
 {
-    private bool show = true;
-
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.BeginProperty(position, label, property);
@@ -19,7 +17,9 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
             Event.current.character = '\0';
         }
 
-        UnityBuildGUIUtility.DropdownHeader(property.FindPropertyRelative("typeName").stringValue, ref show, GUILayout.ExpandWidth(true));
+        bool show = property.isExpanded;
+        UnityBuildGUIUtility.DropdownHeader(property.FindPropertyRelative("typeName").stringValue, ref show);
+        property.isExpanded = show;
 
         if (show)
         {
