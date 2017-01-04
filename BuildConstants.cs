@@ -4,27 +4,27 @@ public static class BuildConstants
 {
     public enum ReleaseType
     {
-        NA
+        None,
     }
 
     public enum Platform
     {
-        NA
+        None,
     }
 
     public enum Architecture
     {
-        NA
+        None,
     }
 
     public enum Distribution
     {
-        NA
+        None,
     }
 
     public const string version = "";
-    public const ReleaseType releaseType = ReleaseType.NA;
-    public const Platform platform = Platform.NA;
-    public const Architecture architecture = Architecture.NA;
-    public const Distribution distribution = Distribution.NA;
+    public const ReleaseType releaseType = ReleaseType.None;
+    public const Platform platform = Platform.None;
+    public const Architecture architecture = Architecture.None;
+    public const Distribution distribution = Distribution.None;
 }
