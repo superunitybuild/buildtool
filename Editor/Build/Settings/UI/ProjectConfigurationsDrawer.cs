@@ -13,8 +13,8 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
     private bool showConfigs = false;
     private bool showBuildInfo = false;
 
-    private bool hideDisabled = true;
-    private bool treeView = true;
+    private bool hideDisabled = false;
+    private bool treeView = false;
 
     private string selectedKeyChain = "";
 
@@ -51,18 +51,24 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
             EditorGUILayout.BeginHorizontal();
             UnityBuildGUIUtility.DropdownHeader("Configurations", ref showConfigs, GUILayout.ExpandWidth(true));
             EditorGUILayout.EndHorizontal();
-
-
+            
             if (showConfigs)
             {
                 EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
-                foreach (string key in BuildSettings.projectConfigurations.configSet.Keys)
+                if (BuildSettings.projectConfigurations.configSet.Keys.Count > 0)
                 {
-                    Configuration config = BuildSettings.projectConfigurations.configSet[key];
-                    DisplayConfigTree(key, ref config, 0);
+                    foreach (string key in BuildSettings.projectConfigurations.configSet.Keys)
+                    {
+                        Configuration config = BuildSettings.projectConfigurations.configSet[key];
+                        DisplayConfigTree(key, ref config, 0);
 
-                    BuildSettings.projectConfigurations.configSet[key] = config;
+                        BuildSettings.projectConfigurations.configSet[key] = config;
+                    }
+                }
+                else
+                {
+                    EditorGUILayout.HelpBox("No Configuration info. Please add a Release Type.", MessageType.Error);
                 }
 
 
@@ -89,49 +95,61 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                     BuildArchitecture arch;
                     BuildDistribution dist;
 
-                    BuildSettings.projectConfigurations.ParseKeychain(selectedKeyChain, out releaseType, out platform, out arch, out dist);
+                    bool parseSuccess = BuildSettings.projectConfigurations.ParseKeychain(selectedKeyChain, out releaseType, out platform, out arch, out dist);
 
-                    EditorGUILayout.LabelField("Misc Info", UnityBuildGUIUtility.midHeaderStyle);
-                    EditorGUILayout.LabelField("Defines:");
-                    EditorGUILayout.LabelField(BuildProject.GenerateDefaultDefines(releaseType, platform, arch, dist), EditorStyles.wordWrappedLabel);
-                    EditorGUILayout.LabelField("Output Build Directory:");
-
-                    if (releaseType != null)
+                    if (parseSuccess)
                     {
-                        EditorGUILayout.LabelField("Release Type", UnityBuildGUIUtility.midHeaderStyle);
-                        EditorGUILayout.LabelField("Type Name:\t" + releaseType.typeName);
-                        EditorGUILayout.LabelField("Bundle Identifier:\t" + releaseType.bundleIndentifier);
-                        EditorGUILayout.LabelField("Product Name:\t" + releaseType.productName);
-                    }
+                        EditorGUILayout.LabelField("Misc Info", UnityBuildGUIUtility.midHeaderStyle);
+                        EditorGUILayout.LabelField("Defines:");
+                        EditorGUILayout.LabelField(BuildProject.GenerateDefaultDefines(releaseType, platform, arch, dist), EditorStyles.wordWrappedLabel);
+                        EditorGUILayout.LabelField("Output Build Directory:");
 
-                    if (platform != null)
-                    {
-                        EditorGUILayout.LabelField("Platform", UnityBuildGUIUtility.midHeaderStyle);
-                        EditorGUILayout.LabelField("Name:\t\t" + platform.platformName);
-                    }
+                        if (releaseType != null)
+                        {
+                            EditorGUILayout.LabelField("Release Type", UnityBuildGUIUtility.midHeaderStyle);
+                            EditorGUILayout.LabelField("Type Name:\t" + releaseType.typeName);
+                            EditorGUILayout.LabelField("Bundle Identifier:\t" + releaseType.bundleIndentifier);
+                            EditorGUILayout.LabelField("Product Name:\t" + releaseType.productName);
+                        }
 
-                    if (arch != null)
-                    {
-                        EditorGUILayout.LabelField("Architecture", UnityBuildGUIUtility.midHeaderStyle);
-                        EditorGUILayout.LabelField("Name:\t\t" + arch.name);
-                    }
+                        if (platform != null)
+                        {
+                            EditorGUILayout.LabelField("Platform", UnityBuildGUIUtility.midHeaderStyle);
+                            EditorGUILayout.LabelField("Name:\t\t" + platform.platformName);
+                        }
 
-                    if (dist != null)
-                    {
-                        EditorGUILayout.LabelField("Distribution", UnityBuildGUIUtility.midHeaderStyle);
-                        EditorGUILayout.LabelField("Name:\t\t" + dist.distributionName);
-                    }
+                        if (arch != null)
+                        {
+                            EditorGUILayout.LabelField("Architecture", UnityBuildGUIUtility.midHeaderStyle);
+                            EditorGUILayout.LabelField("Name:\t\t" + arch.name);
+                        }
 
-                    GUILayout.Space(20);
-                    GUILayout.BeginHorizontal();
-                    GUILayout.FlexibleSpace();
-                    GUI.backgroundColor = Color.green;
-                    if (GUILayout.Button("Build This Config Now", GUILayout.MaxWidth(200)))
-                    {
+                        if (dist != null)
+                        {
+                            EditorGUILayout.LabelField("Distribution", UnityBuildGUIUtility.midHeaderStyle);
+                            EditorGUILayout.LabelField("Name:\t\t" + dist.distributionName);
+                        }
+
+                        GUILayout.Space(20);
+                        GUI.backgroundColor = Color.green;
+                        if (GUILayout.Button("Build", GUILayout.ExpandWidth(true)))
+                        {
+                        }
+                        if (GUILayout.Button("Build and Run", GUILayout.ExpandWidth(true)))
+                        {
+                        }
+
+                        EditorGUI.BeginDisabledGroup(!releaseType.developmentBuild);
+                        if (GUILayout.Button("Build and Run w/ Profiler", GUILayout.ExpandWidth(true)))
+                        {
+                        }
+                        EditorGUI.EndDisabledGroup();
+                        GUI.backgroundColor = defaultBackgroundColor;
                     }
-                    GUI.backgroundColor = defaultBackgroundColor;
-                    GUILayout.FlexibleSpace();
-                    GUILayout.EndHorizontal();
+                    else
+                    {
+                        EditorGUILayout.HelpBox("Could not parse selected configuration. It may no longer be valid due to a changes. Select again.", MessageType.Info);
+                    }
                 }
 
                 EditorGUILayout.EndVertical();
@@ -169,6 +187,8 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
             else
             {
                 displayText = keychain + "/" + key;
+
+                config.enabled = EditorGUILayout.Toggle(config.enabled, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(10));
             }
 
             if (GUILayout.Button(displayText, UnityBuildGUIUtility.dropdownHeaderStyle))
