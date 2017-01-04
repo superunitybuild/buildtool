@@ -1,8 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
+﻿using System.IO;
 using UnityEditor;
-using UnityEngine;
 
 namespace SuperSystems.UnityBuild
 {

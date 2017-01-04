@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
-using System.IO;
 
 namespace SuperSystems.UnityBuild
 {

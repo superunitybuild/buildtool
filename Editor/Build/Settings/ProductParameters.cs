@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-using UnityEditor;
-
+﻿
 namespace SuperSystems.UnityBuild
 {
 

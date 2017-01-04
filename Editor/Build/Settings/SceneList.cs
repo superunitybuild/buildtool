@@ -1,7 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
 using UnityEditor;
-using System.Collections.Generic;
-using System.IO;
 
 namespace SuperSystems.UnityBuild
 {
