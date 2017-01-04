@@ -25,17 +25,19 @@ public class BuildPlatform
     /// <summary>
     /// Platform name.
     /// </summary>
-    public string platformName;
+    public string platformName { get; protected set; }
 
     /// <summary>
     /// The format of the binary executable name (e.g. {0}.exe). {0} = Executable name specified in BuildSettings.basicSettings.
     /// </summary>
-    public virtual string binaryNameFormat { get { return ""; } }
+    public string binaryNameFormat { get; protected set; }
 
     /// <summary>
     /// The format of the data directory (e.g. {0}_Data). {0} = Executable name specified in BuildSettings.basicSettings.
     /// </summary>
-    public virtual string dataDirNameFormat { get { return ""; } }
+    public string dataDirNameFormat { get; protected set; }
+
+    public BuildTargetGroup targetGroup { get; protected set; }
 
     #endregion
 

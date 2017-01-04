@@ -6,11 +6,12 @@ namespace SuperSystems.UnityBuild
 [System.Serializable]
 public class BuildPC : BuildPlatform
 {
-    #region Constants (SET VALUES)
+    #region Constants
 
     private const string _name = "PC";
     private const string _binaryNameFormat = "{0}.exe";
     private const string _dataDirNameFormat = "{0}_Data";
+    private const BuildTargetGroup _targetGroup = BuildTargetGroup.Standalone;
 
     #endregion
 
@@ -18,25 +19,14 @@ public class BuildPC : BuildPlatform
     {
         enabled = false;
         platformName = _name;
+        binaryNameFormat = _binaryNameFormat;
+        dataDirNameFormat = _dataDirNameFormat;
+        targetGroup = _targetGroup;
         architectures = new BuildArchitecture[] { 
             new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true),
             new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false)
         };
     }
-
-    #region Methods & Properties (DO NOT EDIT)
-
-    public override string binaryNameFormat
-    {
-        get { return _binaryNameFormat; }
-    }
-
-    public override string dataDirNameFormat
-    {
-        get { return _dataDirNameFormat; }
-    }
-
-    #endregion
 }
 
 }

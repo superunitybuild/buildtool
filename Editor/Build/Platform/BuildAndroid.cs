@@ -6,11 +6,12 @@ namespace SuperSystems.UnityBuild
 [System.Serializable]
 public class BuildAndroid : BuildPlatform
 {
-    #region Constants (SET VALUES)
+    #region Constants
 
     private const string _name = "Android";
     private const string _binaryNameFormat = "{0}.apk";
     private const string _dataDirNameFormat = "{0}_Data";
+    private const BuildTargetGroup _targetGroup = BuildTargetGroup.Android;
 
     #endregion
 
@@ -18,6 +19,9 @@ public class BuildAndroid : BuildPlatform
     {
         enabled = false;
         platformName = _name;
+        binaryNameFormat = _binaryNameFormat;
+        dataDirNameFormat = _dataDirNameFormat;
+        targetGroup = _targetGroup;
         architectures = new BuildArchitecture[] { 
             new BuildArchitecture(BuildTarget.Android, "Android", true)
         };
@@ -37,20 +41,6 @@ public class BuildAndroid : BuildPlatform
             new BuildVariant("Build System", "ADT (Legacy)", false)
         };
     }
-
-    #region Methods & Properties (DO NOT EDIT)
-
-    public override string binaryNameFormat
-    {
-        get { return _binaryNameFormat; }
-    }
-
-    public override string dataDirNameFormat
-    {
-        get { return _dataDirNameFormat; }
-    }
-
-    #endregion
 }
 
 }
