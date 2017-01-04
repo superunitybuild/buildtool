@@ -28,23 +28,37 @@ public class UnityBuildWindow : EditorWindow
 
     protected void OnGUI()
     {
+        DrawTitle();
+
+        scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false);
+
+        DrawProperties();
+        DrawBuildButtons();
+        GUILayout.Space(30);
+
+        EditorGUILayout.EndScrollView();
+    }
+
+    private void DrawTitle()
+    {
         GUIStyle mainTitleStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
         mainTitleStyle.fontSize = 18;
         mainTitleStyle.fontStyle = FontStyle.Bold;
-        mainTitleStyle.fixedHeight = 30;
+        mainTitleStyle.fixedHeight = 50;
 
         GUIStyle subTitleStyle = new GUIStyle(mainTitleStyle);
         subTitleStyle.fontSize = 11;
         subTitleStyle.fontStyle = FontStyle.Normal;
 
-        SerializedObject settings = new SerializedObject(BuildSettings.instance);
-        SerializedObject go = new SerializedObject(this);
-
         EditorGUILayout.LabelField("Super Unity Build", mainTitleStyle);
         EditorGUILayout.LabelField("by Super Systems Softworks", subTitleStyle);
         GUILayout.Space(10);
+    }
 
-        scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false);
+    private void DrawProperties()
+    {
+        SerializedObject settings = new SerializedObject(BuildSettings.instance);
+        SerializedObject go = new SerializedObject(this);
 
         EditorGUILayout.PropertyField(settings.FindProperty("_basicSettings"), GUILayout.MaxHeight(0));
         EditorGUILayout.PropertyField(settings.FindProperty("_productParameters"), GUILayout.MaxHeight(10));
@@ -56,11 +70,22 @@ public class UnityBuildWindow : EditorWindow
 
         EditorGUILayout.PropertyField(go.FindProperty("notifications"), GUILayout.MaxHeight(10));
 
-        GUILayout.Space(30);
-
-        EditorGUILayout.EndScrollView();
-
         settings.ApplyModifiedProperties();
+    }
+
+    private void DrawBuildButtons()
+    {
+        Color defaultBackgroundColor = GUI.backgroundColor;
+
+        int totalBuildCount = BuildSettings.instance._projectConfigurations.GetEnabledBuildsCount();
+
+        EditorGUI.BeginDisabledGroup(totalBuildCount < 1);
+        GUI.backgroundColor = Color.green;
+        if (GUILayout.Button("Perform All Enabled Builds (" + totalBuildCount + " Builds)", GUILayout.ExpandWidth(true), GUILayout.MinHeight(30)))
+        {
+        }
+        GUI.backgroundColor = defaultBackgroundColor;
+        EditorGUI.EndDisabledGroup();
     }
 }
 

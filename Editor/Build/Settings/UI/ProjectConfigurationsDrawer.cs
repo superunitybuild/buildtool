@@ -99,16 +99,20 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
 
                     if (parseSuccess)
                     {
+                        string defines = BuildProject.GenerateDefaultDefines(releaseType, platform, arch, dist);
+
                         EditorGUILayout.LabelField("Misc Info", UnityBuildGUIUtility.midHeaderStyle);
                         EditorGUILayout.LabelField("Defines:");
-                        EditorGUILayout.LabelField(BuildProject.GenerateDefaultDefines(releaseType, platform, arch, dist), EditorStyles.wordWrappedLabel);
-                        EditorGUILayout.LabelField("Output Build Directory:");
+                        EditorGUILayout.LabelField(defines, EditorStyles.wordWrappedLabel);
 
                         if (releaseType != null)
                         {
                             EditorGUILayout.LabelField("Release Type", UnityBuildGUIUtility.midHeaderStyle);
                             EditorGUILayout.LabelField("Type Name:\t" + releaseType.typeName);
-                            EditorGUILayout.LabelField("Bundle Identifier:\t" + releaseType.bundleIndentifier);
+                            
+                            if (!string.IsNullOrEmpty(releaseType.bundleIndentifier))
+                                EditorGUILayout.LabelField("Bundle Identifier:\t" + releaseType.bundleIndentifier);
+
                             EditorGUILayout.LabelField("Product Name:\t" + releaseType.productName);
                         }
 
@@ -145,6 +149,13 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                         }
                         EditorGUI.EndDisabledGroup();
                         GUI.backgroundColor = defaultBackgroundColor;
+
+                        if (GUILayout.Button("Refresh BuildConstants and Apply Defines", GUILayout.ExpandWidth(true)))
+                        {
+                            EditorUserBuildSettings.SwitchActiveBuildTarget(arch.target);
+                            PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, defines);
+                            BuildConstantsGenerator.Generate(BuildSettings.instance._productParameters.lastGeneratedVersion, releaseType, platform, arch, dist);
+                        }
                     }
                     else
                     {
