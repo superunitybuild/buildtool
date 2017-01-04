@@ -36,6 +36,8 @@ public class BuildSettings : BaseSettings
     public BuildReleaseTypeList _releaseTypeList = new BuildReleaseTypeList();
     public BuildPlatformList _platformList = new BuildPlatformList();
     public ProjectConfigurations _projectConfigurations = new ProjectConfigurations();
+    public BuildActionList _preBuildActions = new BuildActionList();
+    public BuildActionList _postBuildActions = new BuildActionList();
 
     #endregion
 
@@ -78,6 +80,22 @@ public class BuildSettings : BaseSettings
         get
         {
             return instance._projectConfigurations;
+        }
+    }
+
+    public static BuildActionList preBuildActions
+    {
+        get
+        {
+            return instance._preBuildActions;
+        }
+    }
+
+    public static BuildActionList postBuildActions
+    {
+        get
+        {
+            return instance._postBuildActions;
         }
     }
 
