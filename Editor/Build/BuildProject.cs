@@ -4,6 +4,8 @@ using UnityEditor;
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
+using System;
 
 namespace SuperSystems.UnityBuild
 {
@@ -152,23 +154,111 @@ public static class BuildProject
         List<string> defines = new List<string>();
 
         if (releaseType != null)
-            defines.Add("BUILD_TYPE_" + releaseType.typeName.ToUpper().Replace(" ", ""));
+            defines.Add("BUILD_TYPE_" + SanitizeCodeString(releaseType.typeName.ToUpper().Replace(" ", "")));
 
         if (buildPlatform != null)
-            defines.Add("BUILD_PLATFORM_" + buildPlatform.platformName.ToUpper().Replace(" ", ""));
+            defines.Add("BUILD_PLATFORM_" + SanitizeCodeString(buildPlatform.platformName.ToUpper().Replace(" ", "")));
 
         if (arch != null)
-            defines.Add("BUILD_ARCH_" + arch.name.ToUpper().Replace(" ", ""));
+            defines.Add("BUILD_ARCH_" + SanitizeCodeString(arch.name.ToUpper().Replace(" ", "")));
 
         if (dist != null)
-            defines.Add("BUILD_DIST_" + dist.distributionName.ToUpper().Replace(" ", ""));
+            defines.Add("BUILD_DIST_" + SanitizeCodeString(dist.distributionName.ToUpper().Replace(" ", "")));
+
+        if (releaseType != null && !string.IsNullOrEmpty(releaseType.customDefines))
+        {
+            string[] customDefines = releaseType.customDefines.Split(';', ',');
+            for (int i = 0; i < customDefines.Length; i++)
+            {
+                defines.Add(SanitizeCodeString(customDefines[i]).ToUpper());
+            }
+        }
 
         return string.Join(";", defines.ToArray());
+    }
+
+    public static string GenerateVersionString(ProductParameters productParameters, DateTime buildTime)
+    {
+        string prototypeString = productParameters.version;
+        StringBuilder sb = new StringBuilder(prototypeString);
+
+        // Regex = (?:\$DAYSSINCE\(")([^"]*)(?:"\))
+        Match match = Regex.Match(prototypeString, "(?:\\$DAYSSINCE\\(\")([^\"]*)(?:\"\\))");
+        while (match.Success)
+        {
+            DateTime parsedTime;
+            int daysSince = 0;
+            if (DateTime.TryParse(match.Groups[1].Value, out parsedTime))
+            {
+                daysSince = buildTime.Subtract(parsedTime).Days;
+            }
+            
+            sb.Replace(match.Captures[0].Value, daysSince.ToString());
+            match = match.NextMatch();
+        }
+
+        ReplaceFromFile(sb, "$NOUN", "nouns.txt");
+        ReplaceFromFile(sb, "$ADJECTIVE", "adjectives.txt");
+
+        sb.Replace("$SECONDS", (buildTime.TimeOfDay.TotalSeconds / 15f).ToString("F0"));
+
+        sb.Replace("$YEAR", buildTime.ToString("yyyy"));
+        sb.Replace("$MONTH", buildTime.ToString("MM"));
+        sb.Replace("$DAY", buildTime.ToString("dd"));
+        sb.Replace("$TIME", buildTime.ToString("hhmmss"));
+
+        sb.Replace("$BUILD", (++productParameters.buildCounter).ToString());
+
+        string retVal = sb.ToString();
+        productParameters.lastGeneratedVersion = retVal;
+
+        return retVal;
     }
 
     #endregion
 
     #region Private Methods
+
+    private static string SanitizeCodeString(string str)
+    {
+        str = Regex.Replace(str, "[^a-zA-Z0-9_]", "_", RegexOptions.Compiled);
+        if (char.IsDigit(str[0]))
+        {
+            str = "_" + str;
+        }
+        return str;
+    }
+
+    private static void ReplaceFromFile(StringBuilder sb, string keyString, string filename)
+    {
+        if (sb.ToString().IndexOf(keyString) > -1)
+        {
+            string[] fileSearchResults = Directory.GetFiles(Application.dataPath, filename, SearchOption.AllDirectories);
+            string filePath = null;
+            string desiredFilePath = string.Format("UnityBuild{0}Editor{0}{1}", Path.DirectorySeparatorChar, filename);
+            for (int i = 0; i < fileSearchResults.Length; i++)
+            {
+                if (fileSearchResults[i].EndsWith(desiredFilePath))
+                {
+                    filePath = fileSearchResults[i];
+                    break;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                string[] lines = File.ReadAllLines(filePath);
+
+                int index = sb.ToString().IndexOf(keyString, 0);
+                while (index > -1)
+                {
+                    string noun = lines[UnityEngine.Random.Range(0, lines.Length - 1)].ToUpper();
+                    sb.Replace(keyString, noun, index, keyString.Length);
+                    index = sb.ToString().IndexOf(keyString, index + 1);
+                }
+            }
+        }
+    }
 
     private static void SetAllBuildPlatforms(bool enabled)
     {

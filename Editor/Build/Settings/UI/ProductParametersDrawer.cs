@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using System;
 
 namespace SuperSystems.UnityBuild
 {
@@ -24,16 +25,24 @@ public class ProductParametersDrawer : PropertyDrawer
 
             EditorGUILayout.PropertyField(property.FindPropertyRelative("version"));
 
-            GUILayout.Space(20);
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Label("Build Count: " + property.FindPropertyRelative("buildCounter").intValue.ToString(), EditorStyles.label, GUILayout.ExpandWidth(false), GUILayout.MinWidth(100));
-            GUILayout.Space(20);
-            if (GUILayout.Button("Reset", GUILayout.MaxWidth(120)))
+            EditorGUI.BeginDisabledGroup(true);
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("lastGeneratedVersion"));
+            EditorGUI.EndDisabledGroup();
+
+            SerializedProperty autoGenerate = property.FindPropertyRelative("autoGenerate");
+            autoGenerate.boolValue = EditorGUILayout.ToggleLeft("Auto-Generate Version", autoGenerate.boolValue);
+
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("buildCounter"));
+
+            if (GUILayout.Button("Reset Build Counter", GUILayout.ExpandWidth(true)))
             {
                 property.FindPropertyRelative("buildCounter").intValue = 0;
             }
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.EndHorizontal();
+
+            if (!autoGenerate.boolValue && GUILayout.Button("Generate Version String Now", GUILayout.ExpandWidth(true)))
+            {
+                BuildProject.GenerateVersionString(BuildSettings.instance._productParameters, DateTime.Now);
+            }
 
             property.serializedObject.ApplyModifiedProperties();
 
