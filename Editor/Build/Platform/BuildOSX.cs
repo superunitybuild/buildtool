@@ -25,20 +25,6 @@ public class BuildOSX : BuildPlatform
             new BuildArchitecture(BuildTarget.StandaloneOSXIntel64, "OSX x64", false)
         };
     }
-
-    #region Methods & Properties (DO NOT EDIT)
-
-    public override string binaryNameFormat
-    {
-        get { return _binaryNameFormat; }
-    }
-
-    public override string dataDirNameFormat
-    {
-        get { return _dataDirNameFormat; }
-    }
-
-    #endregion
 }
 
 }

@@ -72,6 +72,13 @@ public class BuildPlatformDrawer : PropertyDrawer
             {
                 int addedIndex = distList.arraySize;
                 distList.InsertArrayElementAtIndex(addedIndex);
+
+                SerializedProperty addedProperty = distList.GetArrayElementAtIndex(addedIndex);
+                addedProperty.FindPropertyRelative("enabled").boolValue = true;
+                addedProperty.FindPropertyRelative("distributionName").stringValue = "DistributionName";
+
+                addedProperty.serializedObject.ApplyModifiedProperties();
+                distList.serializedObject.ApplyModifiedProperties();
                 property.serializedObject.ApplyModifiedProperties();
                 GUIUtility.keyboardControl = 0;
             }

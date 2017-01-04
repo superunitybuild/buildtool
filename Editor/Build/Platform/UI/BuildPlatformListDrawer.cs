@@ -32,8 +32,6 @@ public class BuildPlatformListDrawer : PropertyDrawer
             list = property.FindPropertyRelative("platforms");
         //}
 
-        
-
         if (show)
         {
             EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);

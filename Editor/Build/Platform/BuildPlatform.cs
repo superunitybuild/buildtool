@@ -25,7 +25,7 @@ public class BuildPlatform
     /// <summary>
     /// Platform name.
     /// </summary>
-    public string platformName { get; protected set; }
+    public string platformName;
 
     /// <summary>
     /// The format of the binary executable name (e.g. {0}.exe). {0} = Executable name specified in BuildSettings.basicSettings.
