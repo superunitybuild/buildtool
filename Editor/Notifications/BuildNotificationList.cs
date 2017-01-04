@@ -96,7 +96,7 @@ public class BuildNotificationList
         AddNotification(new BuildNotification(
             BuildNotification.Category.Error,
             "No Build Platform Found",
-            "At least one Build Platform is required to perform a build.",
+            "At least one Build Platform with one enabled Architecture is required to perform a build.",
             () => {
                 bool validError = true;
 
@@ -105,7 +105,8 @@ public class BuildNotificationList
                 {
                     for (int i = 0; i < platformCount; i++)
                     {
-                        if (BuildSettings.instance._platformList.platforms[i].enabled)
+                        BuildPlatform platform = BuildSettings.instance._platformList.platforms[i];
+                        if (platform.enabled && platform.atLeastOneArch)
                         {
                             validError = false;
                             break;
