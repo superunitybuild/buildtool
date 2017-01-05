@@ -22,6 +22,7 @@ public static class BuildConstants
         None,
     }
 
+    public static readonly System.DateTime buildDate = System.DateTime.Now;
     public const string version = "";
     public const ReleaseType releaseType = ReleaseType.None;
     public const Platform platform = Platform.None;

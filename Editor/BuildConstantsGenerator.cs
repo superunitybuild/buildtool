@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -12,6 +13,7 @@ public static class BuildConstantsGenerator
     public const string NONE = "None";
 
     public static void Generate(
+        DateTime buildTime,
         string currentVersion = "",
         BuildReleaseType currentReleaseType = null,
         BuildPlatform currentBuildPlatform = null,
@@ -182,6 +184,7 @@ public static class BuildConstantsGenerator
                 distributionString = NONE;
 
             // Write current values.
+            writer.WriteLine("    public static readonly System.DateTime buildDate = new System.DateTime({0});", buildTime.Ticks);
             writer.WriteLine("    public const string version = \"{0}\";", versionString);
             writer.WriteLine("    public const ReleaseType releaseType = ReleaseType.{0};", releaseTypeString);
             writer.WriteLine("    public const Platform platform = Platform.{0};", platformString);
