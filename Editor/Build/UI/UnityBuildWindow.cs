@@ -46,12 +46,6 @@ public class UnityBuildWindow : EditorWindow
         GUIContent title = new GUIContent("SuperUnityBuild");
         titleContent = title;
 
-        if (go == null)
-            go = new SerializedObject(this);
-
-        if (settings == null)
-            settings = new SerializedObject(BuildSettings.instance);
-
         BuildNotificationList.instance.InitializeErrors();
     }
 
@@ -62,6 +56,8 @@ public class UnityBuildWindow : EditorWindow
 
     protected void OnGUI()
     {
+        Init();
+
         settings.Update();
         go.Update();
 
@@ -79,6 +75,15 @@ public class UnityBuildWindow : EditorWindow
     #endregion
 
     #region Private Methods
+
+    private void Init()
+    {
+        if (go == null)
+            go = new SerializedObject(this);
+
+        if (settings == null)
+            settings = new SerializedObject(BuildSettings.instance);
+    }
 
     private void DrawTitle()
     {
