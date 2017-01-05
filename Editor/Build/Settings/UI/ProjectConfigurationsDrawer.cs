@@ -23,7 +23,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
 
         EditorGUILayout.BeginHorizontal();
         UnityBuildGUIUtility.DropdownHeader("Build Configurations", ref show, GUILayout.ExpandWidth(true));
-        UnityBuildGUIUtility.HelpButton("Parameter-Details#Release-Types");
+        UnityBuildGUIUtility.HelpButton("Parameter-Details#build-configurations");
         EditorGUILayout.EndHorizontal();
 
         Color defaultBackgroundColor = GUI.backgroundColor;

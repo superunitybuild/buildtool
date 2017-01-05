@@ -22,7 +22,7 @@ public class BuildPlatformListDrawer : PropertyDrawer
 
         EditorGUILayout.BeginHorizontal();
         UnityBuildGUIUtility.DropdownHeader("Build Platforms", ref show, GUILayout.ExpandWidth(true));
-        UnityBuildGUIUtility.HelpButton("Parameter-Details#Build-Platforms");
+        UnityBuildGUIUtility.HelpButton("Parameter-Details#build-platforms");
         EditorGUILayout.EndHorizontal();
 
         //if (list == null)

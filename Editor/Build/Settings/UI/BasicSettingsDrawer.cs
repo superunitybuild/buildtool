@@ -15,7 +15,7 @@ public class BasicSettingsDrawer : PropertyDrawer
 
         EditorGUILayout.BeginHorizontal();
         UnityBuildGUIUtility.DropdownHeader("Basic Settings", ref show, GUILayout.ExpandWidth(true));
-        UnityBuildGUIUtility.HelpButton("Parameter-Details#Basic-Settings");
+        UnityBuildGUIUtility.HelpButton("Parameter-Details#basic-settings");
         EditorGUILayout.EndHorizontal();
 
         if (show)
