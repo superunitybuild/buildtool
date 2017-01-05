@@ -9,6 +9,8 @@ namespace SuperSystems.UnityBuild
 
 public static class BuildConstantsGenerator
 {
+    public const string NONE = "None";
+
     public static void Generate(
         string currentVersion = "",
         BuildReleaseType currentReleaseType = null,
@@ -34,12 +36,38 @@ public static class BuildConstantsGenerator
             return;
         }
 
+        // Cache any current values if needed.
+        string versionString = string.IsNullOrEmpty(currentVersion) ? BuildConstants.version.ToString() : currentVersion;
+        string releaseTypeString = currentReleaseType == null ? BuildConstants.releaseType.ToString() : SanitizeString(currentReleaseType.typeName);
+        string platformString = currentBuildPlatform == null ? BuildConstants.platform.ToString() : SanitizeString(currentBuildPlatform.platformName);
+        string archString = currentBuildArchitecture == null ? BuildConstants.architecture.ToString() : SanitizeString(currentBuildArchitecture.name);
+        
+        string distributionString = string.Empty;
+        if (currentBuildDistribution == null)
+        {
+            if (currentReleaseType == null)
+            {
+                // No new parameter specified, so use the old value.
+                distributionString = BuildConstants.architecture.ToString();
+            }
+            else
+            {
+                // There are new parameters but no distribution. Should be intentional, so distribution is NONE.
+                distributionString = NONE;
+            }
+        }
+        else
+        {
+            distributionString = SanitizeString(currentBuildDistribution.distributionName);
+        }
+
         // Delete any existing version.
         if (File.Exists(filePath))
         {
             File.Delete(filePath);
         }
 
+        // Create a buffer that we'll use to check for any duplicated names.
         List<string> enumBuffer = new List<string>();
 
         using (StreamWriter writer = new StreamWriter(filePath))
@@ -53,7 +81,8 @@ public static class BuildConstantsGenerator
             // Write ReleaseType enum.
             writer.WriteLine("    public enum ReleaseType");
             writer.WriteLine("    {");
-            writer.WriteLine("        None,");
+            writer.WriteLine("        {0},", NONE);
+            enumBuffer.Add(NONE);
             foreach (BuildReleaseType releaseType in BuildSettings.releaseTypeList.releaseTypes)
             {
                 string addedString = SanitizeString(releaseType.typeName);
@@ -67,11 +96,16 @@ public static class BuildConstantsGenerator
             writer.WriteLine("    }");
             writer.WriteLine();
 
+            // Validate ReleaseType string.
+            if (!enumBuffer.Contains(releaseTypeString))
+                releaseTypeString = NONE;
+
             // Write Platform enum.
             enumBuffer.Clear();
             writer.WriteLine("    public enum Platform");
             writer.WriteLine("    {");
-            writer.WriteLine("        None,");
+            writer.WriteLine("        {0},", NONE);
+            enumBuffer.Add(NONE);
             foreach (BuildPlatform platform in BuildSettings.platformList.platforms)
             {
                 string addedString = SanitizeString(platform.platformName);
@@ -85,11 +119,16 @@ public static class BuildConstantsGenerator
             writer.WriteLine("    }");
             writer.WriteLine();
 
+            // Validate Platform string.
+            if (!enumBuffer.Contains(platformString))
+                platformString = NONE;
+
             // Write Architecture enum.
             enumBuffer.Clear();
             writer.WriteLine("    public enum Architecture");
             writer.WriteLine("    {");
-            writer.WriteLine("        None,");
+            writer.WriteLine("        {0},", NONE);
+            enumBuffer.Add(NONE);
             foreach (BuildPlatform platform in BuildSettings.platformList.platforms)
             {
                 if (platform.enabled)
@@ -109,11 +148,16 @@ public static class BuildConstantsGenerator
             writer.WriteLine("    }");
             writer.WriteLine();
 
+            // Validate Architecture string.
+            if (!enumBuffer.Contains(archString))
+                archString = NONE;
+
             // Write Distribution enum.
             enumBuffer.Clear();
             writer.WriteLine("    public enum Distribution");
             writer.WriteLine("    {");
-            writer.WriteLine("        None,");
+            writer.WriteLine("        {0},", NONE);
+            enumBuffer.Add(NONE);
             foreach (BuildPlatform platform in BuildSettings.platformList.platforms)
             {
                 if (platform.enabled)
@@ -133,12 +177,16 @@ public static class BuildConstantsGenerator
             writer.WriteLine("    }");
             writer.WriteLine();
 
+            // Validate Distribution string.
+            if (!enumBuffer.Contains(distributionString))
+                distributionString = NONE;
+
             // Write current values.
-            writer.WriteLine("    public const string version = \"{0}\";", currentVersion);
-            writer.WriteLine("    public const ReleaseType releaseType = ReleaseType.{0};", currentReleaseType == null ? "None" : SanitizeString(currentReleaseType.typeName));
-            writer.WriteLine("    public const Platform platform = Platform.{0};", currentBuildPlatform == null ? "None" : SanitizeString(currentBuildPlatform.platformName));
-            writer.WriteLine("    public const Architecture architecture = Architecture.{0};", currentBuildArchitecture == null ? "None" : SanitizeString(currentBuildArchitecture.name));
-            writer.WriteLine("    public const Distribution distribution = Distribution.{0};", currentBuildDistribution == null ? "None" : SanitizeString(currentBuildDistribution.distributionName));
+            writer.WriteLine("    public const string version = \"{0}\";", versionString);
+            writer.WriteLine("    public const ReleaseType releaseType = ReleaseType.{0};", releaseTypeString);
+            writer.WriteLine("    public const Platform platform = Platform.{0};", platformString);
+            writer.WriteLine("    public const Architecture architecture = Architecture.{0};", archString);
+            writer.WriteLine("    public const Distribution distribution = Distribution.{0};", distributionString);
 
             // End of class.
             writer.WriteLine("}");
