@@ -295,7 +295,6 @@ public class ProjectConfigurations
 
             string key = distributions[i].distributionName;
             Configuration relConfig = new Configuration();
-            SerializableDictionary<string, Configuration> prevChildConfig = null;
 
             if (refreshedConfigSet.ContainsKey(key))
                 continue;
@@ -303,7 +302,6 @@ public class ProjectConfigurations
             if (prevConfigSet != null && prevConfigSet.ContainsKey(key))
             {
                 relConfig.enabled = prevConfigSet[key].enabled;
-                prevChildConfig = prevConfigSet[key].childConfigurations;
             }
 
             refreshedConfigSet.Add(key, relConfig);

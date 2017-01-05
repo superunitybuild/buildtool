@@ -28,7 +28,6 @@ public class UnityBuildGUIUtility
     #endregion
 
     private GUIStyle _dropdownHeaderStyle;
-    private GUIStyle _dropdownHeaderCollapsedStyle;
     private GUIStyle _dropdownContentStyle;
     private GUIStyle _helpButtonStyle;
     private GUIStyle _midHeaderStyle;
@@ -55,8 +54,6 @@ public class UnityBuildGUIUtility
 
         _midHeaderStyle = new GUIStyle(EditorStyles.helpBox);
         _midHeaderStyle.fontStyle = FontStyle.Bold;
-
-        _dropdownHeaderCollapsedStyle = new GUIStyle(_dropdownHeaderStyle);
 
         _dropdownContentStyle = new GUIStyle(GUI.skin.textField);
         _dropdownContentStyle.padding = new RectOffset(5, 5, 5, 5);
