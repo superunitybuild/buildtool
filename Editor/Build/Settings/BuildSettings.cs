@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace SuperSystems.UnityBuild
 {
@@ -27,13 +28,20 @@ public class BuildSettings : BaseSettings
 
     #region Variables
 
-    public BasicSettings _basicSettings = new BasicSettings();
-    public ProductParameters _productParameters = new ProductParameters();
-    public BuildReleaseTypeList _releaseTypeList = new BuildReleaseTypeList();
-    public BuildPlatformList _platformList = new BuildPlatformList();
-    public ProjectConfigurations _projectConfigurations = new ProjectConfigurations();
-    public BuildActionList _preBuildActions = new BuildActionList();
-    public BuildActionList _postBuildActions = new BuildActionList();
+    [SerializeField]
+    private BasicSettings _basicSettings = new BasicSettings();
+    [SerializeField]
+    private ProductParameters _productParameters = new ProductParameters();
+    [SerializeField]
+    private BuildReleaseTypeList _releaseTypeList = new BuildReleaseTypeList();
+    [SerializeField]
+    private BuildPlatformList _platformList = new BuildPlatformList();
+    [SerializeField]
+    private ProjectConfigurations _projectConfigurations = new ProjectConfigurations();
+    [SerializeField]
+    private BuildActionList _preBuildActions = new BuildActionList();
+    [SerializeField]
+    private BuildActionList _postBuildActions = new BuildActionList();
 
     #endregion
 
