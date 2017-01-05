@@ -1,4 +1,6 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Reflection;
+using UnityEditor;
 using UnityEngine;
 
 namespace SuperSystems.UnityBuild
@@ -10,24 +12,57 @@ public class UnityBuildWindow : EditorWindow
     public BuildNotificationList notifications = BuildNotificationList.instance;
     private Vector2 scrollPos = Vector2.zero;
 
+    private SerializedObject settings;
+    private SerializedObject go;
+
     #region MenuItems
 
     [MenuItem("Window/SuperUnityBuild")]
     public static void ShowWindow()
     {
-        EditorWindow.GetWindow<UnityBuildWindow>();
+        // Get Inspector type, so we can try to autodock beside it.
+        Assembly editorAsm = typeof(Editor).Assembly;
+        Type inspWndType = editorAsm.GetType("UnityEditor.InspectorWindow");
+
+        UnityBuildWindow window;
+        if (inspWndType != null)
+        {
+            window = EditorWindow.GetWindow<UnityBuildWindow>(inspWndType);
+        }
+        else
+        {
+            window = EditorWindow.GetWindow<UnityBuildWindow>();
+        }
+
+        window.Show();
     }
 
     #endregion
-    
+
+    #region Unity Events
+
     protected void OnEnable()
     {
         GUIContent title = new GUIContent("SuperUnityBuild");
         titleContent = title;
+
+        if (go == null)
+            go = new SerializedObject(this);
+
+        if (settings == null)
+            settings = new SerializedObject(BuildSettings.instance);
+    }
+
+    protected void OnInspectorUpdate()
+    {
+        Repaint();
     }
 
     protected void OnGUI()
     {
+        settings.Update();
+        go.Update();
+
         DrawTitle();
 
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false);
@@ -38,6 +73,10 @@ public class UnityBuildWindow : EditorWindow
 
         EditorGUILayout.EndScrollView();
     }
+
+    #endregion
+
+    #region Private Methods
 
     private void DrawTitle()
     {
@@ -57,9 +96,6 @@ public class UnityBuildWindow : EditorWindow
 
     private void DrawProperties()
     {
-        SerializedObject settings = new SerializedObject(BuildSettings.instance);
-        SerializedObject go = new SerializedObject(this);
-
         EditorGUILayout.PropertyField(settings.FindProperty("_basicSettings"), GUILayout.MaxHeight(0));
         EditorGUILayout.PropertyField(settings.FindProperty("_productParameters"), GUILayout.MaxHeight(10));
         EditorGUILayout.PropertyField(settings.FindProperty("_releaseTypeList"), GUILayout.MaxHeight(10));
@@ -89,6 +125,8 @@ public class UnityBuildWindow : EditorWindow
         GUI.backgroundColor = defaultBackgroundColor;
         EditorGUI.EndDisabledGroup();
     }
+
+    #endregion
 }
 
 }
