@@ -1,4 +1,5 @@
 ﻿using UnityEditor;
+using UnityEngine;
 
 namespace SuperSystems.UnityBuild
 {
@@ -8,8 +9,15 @@ public class BuildSettingsEditor : Editor
 {
     public override void OnInspectorGUI()
     {
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("_basicSettings"), true);
-        serializedObject.ApplyModifiedProperties();
+        Color defaultBackgroundColor = GUI.backgroundColor;
+        GUI.backgroundColor = Color.green;
+
+        if (GUILayout.Button("Open SuperUnityBuild", GUILayout.ExpandWidth(true), GUILayout.MinHeight(30)))
+        {
+            UnityBuildWindow.ShowWindow();
+        }
+
+        GUI.backgroundColor = defaultBackgroundColor;
     }
 }
 
