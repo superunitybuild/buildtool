@@ -1,11 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEditor;
-using System.IO;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using System;
+using UnityEditor;
+using UnityEngine;
 
 namespace SuperSystems.UnityBuild
 {
@@ -270,50 +269,50 @@ public static class BuildProject
 
     private static void PerformPreBuild()
     {
-        if (preBuildActions != null)
-        {
-            for (int i = 0; i < preBuildActions.Count; i++)
-            {
-                Debug.Log("Executing PreBuild: " + preBuildActions[i].GetType().Name + " (" + preBuildActions[i].priority + ")");
-                preBuildActions[i].Execute();
-            }
-        }
+        //if (preBuildActions != null)
+        //{
+        //    for (int i = 0; i < preBuildActions.Count; i++)
+        //    {
+        //        Debug.Log("Executing PreBuild: " + preBuildActions[i].GetType().Name + " (" + preBuildActions[i].priority + ")");
+        //        preBuildActions[i].Execute();
+        //    }
+        //}
     }
 
     private static void PerformPostBuild()
     {
-        if (postBuildActions != null)
-        {
-            for (int i = 0; i < postBuildActions.Count; i++)
-            {
-                Debug.Log("Executing PostBuild: " + postBuildActions[i].GetType().Name + " (" + postBuildActions[i].priority + ")");
-                postBuildActions[i].Execute();
-            }
-        }
+        //if (postBuildActions != null)
+        //{
+        //    for (int i = 0; i < postBuildActions.Count; i++)
+        //    {
+        //        Debug.Log("Executing PostBuild: " + postBuildActions[i].GetType().Name + " (" + postBuildActions[i].priority + ")");
+        //        postBuildActions[i].Execute();
+        //    }
+        //}
     }
 
     private static void PerformPreBuild(BuildPlatform platform)
     {
-        if (preBuildActions != null)
-        {
-            for (int i = 0; i < preBuildActions.Count; i++)
-            {
-                Debug.Log("Executing PreBuild (" + platform.platformName + "): " + preBuildActions[i].GetType().Name + " (" + preBuildActions[i].priority + ")");
-                preBuildActions[i].Execute(platform);
-            }
-        }
+        //if (preBuildActions != null)
+        //{
+        //    for (int i = 0; i < preBuildActions.Count; i++)
+        //    {
+        //        Debug.Log("Executing PreBuild (" + platform.platformName + "): " + preBuildActions[i].GetType().Name + " (" + preBuildActions[i].priority + ")");
+        //        preBuildActions[i].Execute(platform);
+        //    }
+        //}
     }
 
     private static void PerformPostBuild(BuildPlatform platform)
     {
-        if (postBuildActions != null)
-        {
-            for (int i = 0; i < postBuildActions.Count; i++)
-            {
-                Debug.Log("Executing PostBuild (" + platform.platformName + "): " + postBuildActions[i].GetType().Name + " (" + postBuildActions[i].priority + ")");
-                postBuildActions[i].Execute(platform);
-            }
-        }
+        //if (postBuildActions != null)
+        //{
+        //    for (int i = 0; i < postBuildActions.Count; i++)
+        //    {
+        //        Debug.Log("Executing PostBuild (" + platform.platformName + "): " + postBuildActions[i].GetType().Name + " (" + postBuildActions[i].priority + ")");
+        //        postBuildActions[i].Execute(platform);
+        //    }
+        //}
     }
 
     #endregion

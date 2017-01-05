@@ -15,7 +15,7 @@ public abstract class PreBuildAction : BuildAction
     /// </summary>
     static PreBuildAction()
     {
-        // Find all classes that inherit from IBuildPlatform and register them with BuildProject.
+        // Find all classes that inherit from PreBuildAction and register them with BuildProject.
         Type ti = typeof(PreBuildAction);
 
         foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
