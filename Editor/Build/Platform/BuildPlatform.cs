@@ -92,7 +92,9 @@ public class BuildPlatform
     {
         get
         {
-            return buildPath + string.Format(dataDirNameFormat, BuildSettings.basicSettings.executableName) + Path.DirectorySeparatorChar;
+            // TODO: Fix.
+            return string.Empty;
+            //return buildPath + string.Format(dataDirNameFormat, BuildSettings.basicSettings.executableName) + Path.DirectorySeparatorChar;
         }
     }
 
@@ -100,7 +102,9 @@ public class BuildPlatform
     {
         get
         {
-            return string.Format(binaryNameFormat, BuildSettings.basicSettings.executableName);
+            // TODO: Fix.
+            return string.Empty;
+            //return string.Format(binaryNameFormat, BuildSettings.basicSettings.executableName);
         }
     }
 
