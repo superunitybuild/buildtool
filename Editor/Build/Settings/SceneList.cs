@@ -39,6 +39,17 @@ public class SceneList
         }
     }
 
+    public string[] GetSceneList()
+    {
+        List<string> scenes = new List<string>();
+        for (int i = 0; i < enabledScenes.Count; i++)
+        {
+            scenes.Add(enabledScenes[i].filePath);
+        }
+
+        return scenes.ToArray();
+    }
+
     [System.Serializable]
     public class Scene
     {
