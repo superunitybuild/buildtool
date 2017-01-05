@@ -7,7 +7,6 @@ namespace SuperSystems.UnityBuild
 [CustomPropertyDrawer(typeof(BuildReleaseTypeList))]
 public class BuildReleaseTypeListDrawer : PropertyDrawer
 {
-    private bool show = false;
     private SerializedProperty list = null;
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -15,7 +14,11 @@ public class BuildReleaseTypeListDrawer : PropertyDrawer
         EditorGUI.BeginProperty(position, label, property);
 
         EditorGUILayout.BeginHorizontal();
+
+        bool show = property.isExpanded;
         UnityBuildGUIUtility.DropdownHeader("Release Types", ref show, GUILayout.ExpandWidth(true));
+        property.isExpanded = show;
+
         UnityBuildGUIUtility.HelpButton("Parameter-Details#release-types");
         EditorGUILayout.EndHorizontal();
 
@@ -38,7 +41,7 @@ public class BuildReleaseTypeListDrawer : PropertyDrawer
             {
                 int addedIndex = list.arraySize;
                 list.InsertArrayElementAtIndex(addedIndex);
-                property.serializedObject.ApplyModifiedProperties();
+                list.serializedObject.ApplyModifiedProperties();
                 GUIUtility.keyboardControl = 0;
             }
             GUILayout.FlexibleSpace();

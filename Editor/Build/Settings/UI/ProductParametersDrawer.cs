@@ -8,14 +8,16 @@ namespace SuperSystems.UnityBuild
 [CustomPropertyDrawer(typeof(ProductParameters))]
 public class ProductParametersDrawer : PropertyDrawer
 {
-    private bool show = true;
-
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.BeginProperty(position, GUIContent.none, property);
 
         EditorGUILayout.BeginHorizontal();
+
+        bool show = property.isExpanded;
         UnityBuildGUIUtility.DropdownHeader("Product Parameters", ref show, GUILayout.ExpandWidth(true));
+        property.isExpanded = show;
+
         UnityBuildGUIUtility.HelpButton("Parameter-Details#product-parameters");
         EditorGUILayout.EndHorizontal();
 

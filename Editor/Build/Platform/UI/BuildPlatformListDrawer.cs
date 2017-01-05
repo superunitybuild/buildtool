@@ -10,7 +10,6 @@ namespace SuperSystems.UnityBuild
 [CustomPropertyDrawer(typeof(BuildPlatformList))]
 public class BuildPlatformListDrawer : PropertyDrawer
 {
-    private bool show = false;
     private int index = 0;
     private SerializedProperty list = null;
     private BuildPlatformList platformList = null;
@@ -21,7 +20,11 @@ public class BuildPlatformListDrawer : PropertyDrawer
         EditorGUI.BeginProperty(position, label, property);
 
         EditorGUILayout.BeginHorizontal();
+
+        bool show = property.isExpanded;
         UnityBuildGUIUtility.DropdownHeader("Build Platforms", ref show, GUILayout.ExpandWidth(true));
+        property.isExpanded = show;
+
         UnityBuildGUIUtility.HelpButton("Parameter-Details#build-platforms");
         EditorGUILayout.EndHorizontal();
 

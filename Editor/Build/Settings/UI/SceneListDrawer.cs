@@ -9,7 +9,6 @@ namespace SuperSystems.UnityBuild
 [CustomPropertyDrawer(typeof(SceneList))]
 public class SceneListDrawer : PropertyDrawer
 {
-    private bool show = false;
     private int index = 0;
     private SerializedProperty list = null;
     private List<SceneList.Scene> availableScenesList = null;
@@ -19,7 +18,11 @@ public class SceneListDrawer : PropertyDrawer
         EditorGUI.BeginProperty(position, label, property);
 
         EditorGUILayout.BeginHorizontal();
+
+        bool show = property.isExpanded;
         UnityBuildGUIUtility.DropdownHeader("SceneList", ref show, GUILayout.ExpandWidth(true));
+        property.isExpanded = show;
+
         EditorGUILayout.EndHorizontal();
 
         if (list == null)

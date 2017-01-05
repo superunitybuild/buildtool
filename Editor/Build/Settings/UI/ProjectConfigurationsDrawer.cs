@@ -7,7 +7,6 @@ namespace SuperSystems.UnityBuild
 [CustomPropertyDrawer(typeof(ProjectConfigurations))]
 public class ProjectConfigurationsDrawer : PropertyDrawer
 {
-    private bool show = false;
     private bool showViewOptions = false;
     private bool showConfigs = false;
     private bool showBuildInfo = false;
@@ -22,7 +21,11 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
         EditorGUI.BeginProperty(position, label, property);
 
         EditorGUILayout.BeginHorizontal();
+
+        bool show = property.isExpanded;
         UnityBuildGUIUtility.DropdownHeader("Build Configurations", ref show, GUILayout.ExpandWidth(true));
+        property.isExpanded = show;
+
         UnityBuildGUIUtility.HelpButton("Parameter-Details#build-configurations");
         EditorGUILayout.EndHorizontal();
 
