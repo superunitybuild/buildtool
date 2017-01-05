@@ -44,15 +44,15 @@ public class UnityBuildWindow : EditorWindow
         GUIStyle mainTitleStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
         mainTitleStyle.fontSize = 18;
         mainTitleStyle.fontStyle = FontStyle.Bold;
-        mainTitleStyle.fixedHeight = 50;
+        mainTitleStyle.fixedHeight = 35;
 
         GUIStyle subTitleStyle = new GUIStyle(mainTitleStyle);
-        subTitleStyle.fontSize = 11;
+        subTitleStyle.fontSize = 9;
         subTitleStyle.fontStyle = FontStyle.Normal;
 
         EditorGUILayout.LabelField("Super Unity Build", mainTitleStyle);
         EditorGUILayout.LabelField("by Super Systems Softworks", subTitleStyle);
-        GUILayout.Space(10);
+        GUILayout.Space(15);
     }
 
     private void DrawProperties()
@@ -64,6 +64,8 @@ public class UnityBuildWindow : EditorWindow
         EditorGUILayout.PropertyField(settings.FindProperty("_productParameters"), GUILayout.MaxHeight(10));
         EditorGUILayout.PropertyField(settings.FindProperty("_releaseTypeList"), GUILayout.MaxHeight(10));
         EditorGUILayout.PropertyField(settings.FindProperty("_platformList"), GUILayout.MaxHeight(10));
+        EditorGUILayout.PropertyField(settings.FindProperty("_preBuildActions"), new GUIContent("Pre-Build Actions"), GUILayout.MaxHeight(10));
+        EditorGUILayout.PropertyField(settings.FindProperty("_preBuildActions"), new GUIContent("Post-Build Actions"), GUILayout.MaxHeight(10));
 
         BuildSettings.projectConfigurations.Refresh();
         EditorGUILayout.PropertyField(settings.FindProperty("_projectConfigurations"), GUILayout.MaxHeight(10));
