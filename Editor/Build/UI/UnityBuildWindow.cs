@@ -51,6 +51,8 @@ public class UnityBuildWindow : EditorWindow
 
         if (settings == null)
             settings = new SerializedObject(BuildSettings.instance);
+
+        BuildNotificationList.instance.InitializeErrors();
     }
 
     protected void OnInspectorUpdate()

@@ -17,13 +17,15 @@ public class BuildNotification
     public Category cat;
     public string title;
     public string details;
+    public bool clearable;
     public ValidityCheck valid;
 
-    public BuildNotification(Category cat = Category.Notification, string title = null, string details = null, ValidityCheck valid = null)
+    public BuildNotification(Category cat = Category.Notification, string title = null, string details = null, bool clearable = true, ValidityCheck valid = null)
     {
         this.cat = cat;
         this.title = title;
         this.details = details;
+        this.clearable = clearable;
         this.valid = valid;
     }
 }

@@ -11,11 +11,13 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
     {
         EditorGUI.BeginProperty(position, label, property);
 
-        char chr = Event.current.character;
-        if ((chr < 'a' || chr > 'z') && (chr < 'A' || chr > 'Z') && (chr < '0' || chr > '9') && chr != '-' && chr != '_' && chr != ' ')
-        {
-            Event.current.character = '\0';
-        }
+        // Limit valid characters.
+        // TODO: This might not be necessary since name will need to be sanitized for different needs later (as an enum entry, pre-processor define, etc.)
+        //char chr = Event.current.character;
+        //if ((chr < 'a' || chr > 'z') && (chr < 'A' || chr > 'Z') && (chr < '0' || chr > '9') && chr != '-' && chr != '_' && chr != ' ')
+        //{
+        //    Event.current.character = '\0';
+        //}
 
         bool show = property.isExpanded;
         UnityBuildGUIUtility.DropdownHeader(property.FindPropertyRelative("typeName").stringValue, ref show);
@@ -41,8 +43,6 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
             allowDebugging.boolValue = EditorGUILayout.ToggleLeft(" Script Debugging", allowDebugging.boolValue);
             
             EditorGUILayout.PropertyField(property.FindPropertyRelative("sceneList"));
-            
-            property.serializedObject.ApplyModifiedProperties();
 
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();

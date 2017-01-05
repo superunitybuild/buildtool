@@ -39,9 +39,15 @@ public class BuildReleaseTypeListDrawer : PropertyDrawer
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Add Release Type", GUILayout.ExpandWidth(false), GUILayout.MaxWidth(150)))
             {
+                // Add new entry.
                 int addedIndex = list.arraySize;
                 list.InsertArrayElementAtIndex(addedIndex);
-                list.serializedObject.ApplyModifiedProperties();
+                
+                // Set default values.
+                SerializedProperty addedEntry = list.GetArrayElementAtIndex(addedIndex);
+                addedEntry.FindPropertyRelative("typeName").stringValue = "NewReleaseType";
+                addedEntry.FindPropertyRelative("productName").stringValue = Application.productName;
+
                 GUIUtility.keyboardControl = 0;
             }
             GUILayout.FlexibleSpace();

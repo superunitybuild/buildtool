@@ -10,18 +10,18 @@ public class UnityBuildGUIUtility
 
     #region Singleton
 
-    private static UnityBuildGUIUtility instance = null;
+    private static UnityBuildGUIUtility _instance = null;
 
-    public static UnityBuildGUIUtility Instance
+    public static UnityBuildGUIUtility instance
     {
         get
         {
-            if (instance == null)
+            if (_instance == null)
             {
-                instance = new UnityBuildGUIUtility();
+                _instance = new UnityBuildGUIUtility();
             }
 
-            return instance;
+            return _instance;
         }
     }
 
@@ -32,6 +32,8 @@ public class UnityBuildGUIUtility
     private GUIStyle _helpButtonStyle;
     private GUIStyle _midHeaderStyle;
     private GUIStyle _popupStyle;
+
+    private GUIContent helpButtonContent;
 
     private UnityBuildGUIUtility()
     {
@@ -58,6 +60,8 @@ public class UnityBuildGUIUtility
         _dropdownContentStyle = new GUIStyle(GUI.skin.textField);
         _dropdownContentStyle.padding = new RectOffset(5, 5, 5, 5);
         _dropdownContentStyle.margin = new RectOffset(5, 5, 0, 0);
+
+        helpButtonContent = new GUIContent("?", "Help");
     }
 
     public static void OpenHelp(string anchor = "")
@@ -76,7 +80,7 @@ public class UnityBuildGUIUtility
 
     public static void HelpButton(string anchor = "")
     {
-        if (GUILayout.Button(new GUIContent("?", "Help"), UnityBuildGUIUtility.helpButtonStyle))
+        if (GUILayout.Button(_instance.helpButtonContent, UnityBuildGUIUtility.helpButtonStyle))
             OpenHelp(anchor);
     }
 
@@ -84,7 +88,7 @@ public class UnityBuildGUIUtility
     {
         get
         {
-            return Instance._helpButtonStyle;
+            return instance._helpButtonStyle;
         }
     }
 
@@ -92,7 +96,7 @@ public class UnityBuildGUIUtility
     {
         get
         {
-            return Instance._midHeaderStyle;
+            return instance._midHeaderStyle;
         }
     }
 
@@ -100,7 +104,7 @@ public class UnityBuildGUIUtility
     {
         get
         {
-            return Instance._dropdownHeaderStyle;
+            return instance._dropdownHeaderStyle;
         }
     }
 
@@ -108,7 +112,7 @@ public class UnityBuildGUIUtility
     {
         get
         {
-            return Instance._dropdownContentStyle;
+            return instance._dropdownContentStyle;
         }
     }
 
@@ -116,7 +120,7 @@ public class UnityBuildGUIUtility
     {
         get
         {
-            return Instance._popupStyle;
+            return instance._popupStyle;
         }
     }
 }
