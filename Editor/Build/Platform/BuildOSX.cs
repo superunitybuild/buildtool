@@ -21,8 +21,8 @@ public class BuildOSX : BuildPlatform
         platformName = _name;
         architectures = new BuildArchitecture[] { 
             new BuildArchitecture(BuildTarget.StandaloneOSXUniversal, "OSX Universal", true),
-            new BuildArchitecture(BuildTarget.StandaloneOSXIntel, "OSX x86", false),
-            new BuildArchitecture(BuildTarget.StandaloneOSXIntel64, "OSX x64", false)
+            new BuildArchitecture(BuildTarget.StandaloneOSXIntel, "OSX Intel", false),
+            new BuildArchitecture(BuildTarget.StandaloneOSXIntel64, "OSX Intel64", false)
         };
     }
 }
