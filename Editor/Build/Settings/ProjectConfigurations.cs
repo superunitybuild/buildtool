@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace SuperSystems.UnityBuild
 {
@@ -6,18 +7,18 @@ namespace SuperSystems.UnityBuild
 [System.Serializable]
 public class ProjectConfigurations
 {
-    public SerializableDictionary<string, Configuration> configSet;
+    public ConfigDictionary configSet;
 
     public void Refresh()
     {
-        SerializableDictionary<string, Configuration> refreshedConfigSet = new SerializableDictionary<string, Configuration>();
+        ConfigDictionary refreshedConfigSet = new ConfigDictionary();
 
         BuildReleaseType[] releaseTypes = BuildSettings.releaseTypeList.releaseTypes;
         for (int i = 0; i < releaseTypes.Length; i++)
         {
             string key = releaseTypes[i].typeName;
             Configuration relConfig = new Configuration();
-            SerializableDictionary<string, Configuration> prevChildConfig = null;
+            ConfigDictionary prevChildConfig = null;
 
             if (refreshedConfigSet.ContainsKey(key))
                 continue;
@@ -80,7 +81,7 @@ public class ProjectConfigurations
 
     private void BuildKeychainsRecursive(ref List<string> keychains, Configuration config, string key, string currentKeychain, int depth)
     {
-        if (depth >= 2 && (config.childConfigurations == null || config.childConfigurations.Count == 0))
+        if (depth >= 2 && config.enabled && (config.childConfigurations == null || config.childConfigurations.Count == 0))
         {
             keychains.Add(currentKeychain + "/" + key);
         }
@@ -213,9 +214,9 @@ public class ProjectConfigurations
         return success;
     }
 
-    private SerializableDictionary<string, Configuration> RefreshPlatforms(SerializableDictionary<string, Configuration> prevConfigSet)
+    private ConfigDictionary RefreshPlatforms(ConfigDictionary prevConfigSet)
     {
-        SerializableDictionary<string, Configuration> refreshedConfigSet = new SerializableDictionary<string, Configuration>();
+        ConfigDictionary refreshedConfigSet = new ConfigDictionary();
 
         BuildPlatform[] platforms = BuildSettings.platformList.platforms;
         for (int i = 0; i < platforms.Length; i++)
@@ -225,7 +226,7 @@ public class ProjectConfigurations
 
             string key = platforms[i].platformName;
             Configuration relConfig = new Configuration();
-            SerializableDictionary<string, Configuration> prevChildConfig = null;
+            ConfigDictionary prevChildConfig = null;
 
             if (refreshedConfigSet.ContainsKey(key))
                 continue;
@@ -253,9 +254,9 @@ public class ProjectConfigurations
         return refreshedConfigSet;
     }
 
-    private SerializableDictionary<string, Configuration> RefreshArchitectures(BuildArchitecture[] architectures, BuildDistribution[] distributions, SerializableDictionary<string, Configuration> prevConfigSet)
+    private ConfigDictionary RefreshArchitectures(BuildArchitecture[] architectures, BuildDistribution[] distributions, ConfigDictionary prevConfigSet)
     {
-        SerializableDictionary<string, Configuration> refreshedConfigSet = new SerializableDictionary<string, Configuration>();
+        ConfigDictionary refreshedConfigSet = new ConfigDictionary();
 
         for (int i = 0; i < architectures.Length; i++)
         {
@@ -264,7 +265,7 @@ public class ProjectConfigurations
 
             string key = architectures[i].name;
             Configuration relConfig = new Configuration();
-            SerializableDictionary<string, Configuration> prevChildConfig = null;
+            ConfigDictionary prevChildConfig = null;
 
             if (refreshedConfigSet.ContainsKey(key))
                 continue;
@@ -284,9 +285,9 @@ public class ProjectConfigurations
         return refreshedConfigSet;
     }
 
-    private SerializableDictionary<string, Configuration> RefreshDistributions(BuildDistribution[] distributions, SerializableDictionary<string, Configuration> prevConfigSet)
+    private ConfigDictionary RefreshDistributions(BuildDistribution[] distributions, ConfigDictionary prevConfigSet)
     {
-        SerializableDictionary<string, Configuration> refreshedConfigSet = new SerializableDictionary<string, Configuration>();
+        ConfigDictionary refreshedConfigSet = new ConfigDictionary();
 
         for (int i = 0; i < distributions.Length; i++)
         {

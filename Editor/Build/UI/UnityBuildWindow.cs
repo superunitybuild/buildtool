@@ -24,6 +24,7 @@ public class UnityBuildWindow : EditorWindow
         Assembly editorAsm = typeof(Editor).Assembly;
         Type inspWndType = editorAsm.GetType("UnityEditor.InspectorWindow");
 
+        // Get and show window.
         UnityBuildWindow window;
         if (inspWndType != null)
         {
@@ -128,6 +129,7 @@ public class UnityBuildWindow : EditorWindow
         GUI.backgroundColor = Color.green;
         if (GUILayout.Button("Perform All Enabled Builds (" + totalBuildCount + " Builds)", GUILayout.ExpandWidth(true), GUILayout.MinHeight(30)))
         {
+            EditorApplication.delayCall += BuildProject.BuildAll;
         }
         GUI.backgroundColor = defaultBackgroundColor;
         EditorGUI.EndDisabledGroup();

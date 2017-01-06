@@ -6,7 +6,10 @@ namespace SuperSystems.UnityBuild
 public class Configuration
 {
     public bool enabled = true;
-    public SerializableDictionary<string, Configuration> childConfigurations;
+    public ConfigDictionary childConfigurations;
 }
+
+[System.Serializable]
+public class ConfigDictionary : SerializableDictionary<string, Configuration> { }
 
 }

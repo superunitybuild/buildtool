@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace SuperSystems.UnityBuild
@@ -53,7 +54,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
             EditorGUILayout.BeginHorizontal();
             UnityBuildGUIUtility.DropdownHeader("Configurations", ref showConfigs, GUILayout.ExpandWidth(true));
             EditorGUILayout.EndHorizontal();
-            
+                        
             if (showConfigs)
             {
                 EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
@@ -156,7 +157,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                         {
                             EditorUserBuildSettings.SwitchActiveBuildTarget(arch.target);
                             PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, defines);
-                            BuildConstantsGenerator.Generate(BuildSettings.productParameters.lastGeneratedVersion, releaseType, platform, arch, dist);
+                            BuildConstantsGenerator.Generate(DateTime.Now, BuildSettings.productParameters.lastGeneratedVersion, releaseType, platform, arch, dist);
                         }
                     }
                     else
@@ -186,6 +187,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
         if (treeView)
         {
             GUILayout.Space(20 * depth);
+
             config.enabled = EditorGUILayout.Toggle(config.enabled, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(10));
         }
 

@@ -1,8 +1,9 @@
-﻿
+﻿using System;
+
 namespace SuperSystems.UnityBuild
 {
 
-[System.Serializable]
+[Serializable]
 public class ProductParameters
 {
     public int buildCounter = 0;
