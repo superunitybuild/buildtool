@@ -11,141 +11,134 @@ namespace SuperSystems.UnityBuild
 
 public static class BuildProject
 {
-    #region Public Variables & Auto-Properties
-
-    public static List<BuildPlatform> platforms { get; private set; }
-    public static List<BuildAction> preBuildActions { get; private set; }
-    public static List<BuildAction> postBuildActions { get; private set; }
-
-    #endregion
-
-    #region MenuItems
-
-    /// <summary>
-    /// Build all enabled platforms.
-    /// </summary>
-    [MenuItem("Build/Run Build", false, 1)]
-    public static void BuildAll()
-    {
-        //if (preBuildActions != null)
-        //    preBuildActions.Sort();
-
-        //if (postBuildActions != null)
-        //    postBuildActions.Sort();
-
-        //PerformPreBuild();
-
-        //for (int i = 0; i < platforms.Count; i++)
-        //{
-        //    IBuildPlatform platform = platforms[i];
-        //    if (platform.buildEnabled)
-        //    {
-        //        PerformPreBuild(platform);
-        //        platform.Build();
-        //        PerformPostBuild(platform);
-        //    }
-        //}
-
-        //PerformPostBuild();
-    }
-
-    /// <summary>
-    /// Enable building of all platforms.
-    /// </summary>
-    [MenuItem("Build/Platforms/Enable All", false, 50)]
-    private static void EnableAllPlatforms()
-    {
-        SetAllBuildPlatforms(true);
-    }
-
-    /// <summary>
-    /// Disable building of all platforms.
-    /// </summary>
-    [MenuItem("Build/Platforms/Disable All", false, 50)]
-    private static void DisableAllPlatforms()
-    {
-        SetAllBuildPlatforms(false);
-    }
-
-    #endregion
-
-    #region Register Methods
-
-    /// <summary>
-    /// Register a platform that can be built.
-    /// </summary>
-    /// <param name="platform"></param>
-    public static void RegisterPlatform(BuildPlatform platform)
-    {
-        if (platforms == null)
-            platforms = new List<BuildPlatform>();
-
-        platforms.Add(platform);
-    }
-
-    /// <summary>
-    /// Register a pre-build action.
-    /// </summary>
-    /// <param name="action"></param>
-    public static void RegisterPreBuildAction(BuildAction action)
-    {
-        if (preBuildActions == null)
-            preBuildActions = new List<BuildAction>();
-
-        preBuildActions.Add(action);
-    }
-
-    /// <summary>
-    /// Register a post-build action.
-    /// </summary>
-    /// <param name="action"></param>
-    public static void RegisterPostBuildAction(BuildAction action)
-    {
-        if (postBuildActions == null)
-            postBuildActions = new List<BuildAction>();
-
-        postBuildActions.Add(action);
-    }
-
-    #endregion
-
     #region Public Methods
 
-    /// <summary>
-    /// Perform build of a platform.
-    /// </summary>
-    /// <param name="platform"></param>
-    public static void PerformBuild(BuildPlatform platform)
+    private static void PerformPreBuild(out DateTime buildTime)
     {
-        //// Build player.
-        //Debug.Log("Building " + platform.name);
-        //FileUtil.DeleteFileOrDirectory(platform.buildPath);
-        //BuildPipeline.BuildPlayer(BuildSettings.basicSettings.scenesInBuild, platform.buildPath + platform.exeName, platform.target, BuildOptions.None);
+        buildTime = DateTime.Now;
 
-        //// Copy any other data.
-        //for (int i = 0; i < BuildSettings.basicSettings.copyToBuild.Length; i++)
-        //{
-        //    string item = BuildSettings.basicSettings.copyToBuild[i];
+        BuildNotificationList.instance.RefreshAll();
 
-        //    // Log an error if file/directory does not exist.
-        //    if (!File.Exists(item) && !Directory.Exists(item))
-        //    {
-        //        Debug.LogError("Item to copy does not exist: " + item);
-        //        continue;
-        //    }
+        if (BuildSettings.productParameters.autoGenerate)
+        {
+            GenerateVersionString(BuildSettings.productParameters, buildTime);
+        }
 
-        //    // Copy the file/directory.
-        //    if (Path.HasExtension(item))
-        //    {
-        //        string filename = Path.GetFileName(item);
-        //        FileUtil.CopyFileOrDirectory(item, platform.dataDirectory + filename);
-        //    }
-        //    else
-        //    {
-        //        string dirname = Path.GetFileName(item.TrimEnd('/').TrimEnd('\\'));
-        //        FileUtil.CopyFileOrDirectory(item, platform.dataDirectory + dirname);
-        //    }
-        //}
+        // TODO: Run pre-build actions.
+    }
+
+    private static void PerformPostBuild()
+    {
+        // TODO: Run post-build actions.
+    }
+
+    public static void BuildAll()
+    {
+        string[] buildConfigs = BuildSettings.projectConfigurations.BuildAllKeychains();
+        PerformBuild(buildConfigs);
+    }
+
+    public static void BuildSingle(string keyChain, BuildOptions options = BuildOptions.None)
+    {
+        string[] buildConfigs = new string[] { keyChain };
+        PerformBuild(buildConfigs, options);
+    }
+
+    private static void PerformBuild(string[] buildConfigs, BuildOptions options = BuildOptions.None)
+    {
+        int successCount = 0;
+        int failCount = 0;
+
+        DateTime buildTime;
+        BuildProject.PerformPreBuild(out buildTime);
+
+        for (int i = 0; i < buildConfigs.Length; i++)
+        {
+            BuildReleaseType releaseType;
+            BuildPlatform platform;
+            BuildArchitecture arch;
+            BuildDistribution dist;
+
+            BuildSettings.projectConfigurations.ParseKeychain(buildConfigs[i], out releaseType, out platform, out arch, out dist);
+            bool success = BuildProject.BuildPlayer(releaseType, platform, arch, dist, buildTime, options);
+
+            if (success)
+                ++successCount;
+            else
+                ++failCount;
+        }
+
+        BuildProject.PerformPostBuild();
+
+        StringBuilder sb = new StringBuilder();
+        if (failCount == 0)
+        {
+            sb.AppendFormat("{0} successful build{1}. No failures. ✔️", successCount, successCount > 1 ? "s" : "");
+        }
+        else if (successCount == 0)
+        {
+            sb.AppendFormat("No successful builds. {0} failure{1}. ✖️", failCount, failCount > 1 ? "s" : "");
+        }
+        else
+        {
+        }
+        BuildNotificationList.instance.AddNotification(new BuildNotification(
+                BuildNotification.Category.Notification,
+                "Build Complete.", sb.ToString(),
+                true, null));
+
+        if (BuildSettings.basicSettings.openFolderPostBuild)
+        {
+            System.Diagnostics.Process.Start(BuildSettings.basicSettings.baseBuildFolder);
+        }
+    }
+
+    private static bool BuildPlayer(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, DateTime buildTime, BuildOptions options)
+    {
+        bool success = true;
+
+        // Get build options.
+        if (releaseType.developmentBuild)
+            options |= BuildOptions.Development;
+        //if (releaseType.allowDebugging)
+        //    options |= BuildOptions.AllowDebugging;
+
+        // Generate configuration keychain string.
+        StringBuilder configKey = new StringBuilder(string.Format("{0}/{1}/{2}", releaseType.typeName, platform.platformName, architecture.name));
+        if (distribution != null)
+            configKey.AppendFormat("/{0}", distribution.distributionName);
+
+        // Generate build path.
+        string buildPath = GenerateBuildPath(releaseType, platform, architecture, distribution, buildTime);
+        string exeName = SanitizeFileName(string.Format(platform.binaryNameFormat, releaseType.productName));
+
+        // TODO: Pre-build actions.
+
+        // Generate BuildConstants
+        BuildConstantsGenerator.Generate(buildTime, BuildSettings.productParameters.lastGeneratedVersion, releaseType, platform, architecture, distribution);
+
+        // Build player.
+        BuildNotificationList.instance.AddNotification(new BuildNotification(
+                BuildNotification.Category.Notification,
+                "Building:", configKey.ToString(),
+                true, null));
+
+        FileUtil.DeleteFileOrDirectory(buildPath);
+        string error = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneList(), Path.Combine(buildPath, exeName), architecture.target, options);
+
+        if (!string.IsNullOrEmpty(error))
+        {
+            success = false;
+
+            BuildNotificationList.instance.AddNotification(new BuildNotification(
+                BuildNotification.Category.Error,
+                "Build Failed:", configKey.ToString() + "\n" + error,
+                true, null));
+        }
+
+        // TODO: Post-build actions.
+
+        return success;
     }
 
     public static string GenerateDefaultDefines(BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist)
@@ -214,6 +207,25 @@ public static class BuildProject
         return retVal;
     }
 
+    public static string GenerateBuildPath(BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist, DateTime buildTime)
+    {
+        StringBuilder sb = new StringBuilder(BuildSettings.basicSettings.buildPath);
+
+        sb.Replace("$YEAR", buildTime.ToString("yyyy"));
+        sb.Replace("$MONTH", buildTime.ToString("MM"));
+        sb.Replace("$DAY", buildTime.ToString("dd"));
+        sb.Replace("$TIME", buildTime.ToString("hhmmss"));
+
+        sb.Replace("$RELEASE_TYPE", SanitizeFolderName(releaseType.typeName));
+        sb.Replace("$PLATFORM", SanitizeFolderName(buildPlatform.platformName));
+        sb.Replace("$ARCHITECTURE", SanitizeFolderName(arch.name));
+        sb.Replace("$DISTRIBUTION", SanitizeFolderName(dist != null ? dist.distributionName : BuildConstantsGenerator.NONE));
+        sb.Replace("$VERSION", SanitizeFolderName(BuildSettings.productParameters.lastGeneratedVersion));
+        sb.Replace("$BUILD", BuildSettings.productParameters.buildCounter.ToString());
+
+        return Path.Combine(BuildSettings.basicSettings.baseBuildFolder, sb.ToString());
+    }
+
     #endregion
 
     #region Private Methods
@@ -226,6 +238,22 @@ public static class BuildProject
             str = "_" + str;
         }
         return str;
+    }
+
+    private static string SanitizeFolderName(string folderName)
+    {
+        string invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()));
+        string invalidRegStr = string.Format(@"[{0}]", invalidChars);
+
+        return Regex.Replace(folderName, invalidRegStr, "");
+    }
+
+    private static string SanitizeFileName(string fileName)
+    {
+        string invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()));
+        string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+        return Regex.Replace(fileName, invalidRegStr, "_");
     }
 
     private static void ReplaceFromFile(StringBuilder sb, string keyString, string filename)
@@ -258,17 +286,9 @@ public static class BuildProject
             }
         }
     }
-
-    private static void SetAllBuildPlatforms(bool enabled)
-    {
-        for (int i = 0; i < platforms.Count; i++)
-        {
-            EditorPrefs.SetBool("buildGame" + platforms[i].platformName, enabled);
-        }
-    }
-
-    private static void PerformPreBuild()
-    {
+    
+    //private static void PerformPreBuild()
+    //{
         //if (preBuildActions != null)
         //{
         //    for (int i = 0; i < preBuildActions.Count; i++)
@@ -277,10 +297,10 @@ public static class BuildProject
         //        preBuildActions[i].Execute();
         //    }
         //}
-    }
+    //}
 
-    private static void PerformPostBuild()
-    {
+    //private static void PerformPostBuild()
+    //{
         //if (postBuildActions != null)
         //{
         //    for (int i = 0; i < postBuildActions.Count; i++)
@@ -289,10 +309,10 @@ public static class BuildProject
         //        postBuildActions[i].Execute();
         //    }
         //}
-    }
+    //}
 
-    private static void PerformPreBuild(BuildPlatform platform)
-    {
+    //private static void PerformPreBuild(BuildPlatform platform)
+    //{
         //if (preBuildActions != null)
         //{
         //    for (int i = 0; i < preBuildActions.Count; i++)
@@ -301,10 +321,10 @@ public static class BuildProject
         //        preBuildActions[i].Execute(platform);
         //    }
         //}
-    }
+    //}
 
-    private static void PerformPostBuild(BuildPlatform platform)
-    {
+    //private static void PerformPostBuild(BuildPlatform platform)
+    //{
         //if (postBuildActions != null)
         //{
         //    for (int i = 0; i < postBuildActions.Count; i++)
@@ -313,7 +333,7 @@ public static class BuildProject
         //        postBuildActions[i].Execute(platform);
         //    }
         //}
-    }
+    //}
 
     #endregion
 }

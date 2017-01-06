@@ -7,7 +7,18 @@ namespace SuperSystems.UnityBuild
 [System.Serializable]
 public class ProjectConfigurations
 {
+    // Data
     public ConfigDictionary configSet;
+
+    // View
+    public bool showViewOptions = false;
+    public bool showConfigs = false;
+    public bool showBuildInfo = false;
+
+    public bool hideDisabled = false;
+    public bool treeView = false;
+
+    public string selectedKeyChain = string.Empty;
 
     public void Refresh()
     {

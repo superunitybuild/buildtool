@@ -72,7 +72,7 @@ public class BuildNotificationList
                 break;
         }
     }
-
+    
     public void RefreshAll()
     {
         RefreshList(notifications);

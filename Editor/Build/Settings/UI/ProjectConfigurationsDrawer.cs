@@ -8,22 +8,29 @@ namespace SuperSystems.UnityBuild
 [CustomPropertyDrawer(typeof(ProjectConfigurations))]
 public class ProjectConfigurationsDrawer : PropertyDrawer
 {
-    private bool showViewOptions = false;
-    private bool showConfigs = false;
-    private bool showBuildInfo = false;
+    private bool show;
 
-    private bool hideDisabled = false;
-    private bool treeView = false;
-
-    private string selectedKeyChain = "";
+    private SerializedProperty showViewOptions;
+    private SerializedProperty showConfigs;
+    private SerializedProperty showBuildInfo;
+    private SerializedProperty hideDisabled;
+    private SerializedProperty treeView;
+    private SerializedProperty selectedKeyChain;
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
+        showViewOptions = property.FindPropertyRelative("showViewOptions");
+        showConfigs = property.FindPropertyRelative("showConfigs");
+        showBuildInfo = property.FindPropertyRelative("showBuildInfo");
+        hideDisabled = property.FindPropertyRelative("hideDisabled");
+        treeView = property.FindPropertyRelative("treeView");
+        selectedKeyChain = property.FindPropertyRelative("selectedKeyChain");
+
         EditorGUI.BeginProperty(position, label, property);
 
         EditorGUILayout.BeginHorizontal();
 
-        bool show = property.isExpanded;
+        show = property.isExpanded;
         UnityBuildGUIUtility.DropdownHeader("Build Configurations", ref show, GUILayout.ExpandWidth(true));
         property.isExpanded = show;
 
@@ -37,25 +44,29 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
             EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
             EditorGUILayout.BeginHorizontal();
-            UnityBuildGUIUtility.DropdownHeader("View Options", ref showViewOptions, GUILayout.ExpandWidth(true));
+            show = showViewOptions.isExpanded;
+            UnityBuildGUIUtility.DropdownHeader("View Options", ref show, GUILayout.ExpandWidth(true));
+            showViewOptions.isExpanded = show;
             EditorGUILayout.EndHorizontal();
 
-            if (showViewOptions)
+            if (show)
             {
                 EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
-                hideDisabled = EditorGUILayout.ToggleLeft("Hide disabled configurations", hideDisabled);
-                treeView = EditorGUILayout.ToggleLeft("Show full configurations tree", treeView);
+                hideDisabled.boolValue = EditorGUILayout.ToggleLeft("Hide disabled configurations", hideDisabled.boolValue);
+                treeView.boolValue = EditorGUILayout.ToggleLeft("Show full configurations tree", treeView.boolValue);
 
                 EditorGUILayout.EndVertical();
             }
 
             GUILayout.Space(5);
             EditorGUILayout.BeginHorizontal();
-            UnityBuildGUIUtility.DropdownHeader("Configurations", ref showConfigs, GUILayout.ExpandWidth(true));
+            show = showConfigs.isExpanded;
+            UnityBuildGUIUtility.DropdownHeader("Configurations", ref show, GUILayout.ExpandWidth(true));
+            showConfigs.isExpanded = show;
             EditorGUILayout.EndHorizontal();
                         
-            if (showConfigs)
+            if (show)
             {
                 EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
@@ -80,14 +91,16 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
 
             GUILayout.Space(5);
             EditorGUILayout.BeginHorizontal();
-            UnityBuildGUIUtility.DropdownHeader("Build Info", ref showBuildInfo, GUILayout.ExpandWidth(true));
+            show = showBuildInfo.isExpanded;
+            UnityBuildGUIUtility.DropdownHeader("Build Info", ref show, GUILayout.ExpandWidth(true));
+            showBuildInfo.isExpanded = show;
             EditorGUILayout.EndHorizontal();
 
-            if (showBuildInfo)
+            if (show)
             {
                 EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
-                if (string.IsNullOrEmpty(selectedKeyChain))
+                if (string.IsNullOrEmpty(selectedKeyChain.stringValue))
                 {
                     EditorGUILayout.HelpBox("Click a build configuration above in \"Configurations\" to view full details.", MessageType.Info);
                 }
@@ -98,7 +111,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                     BuildArchitecture arch;
                     BuildDistribution dist;
 
-                    bool parseSuccess = BuildSettings.projectConfigurations.ParseKeychain(selectedKeyChain, out releaseType, out platform, out arch, out dist);
+                    bool parseSuccess = BuildSettings.projectConfigurations.ParseKeychain(selectedKeyChain.stringValue, out releaseType, out platform, out arch, out dist);
 
                     if (parseSuccess)
                     {
@@ -141,14 +154,20 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                         GUI.backgroundColor = Color.green;
                         if (GUILayout.Button("Build", GUILayout.ExpandWidth(true)))
                         {
+                            EditorApplication.delayCall += () =>
+                                BuildProject.BuildSingle(selectedKeyChain.stringValue);
                         }
                         if (GUILayout.Button("Build and Run", GUILayout.ExpandWidth(true)))
                         {
+                            EditorApplication.delayCall += () =>
+                                BuildProject.BuildSingle(selectedKeyChain.stringValue, BuildOptions.AutoRunPlayer);
                         }
 
                         EditorGUI.BeginDisabledGroup(!releaseType.developmentBuild);
                         if (GUILayout.Button("Build and Run w/ Profiler", GUILayout.ExpandWidth(true)))
                         {
+                            EditorApplication.delayCall += () =>
+                                BuildProject.BuildSingle(selectedKeyChain.stringValue, BuildOptions.AutoRunPlayer | BuildOptions.ConnectWithProfiler);
                         }
                         EditorGUI.EndDisabledGroup();
                         GUI.backgroundColor = defaultBackgroundColor;
@@ -184,7 +203,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
 
         bool displayButton = (depth >= 2 && (config.childConfigurations == null || config.childConfigurations.Count == 0));
 
-        if (treeView)
+        if (treeView.boolValue)
         {
             GUILayout.Space(20 * depth);
 
@@ -195,7 +214,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
         {
             string displayText;
 
-            if (treeView)
+            if (treeView.boolValue)
             {
                 displayText = key;
             }
@@ -208,10 +227,10 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
 
             if (GUILayout.Button(displayText, UnityBuildGUIUtility.dropdownHeaderStyle))
             {
-                selectedKeyChain = keychain + "/" + key;
+                selectedKeyChain.stringValue = keychain + "/" + key;
             }
         }
-        else if (treeView)
+        else if (treeView.boolValue)
         {
             EditorGUILayout.LabelField(key, UnityBuildGUIUtility.midHeaderStyle);
         }
@@ -219,12 +238,12 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
         EditorGUI.EndDisabledGroup();
         EditorGUILayout.EndHorizontal();
 
-        if (!treeView && displayButton)
+        if (!treeView.boolValue && displayButton)
         {
             GUILayout.Space(5);
         }
 
-        if (config.childConfigurations != null && config.childConfigurations.Count > 0 && (!hideDisabled || config.enabled))
+        if (config.childConfigurations != null && config.childConfigurations.Count > 0 && (!hideDisabled.boolValue || config.enabled))
         {
             if (string.IsNullOrEmpty(keychain))
                 keychain = key;

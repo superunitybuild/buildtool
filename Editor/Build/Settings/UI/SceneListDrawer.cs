@@ -10,8 +10,8 @@ namespace SuperSystems.UnityBuild
 public class SceneListDrawer : PropertyDrawer
 {
     private int index = 0;
-    private SerializedProperty list = null;
     private List<SceneList.Scene> availableScenesList = null;
+    private SerializedProperty list;
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
@@ -25,15 +25,8 @@ public class SceneListDrawer : PropertyDrawer
 
         EditorGUILayout.EndHorizontal();
 
-        if (list == null)
-        {
-            list = property.FindPropertyRelative("enabledScenes");
-        }
-
-        if (availableScenesList == null)
-        {
-            PopulateSceneList();
-        }
+        list = property.FindPropertyRelative("enabledScenes");
+        PopulateSceneList();
 
         if (show)
         {
@@ -95,7 +88,7 @@ public class SceneListDrawer : PropertyDrawer
                 }
 
                 index = EditorGUILayout.Popup(index, sceneStringList, UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(true));
-                if (GUILayout.Button("Add Scene", GUILayout.ExpandWidth(false), GUILayout.MaxWidth(150)))
+                if (GUILayout.Button("Add Scene", GUILayout.ExpandWidth(false), GUILayout.MaxWidth(150)) && index < availableScenesList.Count)
                 {
                     int addedIndex = list.arraySize;
                     SceneList.Scene scene = availableScenesList[index];

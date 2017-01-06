@@ -48,6 +48,10 @@ public class BuildReleaseTypeListDrawer : PropertyDrawer
                 addedEntry.FindPropertyRelative("typeName").stringValue = "NewReleaseType";
                 addedEntry.FindPropertyRelative("productName").stringValue = Application.productName;
 
+                list.serializedObject.ApplyModifiedProperties();
+
+                BuildSettings.releaseTypeList.releaseTypes[BuildSettings.releaseTypeList.releaseTypes.Length - 1].sceneList = new SceneList();
+
                 GUIUtility.keyboardControl = 0;
             }
             GUILayout.FlexibleSpace();

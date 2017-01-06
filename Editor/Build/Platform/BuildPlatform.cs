@@ -45,7 +45,7 @@ public class BuildPlatform
     /// </summary>
     public virtual void Build()
     {
-        BuildProject.PerformBuild(this);
+        //BuildProject.PerformBuild(this);
     }
 
     #endregion
@@ -77,34 +77,6 @@ public class BuildPlatform
             }
 
             return atLeastOneDist;
-        }
-    }
-
-    public string buildPath
-    {
-        get
-        {
-            return BuildSettings.basicSettings.buildPath + Path.DirectorySeparatorChar + platformName + Path.DirectorySeparatorChar;
-        }
-    }
-
-    public string dataDirectory
-    {
-        get
-        {
-            // TODO: Fix.
-            return string.Empty;
-            //return buildPath + string.Format(dataDirNameFormat, BuildSettings.basicSettings.executableName) + Path.DirectorySeparatorChar;
-        }
-    }
-
-    public string exeName
-    {
-        get
-        {
-            // TODO: Fix.
-            return string.Empty;
-            //return string.Format(binaryNameFormat, BuildSettings.basicSettings.executableName);
         }
     }
 

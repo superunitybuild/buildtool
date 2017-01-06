@@ -47,6 +47,7 @@ public class UnityBuildWindow : EditorWindow
         GUIContent title = new GUIContent("SuperUnityBuild");
         titleContent = title;
 
+        BuildNotificationList.instance.errors.Clear();
         BuildNotificationList.instance.InitializeErrors();
     }
 
