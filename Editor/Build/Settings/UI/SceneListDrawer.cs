@@ -25,6 +25,13 @@ public class SceneListDrawer : PropertyDrawer
 
         EditorGUILayout.EndHorizontal();
 
+        //Refresh all scene lists.
+        for (int i = 0; i < BuildSettings.releaseTypeList.releaseTypes.Length; i++)
+        {
+            BuildReleaseType rt = BuildSettings.releaseTypeList.releaseTypes[i];
+            rt.sceneList.Refresh();
+        }
+
         list = property.FindPropertyRelative("enabledScenes");
         PopulateSceneList();
 
@@ -124,12 +131,7 @@ public class SceneListDrawer : PropertyDrawer
         else
             availableScenesList.Clear();
 
-        string[] allScenesGUID = AssetDatabase.FindAssets("t:scene");
-        string[] allScenes = new string[allScenesGUID.Length];
-        for (int i = 0; i < allScenesGUID.Length; i++)
-        {
-            allScenes[i] = AssetDatabase.GUIDToAssetPath(allScenesGUID[i]);
-        }
+        string[] allScenes = SceneList.GetListOfAllScenes();
 
         for (int i = 0; i < allScenes.Length; i++)
         {

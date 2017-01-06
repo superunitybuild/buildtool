@@ -15,7 +15,7 @@ public class SceneList
 
     public void Refresh()
     {
-        EditorBuildSettingsScene[] allScenes = EditorBuildSettings.scenes;
+        string[] allScenes = GetListOfAllScenes();
 
         // Verify that all scenes in list still exist.
         for (int i = 0; i < enabledScenes.Count; i++)
@@ -48,6 +48,18 @@ public class SceneList
         }
 
         return scenes.ToArray();
+    }
+
+    public static string[] GetListOfAllScenes()
+    {
+        string[] allScenesGUID = AssetDatabase.FindAssets("t:scene");
+        string[] allScenes = new string[allScenesGUID.Length];
+        for (int i = 0; i < allScenesGUID.Length; i++)
+        {
+            allScenes[i] = AssetDatabase.GUIDToAssetPath(allScenesGUID[i]);
+        }
+
+        return allScenes;
     }
 
     [System.Serializable]

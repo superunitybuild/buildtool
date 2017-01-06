@@ -117,6 +117,9 @@ public static class BuildProject
         // Generate BuildConstants
         BuildConstantsGenerator.Generate(buildTime, BuildSettings.productParameters.lastGeneratedVersion, releaseType, platform, architecture, distribution);
 
+        // Refresh scene list to make sure nothing has been delted.
+        releaseType.sceneList.Refresh();
+
         // Build player.
         BuildNotificationList.instance.AddNotification(new BuildNotification(
                 BuildNotification.Category.Notification,
