@@ -5,7 +5,6 @@ public static class BuildConstants
     public enum ReleaseType
     {
         None,
-        Release,
     }
 
     public enum Platform

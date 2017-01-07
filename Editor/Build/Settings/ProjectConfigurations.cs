@@ -29,19 +29,21 @@ public class ProjectConfigurations
         {
             string key = releaseTypes[i].typeName;
             Configuration relConfig = new Configuration();
-            ConfigDictionary prevChildConfig = null;
 
+            // Check for duplicate.
             if (refreshedConfigSet.ContainsKey(key))
                 continue;
 
+            // Copy old setting if it exists.
             if (configSet != null && configSet.ContainsKey(key))
             {
                 relConfig.enabled = configSet[key].enabled;
-                prevChildConfig = configSet[key].childConfigurations;
             }
 
-            relConfig.childConfigurations = RefreshPlatforms(prevChildConfig);
+            // Get child keys.
+            relConfig.childKeys = RefreshPlatforms(key, refreshedConfigSet, configSet);
 
+            // Save configuration.
             refreshedConfigSet.Add(key, relConfig);
         }
 
@@ -225,9 +227,9 @@ public class ProjectConfigurations
         return success;
     }
 
-    private ConfigDictionary RefreshPlatforms(ConfigDictionary prevConfigSet)
+    private string[] RefreshPlatforms(string keyChain, ConfigDictionary refreshedConfigSet, ConfigDictionary prevConfigSet)
     {
-        ConfigDictionary refreshedConfigSet = new ConfigDictionary();
+        List<string> childKeys = new List<string>();
 
         BuildPlatform[] platforms = BuildSettings.platformList.platforms;
         for (int i = 0; i < platforms.Length; i++)
@@ -236,9 +238,8 @@ public class ProjectConfigurations
             if (!platforms[i].enabled || !platforms[i].atLeastOneArch)
                 continue;
 
-            string key = platforms[i].platformName;
+            string key = keyChain + "/" + platforms[i].platformName;
             Configuration relConfig = new Configuration();
-            ConfigDictionary prevChildConfig = null;
 
             // Check for duplicate key.
             if (refreshedConfigSet.ContainsKey(key))
@@ -248,65 +249,71 @@ public class ProjectConfigurations
             if (prevConfigSet != null && prevConfigSet.ContainsKey(key))
             {
                 relConfig.enabled = prevConfigSet[key].enabled;
-                prevChildConfig = prevConfigSet[key].childConfigurations;
             }
 
             // Refresh architectures.
             BuildArchitecture[] architectures = platforms[i].architectures;
             if (architectures.Length > 0)
-                relConfig.childConfigurations = RefreshArchitectures(architectures, platforms[i].distributionList.distributions, prevChildConfig);
+                relConfig.childKeys = RefreshArchitectures(key, refreshedConfigSet, architectures, platforms[i].distributionList.distributions, prevConfigSet);
 
             // Save configuration.
             refreshedConfigSet.Add(key, relConfig);
+
+            // Add key to list to send back to parent.
+            childKeys.Add(key);
         }
 
-        return refreshedConfigSet;
+        return childKeys.ToArray();
     }
 
-    private ConfigDictionary RefreshArchitectures(BuildArchitecture[] architectures, BuildDistribution[] distributions, ConfigDictionary prevConfigSet)
+    private string[] RefreshArchitectures(string keyChain, ConfigDictionary refreshedConfigSet, BuildArchitecture[] architectures, BuildDistribution[] distributions, ConfigDictionary prevConfigSet)
     {
-        ConfigDictionary refreshedConfigSet = new ConfigDictionary();
+        List<string> childKeys = new List<string>();
 
         for (int i = 0; i < architectures.Length; i++)
         {
+            // Skip if architecture is disabled.
             if (!architectures[i].enabled)
                 continue;
 
-            string key = architectures[i].name;
+            string key = keyChain + "/" + architectures[i].name;
             Configuration relConfig = new Configuration();
-            ConfigDictionary prevChildConfig = null;
 
             // Check for a duplicate key.
             if (refreshedConfigSet.ContainsKey(key))
                 continue;
 
+            // Copy previous settings if they exist.
             if (prevConfigSet != null && prevConfigSet.ContainsKey(key))
             {
                 relConfig.enabled = prevConfigSet[key].enabled;
-                prevChildConfig = prevConfigSet[key].childConfigurations;
             }
 
+            // Refresh distributions.
             if (distributions.Length > 0)
-                relConfig.childConfigurations = RefreshDistributions(distributions, prevChildConfig);
+                relConfig.childKeys = RefreshDistributions(key, refreshedConfigSet, distributions, prevConfigSet);
 
+            // Save configuration.
             refreshedConfigSet.Add(key, relConfig);
+
+            // Add key to list to send back to parent.
+            childKeys.Add(key);
         }
 
-        return refreshedConfigSet;
+        return childKeys.ToArray();
     }
 
-    private ConfigDictionary RefreshDistributions(BuildDistribution[] distributions, ConfigDictionary prevConfigSet)
+    private string[] RefreshDistributions(string keyChain, ConfigDictionary refreshedConfigSet, BuildDistribution[] distributions, ConfigDictionary prevConfigSet)
     {
-        ConfigDictionary refreshedConfigSet = new ConfigDictionary();
+        List<string> childKeys = new List<string>();
 
         for (int i = 0; i < distributions.Length; i++)
         {
             if (!distributions[i].enabled)
                 continue;
 
-            string key = distributions[i].distributionName;
+            string key = keyChain + "/" + distributions[i].distributionName;
             Configuration relConfig = new Configuration();
-            relConfig.childConfigurations = null;
 
             if (refreshedConfigSet.ContainsKey(key))
                 continue;
@@ -317,9 +324,12 @@ public class ProjectConfigurations
             }
 
             refreshedConfigSet.Add(key, relConfig);
+
+            // Add key to list to send back to parent.
+            childKeys.Add(key);
         }
 
-        return refreshedConfigSet;
+        return childKeys.ToArray();
     }
 }
 

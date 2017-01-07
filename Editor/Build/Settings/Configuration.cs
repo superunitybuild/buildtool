@@ -6,7 +6,7 @@ namespace SuperSystems.UnityBuild
 public class Configuration
 {
     public bool enabled = true;
-    public ConfigDictionary childConfigurations;
+    public string[] childKeys = null;
 }
 
 [System.Serializable]
