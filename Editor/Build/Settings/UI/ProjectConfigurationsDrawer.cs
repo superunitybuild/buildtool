@@ -72,12 +72,12 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
 
                 if (BuildSettings.projectConfigurations.configSet.Keys.Count > 0)
                 {
-                    foreach (string key in BuildSettings.projectConfigurations.configSet.Keys)
+                    BuildReleaseType[] releaseTypes = BuildSettings.releaseTypeList.releaseTypes;
+                    for (int i = 0; i < releaseTypes.Length; i++)
                     {
+                        string key = releaseTypes[i].typeName;
                         Configuration config = BuildSettings.projectConfigurations.configSet[key];
-                        DisplayConfigTree(key, ref config, 0);
-
-                        BuildSettings.projectConfigurations.configSet[key] = config;
+                        DisplayConfigTree(key, config, 0);
                     }
                 }
                 else
@@ -196,12 +196,12 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
         EditorGUI.EndProperty();
     }
 
-    private void DisplayConfigTree(string key, ref Configuration config, int depth, bool enabled = true, string keychain = "")
+    private void DisplayConfigTree(string key, Configuration config, int depth, bool enabled = true)
     {
         EditorGUILayout.BeginHorizontal();
         EditorGUI.BeginDisabledGroup(!enabled);
 
-        bool displayButton = (depth >= 2 && (config.childConfigurations == null || config.childConfigurations.Count == 0));
+        bool displayButton = (depth >= 2 && (config.childKeys == null || config.childKeys.Length == 0));
 
         if (treeView.boolValue)
         {
@@ -216,18 +216,18 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
 
             if (treeView.boolValue)
             {
-                displayText = key;
+                string[] split = key.Split('/');
+                displayText = split[split.Length - 1];
             }
             else
             {
-                displayText = keychain + "/" + key;
-
+                displayText = key;
                 config.enabled = EditorGUILayout.Toggle(config.enabled, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(10));
             }
 
             if (GUILayout.Button(displayText, UnityBuildGUIUtility.dropdownHeaderStyle))
             {
-                selectedKeyChain.stringValue = keychain + "/" + key;
+                selectedKeyChain.stringValue = key;
             }
         }
         else if (treeView.boolValue)
@@ -243,17 +243,12 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
             GUILayout.Space(5);
         }
 
-        if (config.childConfigurations != null && config.childConfigurations.Count > 0 && (!hideDisabled.boolValue || config.enabled))
+        if (config.childKeys != null && config.childKeys.Length > 0 && (!hideDisabled.boolValue || config.enabled))
         {
-            if (string.IsNullOrEmpty(keychain))
-                keychain = key;
-            else
-                keychain += "/" + key;
-
-            foreach (string childKey in config.childConfigurations.Keys)
+            foreach (string childKey in config.childKeys)
             {
-                Configuration childConfig = config.childConfigurations[childKey];
-                DisplayConfigTree(childKey, ref childConfig, depth + 1, config.enabled && enabled, keychain);
+                Configuration childConfig = BuildSettings.projectConfigurations.configSet[childKey];
+                DisplayConfigTree(childKey, childConfig, depth + 1, config.enabled && enabled);
             }
         }
     }

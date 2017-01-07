@@ -57,7 +57,7 @@ public class ProjectConfigurations
         foreach (string key in configSet.Keys)
         {
             Configuration config = configSet[key];
-            BuildKeychainsRecursive(ref keychains, config, key, "", 0);
+            BuildKeychainsRecursive(ref keychains, config, key, 0);
         }
 
         return keychains.ToArray();
@@ -67,48 +67,43 @@ public class ProjectConfigurations
     {
         int count = 0;
 
-        foreach (string key in configSet.Keys)
+        BuildReleaseType[] releaseTypes = BuildSettings.releaseTypeList.releaseTypes;
+        for (int i = 0; i < releaseTypes.Length; i++)
         {
+            string key = releaseTypes[i].typeName;
             Configuration config = configSet[key];
-            NavigateTree(key, ref config, 0, ref count);
+            NavigateTree(key, config, 0, ref count);
         }
 
         return count;
     }
 
-    private void NavigateTree(string key, ref Configuration config, int depth, ref int count)
+    private void NavigateTree(string key, Configuration config, int depth, ref int count)
     {
-        if (depth >= 2 && config.enabled && (config.childConfigurations == null || config.childConfigurations.Count == 0))
+        if (depth >= 2 && config.enabled && (config.childKeys == null || config.childKeys.Length == 0))
         {
             ++count;
         }
-        else if (config.enabled)
+        else if (config.enabled && config.childKeys != null)
         {
-            foreach (string childKey in config.childConfigurations.Keys)
+            foreach (string childKey in config.childKeys)
             {
-                Configuration childConfig = config.childConfigurations[childKey];
-                NavigateTree(childKey, ref childConfig, depth + 1, ref count);
+                NavigateTree(childKey, configSet[childKey], depth + 1, ref count);
             }
         }
     }
 
-    private void BuildKeychainsRecursive(ref List<string> keychains, Configuration config, string key, string currentKeychain, int depth)
+    private void BuildKeychainsRecursive(ref List<string> keychains, Configuration config, string key, int depth)
     {
-        if (depth >= 2 && config.enabled && (config.childConfigurations == null || config.childConfigurations.Count == 0))
+        if (depth >= 2 && config.enabled && (config.childKeys == null || config.childKeys.Length == 0))
         {
-            keychains.Add(currentKeychain + "/" + key);
+            keychains.Add(key);
         }
-        else if (config.childConfigurations != null && config.childConfigurations.Count > 0 && config.enabled)
+        else if (config.childKeys != null && config.childKeys.Length > 0 && config.enabled)
         {
-            if (string.IsNullOrEmpty(currentKeychain))
-                currentKeychain = key;
-            else
-                currentKeychain += "/" + key;
-
-            foreach (string childKey in config.childConfigurations.Keys)
+            foreach (string childKey in config.childKeys)
             {
-                Configuration childConfig = config.childConfigurations[childKey];
-                BuildKeychainsRecursive(ref keychains, childConfig, childKey, currentKeychain, depth + 1);
+                BuildKeychainsRecursive(ref keychains, configSet[childKey], childKey, depth + 1);
             }
         }
     }
@@ -119,7 +114,6 @@ public class ProjectConfigurations
         string[] keys = keychain.Split('/');
         int keyCount = keys.Length;
         int targetKey = 0;
-        Configuration childConfig = null;
 
         releaseType = null;
         platform = null;
@@ -127,7 +121,7 @@ public class ProjectConfigurations
         distribution = null;
 
         // Parse release type.
-        if (keyCount > targetKey && configSet.ContainsKey(keys[targetKey]))
+        if (keyCount > targetKey)
         {
             for (int i = 0; i < BuildSettings.releaseTypeList.releaseTypes.Length; i++)
             {
@@ -136,7 +130,6 @@ public class ProjectConfigurations
                 if (keys[targetKey] == rt.typeName)
                 {
                     releaseType = rt;
-                    childConfig = configSet[keys[targetKey]];
                     break;
                 }
             }
@@ -146,8 +139,7 @@ public class ProjectConfigurations
             return false;
 
         // Parse platform.
-        ++targetKey;
-        if (keyCount > targetKey && childConfig != null && childConfig.childConfigurations != null && childConfig.childConfigurations.ContainsKey(keys[targetKey]))
+        if (keyCount > ++targetKey)
         {
             for (int i = 0; i < BuildSettings.platformList.platforms.Length; i++)
             {
@@ -156,7 +148,6 @@ public class ProjectConfigurations
                 if (keys[targetKey] == p.platformName)
                 {
                     platform = p;
-                    childConfig = childConfig.childConfigurations[keys[targetKey]];
                     break;
                 }
             }
@@ -171,32 +162,18 @@ public class ProjectConfigurations
             // Only one architecture, so it won't even appear in dictionary. Just get it directly.
             architecture = platform.architectures[0];
             success = true;
-
-            if (childConfig.childConfigurations.ContainsKey(keys[targetKey]))
-            {
-                childConfig = childConfig.childConfigurations[keys[targetKey]];
-            }
-            else
-            {
-                childConfig = null;
-            }
         }
-        else
+        else if (keyCount > ++targetKey)
         {
-            ++targetKey;
-            if (keyCount > targetKey && childConfig != null && childConfig.childConfigurations != null && childConfig.childConfigurations.ContainsKey(keys[targetKey]))
+            for (int i = 0; i < platform.architectures.Length; i++)
             {
-                for (int i = 0; i < platform.architectures.Length; i++)
-                {
-                    BuildArchitecture arch = platform.architectures[i];
+                BuildArchitecture arch = platform.architectures[i];
 
-                    if (keys[targetKey] == arch.name)
-                    {
-                        architecture = arch;
-                        childConfig = childConfig.childConfigurations[keys[targetKey]];
-                        success = true;
-                        break;
-                    }
+                if (keys[targetKey] == arch.name)
+                {
+                    architecture = arch;
+                    success = true;
+                    break;
                 }
             }
         }
@@ -207,8 +184,7 @@ public class ProjectConfigurations
         // TODO: Parse variants.
 
         // Parse distribution.
-        ++targetKey;
-        if (keyCount > targetKey && childConfig != null && childConfig.childConfigurations != null && childConfig.childConfigurations.ContainsKey(keys[targetKey]))
+        if (keyCount > ++targetKey)
         {
             success = false;
             for (int i = 0; i < platform.distributionList.distributions.Length; i++)
