@@ -8,47 +8,18 @@ namespace SuperSystems.UnityBuild
 public class BuildPlatform
 {
     public bool enabled = false;
-    public BuildDistributionList distributionList;
+    public BuildDistributionList distributionList = new BuildDistributionList();
+    public BuildArchitecture[] architectures = new BuildArchitecture[0];
+    public BuildVariant[] variants = new BuildVariant[0];
 
-    #region Abstract
-
-    /// <summary>
-    /// Unity build target definition.
-    /// </summary>
-    public BuildArchitecture[] architectures;
-
-    public BuildVariant[] variants;
-
-    /// <summary>
-    /// Platform name.
-    /// </summary>
     public string platformName;
-
-    /// <summary>
-    /// The format of the binary executable name (e.g. {0}.exe). {0} = Executable name specified in BuildSettings.basicSettings.
-    /// </summary>
-    public string binaryNameFormat { get; protected set; }
-
-    /// <summary>
-    /// The format of the data directory (e.g. {0}_Data). {0} = Executable name specified in BuildSettings.basicSettings.
-    /// </summary>
-    public string dataDirNameFormat { get; protected set; }
-
-    public BuildTargetGroup targetGroup { get; protected set; }
-
-    #endregion
-
-    #region Public Methods
-
-    /// <summary>
-    /// Perform build for platform.
-    /// </summary>
-    public virtual void Build()
+    public string binaryNameFormat;
+    public string dataDirNameFormat;
+    public BuildTargetGroup targetGroup;
+    
+    public virtual void Init()
     {
-        //BuildProject.PerformBuild(this);
     }
-
-    #endregion
 
     #region Public Properties
 

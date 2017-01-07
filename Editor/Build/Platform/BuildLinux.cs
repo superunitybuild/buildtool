@@ -18,15 +18,24 @@ public class BuildLinux : BuildPlatform
     public BuildLinux()
     {
         enabled = false;
+        Init();
+    }
+
+    public override void Init()
+    {
         platformName = _name;
         binaryNameFormat = _binaryNameFormat;
         dataDirNameFormat = _dataDirNameFormat;
         targetGroup = _targetGroup;
-        architectures = new BuildArchitecture[] { 
-            new BuildArchitecture(BuildTarget.StandaloneLinuxUniversal, "Linux Universal", true),
-            new BuildArchitecture(BuildTarget.StandaloneLinux, "Linux x86", false),
-            new BuildArchitecture(BuildTarget.StandaloneLinux64, "Linux x64", false)
-        };
+
+        if (architectures == null || architectures.Length == 0)
+        {
+            architectures = new BuildArchitecture[] { 
+                new BuildArchitecture(BuildTarget.StandaloneLinuxUniversal, "Linux Universal", true),
+                new BuildArchitecture(BuildTarget.StandaloneLinux, "Linux x86", false),
+                new BuildArchitecture(BuildTarget.StandaloneLinux64, "Linux x64", false)
+            };
+        }
     }
 }
 

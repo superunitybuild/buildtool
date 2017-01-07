@@ -18,14 +18,23 @@ public class BuildPC : BuildPlatform
     public BuildPC()
     {
         enabled = false;
+        Init();
+    }
+
+    public override void Init()
+    {
         platformName = _name;
         binaryNameFormat = _binaryNameFormat;
         dataDirNameFormat = _dataDirNameFormat;
         targetGroup = _targetGroup;
-        architectures = new BuildArchitecture[] { 
-            new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true),
-            new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false)
-        };
+
+        if (architectures == null || architectures.Length == 0)
+        {
+            architectures = new BuildArchitecture[] { 
+                new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true),
+                new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false)
+            };
+        }
     }
 }
 

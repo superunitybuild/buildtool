@@ -18,12 +18,24 @@ public class BuildOSX : BuildPlatform
     public BuildOSX()
     {
         enabled = false;
+        Init();
+    }
+
+    public override void Init()
+    {
         platformName = _name;
-        architectures = new BuildArchitecture[] { 
-            new BuildArchitecture(BuildTarget.StandaloneOSXUniversal, "OSX Universal", true),
-            new BuildArchitecture(BuildTarget.StandaloneOSXIntel, "OSX Intel", false),
-            new BuildArchitecture(BuildTarget.StandaloneOSXIntel64, "OSX Intel64", false)
-        };
+        binaryNameFormat = _binaryNameFormat;
+        dataDirNameFormat = _dataDirNameFormat;
+        targetGroup = _targetGroup;
+
+        if (architectures == null || architectures.Length == 0)
+        {
+            architectures = new BuildArchitecture[] { 
+                new BuildArchitecture(BuildTarget.StandaloneOSXUniversal, "OSX Universal", true),
+                new BuildArchitecture(BuildTarget.StandaloneOSXIntel, "OSX Intel", false),
+                new BuildArchitecture(BuildTarget.StandaloneOSXIntel64, "OSX Intel64", false)
+            };
+        }
     }
 }
 

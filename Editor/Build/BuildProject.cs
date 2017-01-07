@@ -58,9 +58,15 @@ public static class BuildProject
             BuildPlatform platform;
             BuildArchitecture arch;
             BuildDistribution dist;
+            string configKey = buildConfigs[i];
 
-            BuildSettings.projectConfigurations.ParseKeychain(buildConfigs[i], out releaseType, out platform, out arch, out dist);
-            bool success = BuildProject.BuildPlayer(releaseType, platform, arch, dist, buildTime, options);
+            BuildNotificationList.instance.AddNotification(new BuildNotification(
+                BuildNotification.Category.Notification,
+                string.Format("Building ({0}/{1}): ", i + 1, buildConfigs.Length), configKey,
+                true, null));
+
+            BuildSettings.projectConfigurations.ParseKeychain(configKey, out releaseType, out platform, out arch, out dist);
+            bool success = BuildProject.BuildPlayer(releaseType, platform, arch, dist, buildTime, options, configKey);
 
             if (success)
                 ++successCount;
@@ -93,7 +99,7 @@ public static class BuildProject
         }
     }
 
-    private static bool BuildPlayer(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, DateTime buildTime, BuildOptions options)
+    private static bool BuildPlayer(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, DateTime buildTime, BuildOptions options, string configKey)
     {
         bool success = true;
 
@@ -103,14 +109,9 @@ public static class BuildProject
         if (releaseType.allowDebugging)
             options |= BuildOptions.AllowDebugging;
 
-        // Generate configuration keychain string.
-        StringBuilder configKey = new StringBuilder(string.Format("{0}/{1}/{2}", releaseType.typeName, platform.platformName, architecture.name));
-        if (distribution != null)
-            configKey.AppendFormat("/{0}", distribution.distributionName);
-
         // Generate build path.
         string buildPath = GenerateBuildPath(releaseType, platform, architecture, distribution, buildTime);
-        string exeName = SanitizeFileName(string.Format(platform.binaryNameFormat, releaseType.productName));
+        string exeName = string.Format(platform.binaryNameFormat, SanitizeFileName(releaseType.productName));
 
         // TODO: Pre-build actions.
 
@@ -121,11 +122,6 @@ public static class BuildProject
         releaseType.sceneList.Refresh();
 
         // Build player.
-        BuildNotificationList.instance.AddNotification(new BuildNotification(
-                BuildNotification.Category.Notification,
-                "Building:", configKey.ToString(),
-                true, null));
-
         FileUtil.DeleteFileOrDirectory(buildPath);
         string error = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneList(), Path.Combine(buildPath, exeName), architecture.target, options);
 
@@ -226,14 +222,17 @@ public static class BuildProject
         sb.Replace("$VERSION", SanitizeFolderName(BuildSettings.productParameters.lastGeneratedVersion));
         sb.Replace("$BUILD", BuildSettings.productParameters.buildCounter.ToString());
 
-        return Path.Combine(BuildSettings.basicSettings.baseBuildFolder, sb.ToString());
+        string buildPath = Path.Combine(BuildSettings.basicSettings.baseBuildFolder, sb.ToString());
+        buildPath = Path.GetFullPath(buildPath);
+
+        return buildPath;
     }
 
     #endregion
 
     #region Private Methods
 
-    private static string SanitizeCodeString(string str)
+    public static string SanitizeCodeString(string str)
     {
         str = Regex.Replace(str, "[^a-zA-Z0-9_]", "_", RegexOptions.Compiled);
         if (char.IsDigit(str[0]))
@@ -243,7 +242,7 @@ public static class BuildProject
         return str;
     }
 
-    private static string SanitizeFolderName(string folderName)
+    public static string SanitizeFolderName(string folderName)
     {
         string invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()));
         string invalidRegStr = string.Format(@"[{0}]", invalidChars);
@@ -251,7 +250,7 @@ public static class BuildProject
         return Regex.Replace(folderName, invalidRegStr, "");
     }
 
-    private static string SanitizeFileName(string fileName)
+    public static string SanitizeFileName(string fileName)
     {
         string invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()));
         string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);

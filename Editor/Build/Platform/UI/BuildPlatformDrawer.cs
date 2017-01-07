@@ -51,7 +51,7 @@ public class BuildPlatformDrawer : PropertyDrawer
                     GUILayout.BeginHorizontal();
 
                     distEnabled.boolValue = GUILayout.Toggle(distEnabled.boolValue, GUIContent.none, GUILayout.ExpandWidth(false));
-                    distName.stringValue = GUILayout.TextField(distName.stringValue);
+                    distName.stringValue = BuildProject.SanitizeFolderName(GUILayout.TextField(distName.stringValue));
 
                     if (GUILayout.Button("X", UnityBuildGUIUtility.helpButtonStyle))
                     {

@@ -7,7 +7,7 @@ namespace SuperSystems.UnityBuild
 public class BasicSettings
 {
     public string baseBuildFolder = "bin";
-    public string buildPath = "$YEAR-$MONTH-$DAY-$TIME/$RELEASE_TYPE/$PLATFORM/$ARCHITECTURE/";
+    public string buildPath = "$YEAR-$MONTH-$DAY/$BUILD/$RELEASE_TYPE/$PLATFORM/$ARCHITECTURE/$DISTRIBUTION";
     public bool openFolderPostBuild = true;
 }
 

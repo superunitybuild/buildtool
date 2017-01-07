@@ -28,7 +28,14 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
             EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
             GUILayout.Label("Basic Info", UnityBuildGUIUtility.midHeaderStyle);
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("typeName"));
+
+            SerializedProperty typeName = property.FindPropertyRelative("typeName");
+            
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("Type Name");
+            typeName.stringValue = BuildProject.SanitizeFolderName(GUILayout.TextArea(typeName.stringValue));
+            EditorGUILayout.EndHorizontal();
+
             EditorGUILayout.PropertyField(property.FindPropertyRelative("bundleIndentifier"));
             EditorGUILayout.PropertyField(property.FindPropertyRelative("productName"));
 

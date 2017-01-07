@@ -232,33 +232,31 @@ public class ProjectConfigurations
         BuildPlatform[] platforms = BuildSettings.platformList.platforms;
         for (int i = 0; i < platforms.Length; i++)
         {
-            if (!platforms[i].enabled && platforms[i].atLeastOneArch)
+            // Skip if platform is disabled or if it doesn't have any enabled architectures.
+            if (!platforms[i].enabled || !platforms[i].atLeastOneArch)
                 continue;
 
             string key = platforms[i].platformName;
             Configuration relConfig = new Configuration();
             ConfigDictionary prevChildConfig = null;
 
+            // Check for duplicate key.
             if (refreshedConfigSet.ContainsKey(key))
                 continue;
 
+            // Copy previous settings if they exist.
             if (prevConfigSet != null && prevConfigSet.ContainsKey(key))
             {
                 relConfig.enabled = prevConfigSet[key].enabled;
                 prevChildConfig = prevConfigSet[key].childConfigurations;
             }
 
+            // Refresh architectures.
             BuildArchitecture[] architectures = platforms[i].architectures;
-
-            //if (architectures.Length > 1)
-            //{
+            if (architectures.Length > 0)
                 relConfig.childConfigurations = RefreshArchitectures(architectures, platforms[i].distributionList.distributions, prevChildConfig);
-            //}
-            //else
-            //{
-            //    relConfig.childConfigurations = RefreshDistributions(platforms[i].distributionList.distributions, prevChildConfig);
-            //}
 
+            // Save configuration.
             refreshedConfigSet.Add(key, relConfig);
         }
 
@@ -278,6 +276,7 @@ public class ProjectConfigurations
             Configuration relConfig = new Configuration();
             ConfigDictionary prevChildConfig = null;
 
+            // Check for a duplicate key.
             if (refreshedConfigSet.ContainsKey(key))
                 continue;
 
@@ -307,6 +306,7 @@ public class ProjectConfigurations
 
             string key = distributions[i].distributionName;
             Configuration relConfig = new Configuration();
+            relConfig.childConfigurations = null;
 
             if (refreshedConfigSet.ContainsKey(key))
                 continue;

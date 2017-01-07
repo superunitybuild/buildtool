@@ -6,6 +6,7 @@ namespace SuperSystems.UnityBuild
 public class BuildAction // This really should be an abstract class but needs to be concrete to work with Unity serialization.
 {
     public string name = string.Empty;
+    public string note = string.Empty;
     public BuildFilter filter = new BuildFilter();
 
     /// <summary>

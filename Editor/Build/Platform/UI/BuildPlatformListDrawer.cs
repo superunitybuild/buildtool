@@ -115,6 +115,18 @@ public class BuildPlatformListDrawer : PropertyDrawer
                         if (platforms[i].platformName.Equals(instance.platformName))
                         {
                             alreadyPresent = true;
+                            BuildPlatform oldInstance = platforms[i];
+
+                            instance.enabled = oldInstance.enabled;
+
+                            if (instance.enabled)
+                            {
+                                instance.architectures = oldInstance.architectures;
+                                instance.variants = oldInstance.variants;
+                                instance.distributionList = oldInstance.distributionList;
+                            }
+
+                            platforms[i] = instance;
                             break;
                         }
                     }
