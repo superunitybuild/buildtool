@@ -100,8 +100,8 @@ public static class BuildProject
         // Get build options.
         if (releaseType.developmentBuild)
             options |= BuildOptions.Development;
-        //if (releaseType.allowDebugging)
-        //    options |= BuildOptions.AllowDebugging;
+        if (releaseType.allowDebugging)
+            options |= BuildOptions.AllowDebugging;
 
         // Generate configuration keychain string.
         StringBuilder configKey = new StringBuilder(string.Format("{0}/{1}/{2}", releaseType.typeName, platform.platformName, architecture.name));
@@ -114,10 +114,10 @@ public static class BuildProject
 
         // TODO: Pre-build actions.
 
-        // Generate BuildConstants
+        // Generate BuildConstants.
         BuildConstantsGenerator.Generate(buildTime, BuildSettings.productParameters.lastGeneratedVersion, releaseType, platform, architecture, distribution);
 
-        // Refresh scene list to make sure nothing has been delted.
+        // Refresh scene list to make sure nothing has been deleted or moved.
         releaseType.sceneList.Refresh();
 
         // Build player.

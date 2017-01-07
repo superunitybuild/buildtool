@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Collections.Generic;
 using UnityEditor;
 
 namespace SuperSystems.UnityBuild
@@ -8,6 +9,8 @@ namespace SuperSystems.UnityBuild
 [InitializeOnLoad]
 public abstract class PreBuildAction : BuildAction
 {
+    public static List<Type> preBuildActions = new List<Type>();
+
     #region Contructor
 
     /// <summary>
@@ -15,19 +18,19 @@ public abstract class PreBuildAction : BuildAction
     /// </summary>
     static PreBuildAction()
     {
-        //// Find all classes that inherit from PreBuildAction and register them with BuildProject.
-        //Type ti = typeof(PreBuildAction);
+        // Find all classes that inherit from PreBuildAction and register them.
+        Type ti = typeof(PreBuildAction);
 
-        //foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
-        //{
-        //    foreach (Type t in asm.GetTypes())
-        //    {
-        //        if (ti.IsAssignableFrom(t) && ti != t)
-        //        {
-        //            BuildProject.RegisterPreBuildAction((BuildAction)Activator.CreateInstance(t));
-        //        }
-        //    }
-        //}
+        foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            foreach (Type t in asm.GetTypes())
+            {
+                if (ti.IsAssignableFrom(t) && ti != t)
+                {
+                    preBuildActions.Add(t);
+                }
+            }
+        }
     }
 
     #endregion

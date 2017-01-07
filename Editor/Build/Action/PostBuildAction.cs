@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Collections.Generic;
 using UnityEditor;
 
 namespace SuperSystems.UnityBuild
@@ -8,6 +9,8 @@ namespace SuperSystems.UnityBuild
 [InitializeOnLoad]
 public abstract class PostBuildAction : BuildAction
 {
+    public static List<Type> postBuildActions = new List<Type>();
+
     #region Contructor
 
     /// <summary>
@@ -15,19 +18,19 @@ public abstract class PostBuildAction : BuildAction
     /// </summary>
     static PostBuildAction()
     {
-        //// Find all classes that inherit from PostBuildAction and register them with BuildProject.
-        //Type ti = typeof(PostBuildAction);
+        // Find all classes that inherit from PostBuildAction and register them.
+        Type ti = typeof(PostBuildAction);
 
-        //foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
-        //{
-        //    foreach (Type t in asm.GetTypes())
-        //    {
-        //        if (ti.IsAssignableFrom(t) && ti != t)
-        //        {
-        //            BuildProject.RegisterPostBuildAction((BuildAction)Activator.CreateInstance(t));
-        //        }
-        //    }
-        //}
+        foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            foreach (Type t in asm.GetTypes())
+            {
+                if (ti.IsAssignableFrom(t) && ti != t)
+                {
+                    postBuildActions.Add(t);
+                }
+            }
+        }
     }
 
     #endregion

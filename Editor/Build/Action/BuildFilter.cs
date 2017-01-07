@@ -2,13 +2,17 @@
 namespace SuperSystems.UnityBuild
 {
 
+[System.Serializable]
 public class BuildFilter
 {
+    #region Constants and Enums
+
     public enum FilterCondition
     {
         Any,
         One,
-        All
+        All,
+        None
     }
 
     public enum FilterType
@@ -26,14 +30,67 @@ public class BuildFilter
         Contains
     }
 
-    FilterCondition condition;
-    FilterClause[] clauses;
+    #endregion
+
+    public FilterCondition condition;
+    public FilterClause[] clauses;
 
     public bool Evaluate(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, string configKeychain)
     {
-        return false;
+        // Set default state for success based on condition type.
+        bool success = true;
+        if (condition == FilterCondition.Any ||
+            condition == FilterCondition.One)
+        {
+            success = false;
+        }
+
+        for (int i = 0; i < clauses.Length; i++)
+        {
+            if (condition == FilterCondition.Any)
+            {
+                // Succeed as soon as any test evaluates true.
+                success |= clauses[i].Evaluate(releaseType, platform, architecture, distribution, configKeychain);
+                if (success)
+                    break;
+            }
+            else if (condition == FilterCondition.All)
+            {
+                // Succeed only if all tests evaluate true.
+                success &= clauses[i].Evaluate(releaseType, platform, architecture, distribution, configKeychain);
+                if (!success)
+                    break;
+            }
+            else if (condition == FilterCondition.None)
+            {
+                // Succeed only if all tests fail.
+                success &= !(clauses[i].Evaluate(releaseType, platform, architecture, distribution, configKeychain));
+                if (!success)
+                    break;
+            }
+            else if (condition == FilterCondition.One)
+            {
+                // Succeed only if exactly one test evaluates true.
+                if (clauses[i].Evaluate(releaseType, platform, architecture, distribution, configKeychain))
+                {
+                    if (success)
+                    {
+                        // Another test already succeeded, so this is a failure.
+                        success = false;
+                        break;
+                    }
+                    else
+                    {
+                        success = true;
+                    }
+                }
+            }
+        }
+
+        return success;
     }
 
+    [System.Serializable]
     public class FilterClause
     {
         public FilterType type;

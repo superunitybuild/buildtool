@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace SuperSystems.UnityBuild
 {
@@ -8,24 +7,23 @@ namespace SuperSystems.UnityBuild
 [CustomPropertyDrawer(typeof(BuildAction))]
 public class BuildActionDrawer : PropertyDrawer
 {
-    private bool show = false;
-    private SerializedProperty list = null;
-
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.BeginProperty(position, label, property);
 
-        EditorGUILayout.BeginHorizontal();
-        UnityBuildGUIUtility.DropdownHeader("Release Types", ref show, GUILayout.ExpandWidth(true));
-        UnityBuildGUIUtility.HelpButton("Parameter-Details#release-types");
-        EditorGUILayout.EndHorizontal();
-
-        if (show)
-        {
-
-        }
+        DrawBuildAction(property);
+        DrawBuildActionSettings(property);
 
         EditorGUI.EndProperty();
+    }
+
+    private void DrawBuildAction(SerializedProperty property)
+    {
+        EditorGUILayout.PropertyField(property.FindPropertyRelative("filter"), GUILayout.Height(0));
+    }
+
+    protected virtual void DrawBuildActionSettings(SerializedProperty property)
+    {
     }
 }
 

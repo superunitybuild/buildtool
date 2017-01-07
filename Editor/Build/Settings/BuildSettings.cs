@@ -45,6 +45,19 @@ public class BuildSettings : BaseSettings
 
     #endregion
 
+    #region Public Methods
+
+    public static void Init()
+    {
+        if (_instance._preBuildActions == null)
+            _instance._preBuildActions = new BuildActionList();
+
+        if (_instance._postBuildActions == null)
+            _instance._postBuildActions = new BuildActionList();
+    }
+
+    #endregion
+
     #region Properties
 
     public static BasicSettings basicSettings
