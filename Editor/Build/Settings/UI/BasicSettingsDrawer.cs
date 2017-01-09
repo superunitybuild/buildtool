@@ -26,19 +26,8 @@ public class BasicSettingsDrawer : PropertyDrawer
             EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
             GUILayout.Label("Build Path Options", UnityBuildGUIUtility.midHeaderStyle);
-
-            //EditorGUI.BeginDisabledGroup(true);
-            //EditorGUILayout.PropertyField(property.FindPropertyRelative("baseBuildFolder"));
-            //EditorGUI.EndDisabledGroup();
-
-            EditorGUILayout.BeginHorizontal();
-            BuildSettings.basicSettings.baseBuildFolder = EditorGUILayout.TextField("Base Build Folder", property.FindPropertyRelative("baseBuildFolder").stringValue);
-            if (GUILayout.Button("...", UnityBuildGUIUtility.helpButtonStyle))
-            {
-                EditorApplication.delayCall += SetBaseBuildFolder;
-            }
-            EditorGUILayout.EndHorizontal();
-
+            
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("baseBuildFolder"));
             EditorGUILayout.PropertyField(property.FindPropertyRelative("buildPath"));
 
             GUILayout.Space(20);
@@ -60,38 +49,6 @@ public class BasicSettingsDrawer : PropertyDrawer
         }
 
         EditorGUI.EndProperty();
-    }
-
-    private void SetBaseBuildFolder()
-    {
-        string projectPath = Path.GetFullPath(Path.Combine(Application.dataPath, "..")) + Path.DirectorySeparatorChar;
-        string directory = EditorUtility.OpenFolderPanel("Choose location for build output", projectPath, "");
-        
-        // Canceled.
-        if (string.IsNullOrEmpty(directory))
-        {
-            return;
-        }
-
-        // Normalize path separators.
-        directory = Path.GetFullPath(directory);
-
-        // Check for bad choice.
-        if (directory.Contains(Path.GetFullPath(Application.dataPath)))
-        {
-            BuildNotificationList.instance.AddNotification(new BuildNotification(
-                BuildNotification.Category.Warning,
-                "Build Path in Assets",
-                "Putting build output into the Assets directory is likely to cause issues.",
-                true, null));
-        }
-
-        // If relative to project path, reduce the filepath to just what we need.
-        if (directory.Contains(projectPath))
-            directory = directory.Replace(projectPath, "");
-
-        // Save setting.
-        BuildSettings.basicSettings.baseBuildFolder = directory;
     }
 }
 
