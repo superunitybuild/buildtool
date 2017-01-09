@@ -50,7 +50,7 @@ public static class BuildProject
         int failCount = 0;
 
         DateTime buildTime;
-        BuildProject.PerformPreBuild(out buildTime);
+        PerformPreBuild(out buildTime);
 
         for (int i = 0; i < buildConfigs.Length; i++)
         {
@@ -66,7 +66,7 @@ public static class BuildProject
                 true, null));
 
             BuildSettings.projectConfigurations.ParseKeychain(configKey, out releaseType, out platform, out arch, out dist);
-            bool success = BuildProject.BuildPlayer(releaseType, platform, arch, dist, buildTime, options, configKey);
+            bool success = BuildPlayer(releaseType, platform, arch, dist, buildTime, options, configKey);
 
             if (success)
                 ++successCount;
@@ -74,7 +74,7 @@ public static class BuildProject
                 ++failCount;
         }
 
-        BuildProject.PerformPostBuild();
+        PerformPostBuild();
 
         StringBuilder sb = new StringBuilder();
         if (failCount == 0)

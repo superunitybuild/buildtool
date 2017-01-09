@@ -13,6 +13,9 @@ public class BuildActionListDrawer : PropertyDrawer
     private int index = 0;
     private SerializedProperty list = null;
 
+    [SerializeField]
+    private BuildAction buildAction;
+
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.BeginProperty(position, label, property);
@@ -45,9 +48,12 @@ public class BuildActionListDrawer : PropertyDrawer
             {
                 SerializedProperty listEntry = list.GetArrayElementAtIndex(i);
 
+                BuildAction buildAction = listEntry.objectReferenceValue as BuildAction;
+                SerializedObject serializedBuildAction = new SerializedObject(buildAction);
+
                 EditorGUILayout.BeginHorizontal();
                 show = listEntry.isExpanded;
-                UnityBuildGUIUtility.DropdownHeader(listEntry.FindPropertyRelative("name").stringValue, ref show, GUILayout.ExpandWidth(true));
+                UnityBuildGUIUtility.DropdownHeader(buildAction.actionName, ref show, GUILayout.ExpandWidth(true));
                 listEntry.isExpanded = show;
 
                 EditorGUI.BeginDisabledGroup(i == 0);
@@ -70,6 +76,23 @@ public class BuildActionListDrawer : PropertyDrawer
 
                 if (GUILayout.Button("X", UnityBuildGUIUtility.helpButtonStyle))
                 {
+                    BuildAction[] buildActions;
+                    if (property.name.ToUpper().Contains("PRE"))
+                    {
+                        buildActions = BuildSettings.preBuildActions.buildActions;
+                    }
+                    else
+                    {
+                        buildActions = BuildSettings.postBuildActions.buildActions;
+                    }
+
+                    // Destroy underlying object.
+                    ScriptableObject.DestroyImmediate(buildActions[i], true);
+                    AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
+
+                    // Remove object reference from list.
+                    // TODO: Why do I need to call this twice? First call nulls reference, second one then deletes null entry.
+                    list.DeleteArrayElementAtIndex(i);
                     list.DeleteArrayElementAtIndex(i);
                     show = false;
                 }
@@ -78,8 +101,8 @@ public class BuildActionListDrawer : PropertyDrawer
 
                 if (show)
                 {
-                    EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle); 
-                    EditorGUILayout.PropertyField(listEntry, GUILayout.Height(0));
+                    EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
+                    buildAction.Draw(serializedBuildAction);
                     EditorGUILayout.EndVertical();
                 }
             }
@@ -120,7 +143,11 @@ public class BuildActionListDrawer : PropertyDrawer
 
                     buildActions[addedIndex] = Activator.CreateInstance(addedType) as BuildAction;
                     buildActions[addedIndex].name = addedType.Name;
+                    buildActions[addedIndex].actionName = addedType.Name;
                     buildActions[addedIndex].filter = new BuildFilter();
+
+                    AssetDatabase.AddObjectToAsset(buildActions[addedIndex], BuildSettings.instance);
+                    AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
 
                     index = 0;
                 }

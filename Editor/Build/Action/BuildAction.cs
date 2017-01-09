@@ -1,11 +1,13 @@
-﻿
+﻿using UnityEditor;
+using UnityEngine;
+
 namespace SuperSystems.UnityBuild
 {
 
 [System.Serializable]
-public class BuildAction // This really should be an abstract class but needs to be concrete to work with Unity serialization.
+public class BuildAction : ScriptableObject // This really should be an abstract class but needs to be concrete to work with Unity serialization.
 {
-    public string name = string.Empty;
+    public string actionName = string.Empty;
     public string note = string.Empty;
     public BuildFilter filter = new BuildFilter();
 
@@ -21,6 +23,41 @@ public class BuildAction // This really should be an abstract class but needs to
     /// </summary>
     public virtual void Execute(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution)
     {
+    }
+
+    public void Draw(SerializedObject obj)
+    {
+        DrawProperties(obj);
+        EditorGUILayout.PropertyField(obj.FindProperty("note"));
+        EditorGUILayout.PropertyField(obj.FindProperty("filter"), GUILayout.Height(0));
+        obj.ApplyModifiedProperties();
+    }
+
+    protected virtual void DrawProperties(SerializedObject obj)
+    {
+        SerializedProperty prop = obj.GetIterator();
+        bool done = false;
+
+        while (!done && prop != null)
+        {
+            if (prop.name == "actionName" ||
+                prop.name == "note" ||
+                prop.name == "filter")
+            {
+                // Already drawn these. Go to next, don't enter into object.
+                done = !prop.NextVisible(false);
+            }
+            else if (prop.name == "Base")
+            {
+                // Valid property we want to enter, but don't want to draw the parent node.
+                done = !prop.NextVisible(true);
+            }
+            else
+            {
+                EditorGUILayout.PropertyField(prop);
+                done = !prop.NextVisible(true);
+            }
+        }
     }
 }
 
