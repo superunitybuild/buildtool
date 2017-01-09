@@ -32,7 +32,7 @@ public class BasicSettingsDrawer : PropertyDrawer
             //EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.TextField("Base Build Folder", property.FindPropertyRelative("baseBuildFolder").stringValue);
+            BuildSettings.basicSettings.baseBuildFolder = EditorGUILayout.TextField("Base Build Folder", property.FindPropertyRelative("baseBuildFolder").stringValue);
             if (GUILayout.Button("...", UnityBuildGUIUtility.helpButtonStyle))
             {
                 EditorApplication.delayCall += SetBaseBuildFolder;
