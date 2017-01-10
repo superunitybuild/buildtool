@@ -25,7 +25,7 @@ public class FilePathDrawer : PropertyDrawer
         EditorGUILayout.BeginHorizontal();
 
         if (filePathAttr.allowManualEdit)
-            BuildSettings.basicSettings.baseBuildFolder = EditorGUILayout.TextField(label, property.stringValue);
+            property.stringValue = EditorGUILayout.TextField(label, property.stringValue);
         else
             EditorGUILayout.TextField(label, property.stringValue);
 
