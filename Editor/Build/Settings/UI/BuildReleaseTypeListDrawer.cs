@@ -16,7 +16,7 @@ public class BuildReleaseTypeListDrawer : PropertyDrawer
         EditorGUILayout.BeginHorizontal();
 
         bool show = property.isExpanded;
-        UnityBuildGUIUtility.DropdownHeader("Release Types", ref show, GUILayout.ExpandWidth(true));
+        UnityBuildGUIUtility.DropdownHeader("Release Types", ref show, false, GUILayout.ExpandWidth(true));
         property.isExpanded = show;
 
         UnityBuildGUIUtility.HelpButton("Parameter-Details#release-types");

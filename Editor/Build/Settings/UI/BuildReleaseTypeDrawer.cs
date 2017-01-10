@@ -20,7 +20,7 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
         //}
 
         bool show = property.isExpanded;
-        UnityBuildGUIUtility.DropdownHeader(property.FindPropertyRelative("typeName").stringValue, ref show);
+        UnityBuildGUIUtility.DropdownHeader(property.FindPropertyRelative("typeName").stringValue, ref show, false);
         property.isExpanded = show;
 
         if (show)

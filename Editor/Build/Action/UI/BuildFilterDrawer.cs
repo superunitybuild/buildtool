@@ -30,7 +30,7 @@ public class BuildFilterDrawer : PropertyDrawer
 
         EditorGUILayout.BeginHorizontal();
         bool show = property.isExpanded;
-        UnityBuildGUIUtility.DropdownHeader("Filter", ref show, GUILayout.ExpandWidth(true));
+        UnityBuildGUIUtility.DropdownHeader("Filter", ref show, false, GUILayout.ExpandWidth(true));
         property.isExpanded = show;
         EditorGUILayout.EndHorizontal();
 

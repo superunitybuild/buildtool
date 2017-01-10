@@ -21,7 +21,7 @@ public class BuildActionListDrawer : PropertyDrawer
 
         EditorGUILayout.BeginHorizontal();
         bool show = property.isExpanded;
-        UnityBuildGUIUtility.DropdownHeader(label.text, ref show, GUILayout.ExpandWidth(true));
+        UnityBuildGUIUtility.DropdownHeader(label.text, ref show, false, GUILayout.ExpandWidth(true));
         property.isExpanded = show;
 
         UnityBuildGUIUtility.HelpButton("Parameter-Details#build-actions");
@@ -52,7 +52,7 @@ public class BuildActionListDrawer : PropertyDrawer
 
                 EditorGUILayout.BeginHorizontal();
                 show = listEntry.isExpanded;
-                UnityBuildGUIUtility.DropdownHeader(buildAction.actionName, ref show, GUILayout.ExpandWidth(true));
+                UnityBuildGUIUtility.DropdownHeader(buildAction.actionName, ref show, false, GUILayout.ExpandWidth(true));
                 listEntry.isExpanded = show;
 
                 EditorGUI.BeginDisabledGroup(i == 0);

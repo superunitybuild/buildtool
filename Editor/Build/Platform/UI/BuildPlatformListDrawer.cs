@@ -22,7 +22,7 @@ public class BuildPlatformListDrawer : PropertyDrawer
         EditorGUILayout.BeginHorizontal();
 
         bool show = property.isExpanded;
-        UnityBuildGUIUtility.DropdownHeader("Build Platforms", ref show, GUILayout.ExpandWidth(true));
+        UnityBuildGUIUtility.DropdownHeader("Build Platforms", ref show, false, GUILayout.ExpandWidth(true));
         property.isExpanded = show;
 
         UnityBuildGUIUtility.HelpButton("Parameter-Details#build-platforms");

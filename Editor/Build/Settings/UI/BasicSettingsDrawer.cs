@@ -15,7 +15,7 @@ public class BasicSettingsDrawer : PropertyDrawer
         EditorGUILayout.BeginHorizontal();
 
         bool show = property.isExpanded;
-        UnityBuildGUIUtility.DropdownHeader("Basic Settings", ref show, GUILayout.ExpandWidth(true));
+        UnityBuildGUIUtility.DropdownHeader("Basic Settings", ref show, false, GUILayout.ExpandWidth(true));
         property.isExpanded = show;
 
         UnityBuildGUIUtility.HelpButton("Parameter-Details#basic-settings");

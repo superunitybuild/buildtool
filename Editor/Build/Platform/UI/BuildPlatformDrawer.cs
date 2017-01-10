@@ -12,7 +12,7 @@ public class BuildPlatformDrawer : PropertyDrawer
         EditorGUI.BeginProperty(position, GUIContent.none, property);
 
         bool show = property.isExpanded;
-        UnityBuildGUIUtility.DropdownHeader(property.FindPropertyRelative("platformName").stringValue, ref show);
+        UnityBuildGUIUtility.DropdownHeader(property.FindPropertyRelative("platformName").stringValue, ref show, false);
         property.isExpanded = show;
 
         if (show)

@@ -31,7 +31,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
         EditorGUILayout.BeginHorizontal();
 
         show = property.isExpanded;
-        UnityBuildGUIUtility.DropdownHeader("Build Configurations", ref show, GUILayout.ExpandWidth(true));
+        UnityBuildGUIUtility.DropdownHeader("Build Configurations", ref show, false, GUILayout.ExpandWidth(true));
         property.isExpanded = show;
 
         UnityBuildGUIUtility.HelpButton("Parameter-Details#build-configurations");
@@ -45,7 +45,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
 
             EditorGUILayout.BeginHorizontal();
             show = showViewOptions.isExpanded;
-            UnityBuildGUIUtility.DropdownHeader("View Options", ref show, GUILayout.ExpandWidth(true));
+            UnityBuildGUIUtility.DropdownHeader("View Options", ref show, false, GUILayout.ExpandWidth(true));
             showViewOptions.isExpanded = show;
             EditorGUILayout.EndHorizontal();
 
@@ -62,7 +62,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
             GUILayout.Space(5);
             EditorGUILayout.BeginHorizontal();
             show = showConfigs.isExpanded;
-            UnityBuildGUIUtility.DropdownHeader("Configurations", ref show, GUILayout.ExpandWidth(true));
+            UnityBuildGUIUtility.DropdownHeader("Configurations", ref show, false, GUILayout.ExpandWidth(true));
             showConfigs.isExpanded = show;
             EditorGUILayout.EndHorizontal();
                         
@@ -92,7 +92,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
             GUILayout.Space(5);
             EditorGUILayout.BeginHorizontal();
             show = showBuildInfo.isExpanded;
-            UnityBuildGUIUtility.DropdownHeader("Build Info", ref show, GUILayout.ExpandWidth(true));
+            UnityBuildGUIUtility.DropdownHeader("Build Info", ref show, false, GUILayout.ExpandWidth(true));
             showBuildInfo.isExpanded = show;
             EditorGUILayout.EndHorizontal();
 

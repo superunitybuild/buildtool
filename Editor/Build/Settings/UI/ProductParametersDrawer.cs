@@ -15,7 +15,7 @@ public class ProductParametersDrawer : PropertyDrawer
         EditorGUILayout.BeginHorizontal();
 
         bool show = property.isExpanded;
-        UnityBuildGUIUtility.DropdownHeader("Product Parameters", ref show, GUILayout.ExpandWidth(true));
+        UnityBuildGUIUtility.DropdownHeader("Product Parameters", ref show, false, GUILayout.ExpandWidth(true));
         property.isExpanded = show;
 
         UnityBuildGUIUtility.HelpButton("Parameter-Details#product-parameters");

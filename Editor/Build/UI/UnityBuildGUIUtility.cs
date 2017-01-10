@@ -85,15 +85,19 @@ public class UnityBuildGUIUtility
         Application.OpenURL(string.Format(HELP_URL, anchor));
     }
 
-    public static void DropdownHeader(string content, ref bool showDropdown, params GUILayoutOption[] options)
+    public static void DropdownHeader(string content, ref bool showDropdown, bool noColor, params GUILayoutOption[] options)
     {
-        GUI.backgroundColor = instance._mainHeaderColor;
+        if (!noColor)
+            GUI.backgroundColor = instance._mainHeaderColor;
+
         if (GUILayout.Button(content, UnityBuildGUIUtility.dropdownHeaderStyle, options))
         {
             showDropdown = !showDropdown;
             GUIUtility.keyboardControl = 0;
         }
-        GUI.backgroundColor = instance._defaultBackgroundColor;
+
+        if (!noColor)
+            GUI.backgroundColor = instance._defaultBackgroundColor;
     }
 
     public static void HelpButton(string anchor = "")

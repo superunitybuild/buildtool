@@ -20,7 +20,7 @@ public class SceneListDrawer : PropertyDrawer
         EditorGUILayout.BeginHorizontal();
 
         bool show = property.isExpanded;
-        UnityBuildGUIUtility.DropdownHeader("SceneList", ref show, GUILayout.ExpandWidth(true));
+        UnityBuildGUIUtility.DropdownHeader("SceneList", ref show, false, GUILayout.ExpandWidth(true));
         property.isExpanded = show;
 
         EditorGUILayout.EndHorizontal();

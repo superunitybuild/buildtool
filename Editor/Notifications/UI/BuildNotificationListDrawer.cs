@@ -49,7 +49,7 @@ public class BuildNotificationListDrawer : PropertyDrawer
         GUI.backgroundColor = Color.red;
         UnityBuildGUIUtility.DropdownHeader(
             "Errors (" + errorCount + ")",
-            ref show,
+            ref show, true,
             GUILayout.ExpandWidth(true));
 
         if (clearableCount > 0)
@@ -102,7 +102,7 @@ public class BuildNotificationListDrawer : PropertyDrawer
         GUI.backgroundColor = Color.yellow;
         UnityBuildGUIUtility.DropdownHeader(
             "Warnings (" + warningCount + ")",
-            ref show,
+            ref show, true,
             GUILayout.ExpandWidth(true));
 
         if (clearableCount > 0)
@@ -155,7 +155,7 @@ public class BuildNotificationListDrawer : PropertyDrawer
         GUI.backgroundColor = Color.cyan;
         UnityBuildGUIUtility.DropdownHeader(
             "Log (" + warningCount + ")",
-            ref show,
+            ref show, true,
             GUILayout.ExpandWidth(true));
 
         if (clearableCount > 0)
