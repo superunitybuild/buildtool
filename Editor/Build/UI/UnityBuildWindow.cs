@@ -90,17 +90,8 @@ public class UnityBuildWindow : EditorWindow
 
     private void DrawTitle()
     {
-        GUIStyle mainTitleStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
-        mainTitleStyle.fontSize = 18;
-        mainTitleStyle.fontStyle = FontStyle.Bold;
-        mainTitleStyle.fixedHeight = 35;
-
-        GUIStyle subTitleStyle = new GUIStyle(mainTitleStyle);
-        subTitleStyle.fontSize = 9;
-        subTitleStyle.fontStyle = FontStyle.Normal;
-
-        EditorGUILayout.LabelField("Super Unity Build", mainTitleStyle);
-        EditorGUILayout.LabelField("by Super Systems Softworks", subTitleStyle);
+        EditorGUILayout.LabelField("Super Unity Build", UnityBuildGUIUtility.mainTitleStyle);
+        EditorGUILayout.LabelField("by Super Systems Softworks", UnityBuildGUIUtility.subTitleStyle);
         GUILayout.Space(15);
     }
 
@@ -123,8 +114,6 @@ public class UnityBuildWindow : EditorWindow
 
     private void DrawBuildButtons()
     {
-        Color defaultBackgroundColor = GUI.backgroundColor;
-
         int totalBuildCount = BuildSettings.projectConfigurations.GetEnabledBuildsCount();
 
         EditorGUI.BeginDisabledGroup(totalBuildCount < 1);
@@ -133,7 +122,7 @@ public class UnityBuildWindow : EditorWindow
         {
             EditorApplication.delayCall += BuildProject.BuildAll;
         }
-        GUI.backgroundColor = defaultBackgroundColor;
+        GUI.backgroundColor = UnityBuildGUIUtility.defaultBackgroundColor;
         EditorGUI.EndDisabledGroup();
     }
 

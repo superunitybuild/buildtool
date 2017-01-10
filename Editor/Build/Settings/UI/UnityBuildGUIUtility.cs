@@ -32,6 +32,11 @@ public class UnityBuildGUIUtility
     private GUIStyle _helpButtonStyle;
     private GUIStyle _midHeaderStyle;
     private GUIStyle _popupStyle;
+    private GUIStyle _mainTitleStyle;
+    private GUIStyle _subTitleStyle;
+
+    private Color32 _defaultBackgroundColor = GUI.backgroundColor;
+    private Color32 _mainHeaderColor = new Color32(20, 1, 45, 255);
 
     private GUIContent helpButtonContent;
 
@@ -60,6 +65,17 @@ public class UnityBuildGUIUtility
         _dropdownContentStyle = new GUIStyle(GUI.skin.textField);
         _dropdownContentStyle.padding = new RectOffset(5, 5, 5, 5);
         _dropdownContentStyle.margin = new RectOffset(5, 5, 0, 0);
+
+        _mainTitleStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
+        _mainTitleStyle.fontSize = 18;
+        _mainTitleStyle.fontStyle = FontStyle.Bold;
+        _mainTitleStyle.fixedHeight = 35;
+        _mainTitleStyle.normal.textColor = new Color32(255, 0, 85, 255);
+
+        _subTitleStyle = new GUIStyle(_mainTitleStyle);
+        _subTitleStyle.fontSize = 9;
+        _subTitleStyle.fontStyle = FontStyle.Normal;
+        _subTitleStyle.normal.textColor = new Color32(83, 229, 255, 255);
 
         helpButtonContent = new GUIContent("?", "Help");
     }
@@ -121,6 +137,38 @@ public class UnityBuildGUIUtility
         get
         {
             return instance._popupStyle;
+        }
+    }
+
+    public static GUIStyle mainTitleStyle
+    {
+        get
+        {
+            return instance._mainTitleStyle;
+        }
+    }
+
+    public static GUIStyle subTitleStyle
+    {
+        get
+        {
+            return instance._subTitleStyle;
+        }
+    }
+
+    public static Color defaultBackgroundColor
+    {
+        get
+        {
+            return instance._defaultBackgroundColor;
+        }
+    }
+
+    public static Color mainHeaderColor
+    {
+        get
+        {
+            return instance._mainHeaderColor;
         }
     }
 }
