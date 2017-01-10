@@ -7,9 +7,7 @@ namespace SuperSystems.UnityBuild
 [CustomPropertyDrawer(typeof(BuildNotificationList))]
 public class BuildNotificationListDrawer : PropertyDrawer
 {
-    private bool showErrors = true;
-    private bool showWarnings = false;
-    private bool showNotifications = false;
+    private bool show = true;
 
     private SerializedProperty errorList;
     private SerializedProperty warningList;
@@ -51,7 +49,7 @@ public class BuildNotificationListDrawer : PropertyDrawer
         GUI.backgroundColor = Color.red;
         UnityBuildGUIUtility.DropdownHeader(
             "Errors (" + errorCount + ")",
-            ref showErrors,
+            ref show,
             GUILayout.ExpandWidth(true));
 
         if (clearableCount > 0)
@@ -65,7 +63,7 @@ public class BuildNotificationListDrawer : PropertyDrawer
         GUI.backgroundColor = defaultBackgroundColor;
         EditorGUILayout.EndHorizontal();
 
-        if (showErrors)
+        if (show)
         {
             EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
@@ -104,7 +102,7 @@ public class BuildNotificationListDrawer : PropertyDrawer
         GUI.backgroundColor = Color.yellow;
         UnityBuildGUIUtility.DropdownHeader(
             "Warnings (" + warningCount + ")",
-            ref showErrors,
+            ref show,
             GUILayout.ExpandWidth(true));
 
         if (clearableCount > 0)
@@ -118,7 +116,7 @@ public class BuildNotificationListDrawer : PropertyDrawer
         GUI.backgroundColor = defaultBackgroundColor;
         EditorGUILayout.EndHorizontal();
 
-        if (showErrors)
+        if (show)
         {
             EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
@@ -157,7 +155,7 @@ public class BuildNotificationListDrawer : PropertyDrawer
         GUI.backgroundColor = Color.cyan;
         UnityBuildGUIUtility.DropdownHeader(
             "Log (" + warningCount + ")",
-            ref showErrors,
+            ref show,
             GUILayout.ExpandWidth(true));
 
         if (clearableCount > 0)
@@ -171,7 +169,7 @@ public class BuildNotificationListDrawer : PropertyDrawer
         GUI.backgroundColor = defaultBackgroundColor;
         EditorGUILayout.EndHorizontal();
 
-        if (showErrors)
+        if (show)
         {
             EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 

@@ -71,8 +71,12 @@ public class ProjectConfigurations
         for (int i = 0; i < releaseTypes.Length; i++)
         {
             string key = releaseTypes[i].typeName;
-            Configuration config = configSet[key];
-            NavigateTree(key, config, 0, ref count);
+
+            if (configSet.ContainsKey(key))
+            {
+                Configuration config = configSet[key];
+                NavigateTree(key, config, 0, ref count);
+            }
         }
 
         return count;

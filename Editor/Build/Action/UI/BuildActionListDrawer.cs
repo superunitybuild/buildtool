@@ -9,7 +9,6 @@ namespace SuperSystems.UnityBuild
 [CustomPropertyDrawer(typeof(BuildActionList))]
 public class BuildActionListDrawer : PropertyDrawer
 {
-    private bool show = false;
     private int index = 0;
     private SerializedProperty list = null;
 
