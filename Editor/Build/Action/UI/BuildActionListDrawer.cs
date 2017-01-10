@@ -140,7 +140,8 @@ public class BuildActionListDrawer : PropertyDrawer
                         buildActions = BuildSettings.postBuildActions.buildActions;
                     }
 
-                    buildActions[addedIndex] = Activator.CreateInstance(addedType) as BuildAction;
+                    //buildActions[addedIndex] = Activator.CreateInstance(addedType) as BuildAction;
+                    buildActions[addedIndex] = ScriptableObject.CreateInstance(addedType) as BuildAction;
                     buildActions[addedIndex].name = addedType.Name;
                     buildActions[addedIndex].actionName = addedType.Name;
                     buildActions[addedIndex].filter = new BuildFilter();
