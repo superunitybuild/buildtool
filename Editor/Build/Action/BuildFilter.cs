@@ -10,7 +10,7 @@ public class BuildFilter
     public enum FilterCondition
     {
         Any,
-        One,
+        ExactlyOne,
         All,
         None
     }
@@ -40,7 +40,7 @@ public class BuildFilter
         // Set default state for success based on condition type.
         bool success = true;
         if (condition == FilterCondition.Any ||
-            condition == FilterCondition.One)
+            condition == FilterCondition.ExactlyOne)
         {
             success = false;
         }
@@ -68,7 +68,7 @@ public class BuildFilter
                 if (!success)
                     break;
             }
-            else if (condition == FilterCondition.One)
+            else if (condition == FilterCondition.ExactlyOne)
             {
                 // Succeed only if exactly one test evaluates true.
                 if (clauses[i].Evaluate(releaseType, platform, architecture, distribution, configKeychain))
