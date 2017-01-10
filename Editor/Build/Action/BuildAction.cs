@@ -21,7 +21,12 @@ public class BuildAction : ScriptableObject // This really should be an abstract
     /// <summary>
     /// This will be executed before/after each individual player is built.
     /// </summary>
-    public virtual void Execute(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution)
+    public virtual void PerBuildExecute(
+        BuildReleaseType releaseType,
+        BuildPlatform platform,
+        BuildArchitecture architecture,
+        BuildDistribution distribution,
+        System.DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
     {
     }
 
