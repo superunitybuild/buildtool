@@ -92,9 +92,9 @@ public static class BuildProject
         return retVal;
     }
 
-    public static string GenerateBuildPath(BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist, DateTime buildTime)
+    public static string GenerateBuildPath(string prototype, BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist, DateTime buildTime)
     {
-        StringBuilder sb = new StringBuilder(BuildSettings.basicSettings.buildPath);
+        StringBuilder sb = new StringBuilder(prototype);
 
         sb.Replace("$YEAR", buildTime.ToString("yyyy"));
         sb.Replace("$MONTH", buildTime.ToString("MM"));
@@ -107,6 +107,7 @@ public static class BuildProject
         sb.Replace("$DISTRIBUTION", SanitizeFolderName(dist != null ? dist.distributionName : BuildConstantsGenerator.NONE));
         sb.Replace("$VERSION", SanitizeFolderName(BuildSettings.productParameters.lastGeneratedVersion));
         sb.Replace("$BUILD", BuildSettings.productParameters.buildCounter.ToString());
+        sb.Replace("$PRODUCT_NAME", SanitizeFolderName(releaseType.productName));
 
         string buildPath = Path.Combine(BuildSettings.basicSettings.baseBuildFolder, sb.ToString());
         buildPath = Path.GetFullPath(buildPath);
@@ -246,7 +247,7 @@ public static class BuildProject
             options |= BuildOptions.AllowDebugging;
 
         // Generate build path.
-        string buildPath = GenerateBuildPath(releaseType, platform, architecture, distribution, buildTime);
+        string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
         string exeName = string.Format(platform.binaryNameFormat, SanitizeFileName(releaseType.productName));
 
         // Pre-build actions.
