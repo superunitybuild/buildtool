@@ -36,7 +36,7 @@ public class UnityBuildGUIUtility
     private GUIStyle _subTitleStyle;
 
     private Color32 _defaultBackgroundColor = GUI.backgroundColor;
-    private Color32 _mainHeaderColor = new Color32(20, 1, 45, 255);
+    private Color32 _mainHeaderColor = new Color32(180, 180, 255, 255);
 
     private GUIContent helpButtonContent;
 
@@ -70,7 +70,7 @@ public class UnityBuildGUIUtility
         _mainTitleStyle.fontSize = 18;
         _mainTitleStyle.fontStyle = FontStyle.Bold;
         _mainTitleStyle.fixedHeight = 35;
-        _mainTitleStyle.normal.textColor = new Color32(255, 0, 85, 255);
+        _mainTitleStyle.normal.textColor = new Color32(255, 55, 85, 255);
 
         _subTitleStyle = new GUIStyle(_mainTitleStyle);
         _subTitleStyle.fontSize = 9;
@@ -87,11 +87,13 @@ public class UnityBuildGUIUtility
 
     public static void DropdownHeader(string content, ref bool showDropdown, params GUILayoutOption[] options)
     {
+        GUI.backgroundColor = instance._mainHeaderColor;
         if (GUILayout.Button(content, UnityBuildGUIUtility.dropdownHeaderStyle, options))
         {
             showDropdown = !showDropdown;
             GUIUtility.keyboardControl = 0;
         }
+        GUI.backgroundColor = instance._defaultBackgroundColor;
     }
 
     public static void HelpButton(string anchor = "")

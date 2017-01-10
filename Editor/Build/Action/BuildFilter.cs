@@ -37,6 +37,9 @@ public class BuildFilter
 
     public bool Evaluate(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, string configKeychain)
     {
+        if (clauses == null || clauses.Length == 0)
+            return true;
+
         // Set default state for success based on condition type.
         bool success = true;
         if (condition == FilterCondition.Any ||

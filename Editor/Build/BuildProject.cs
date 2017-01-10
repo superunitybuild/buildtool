@@ -192,15 +192,10 @@ public static class BuildProject
             BuildDistribution dist;
             string configKey = buildConfigs[i];
 
-            // Report build starting.
-            BuildNotificationList.instance.AddNotification(new BuildNotification(
-                BuildNotification.Category.Notification,
-                string.Format("Building ({0}/{1}): ", i + 1, buildConfigs.Length), configKey,
-                true, null));
-
             // Parse build config and perform build.
+            string notification = string.Format("Building ({0}/{1}): ", i + 1, buildConfigs.Length);
             BuildSettings.projectConfigurations.ParseKeychain(configKey, out releaseType, out platform, out arch, out dist);
-            bool success = BuildPlayer(releaseType, platform, arch, dist, buildTime, options, configKey);
+            bool success = BuildPlayer(notification, releaseType, platform, arch, dist, buildTime, options, configKey);
 
             if (success)
                 ++successCount;
@@ -240,7 +235,7 @@ public static class BuildProject
         }
     }
 
-    private static bool BuildPlayer(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, DateTime buildTime, BuildOptions options, string configKey)
+    private static bool BuildPlayer(string notification, BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, DateTime buildTime, BuildOptions options, string configKey)
     {
         bool success = true;
 
@@ -262,6 +257,12 @@ public static class BuildProject
 
         // Refresh scene list to make sure nothing has been deleted or moved.
         releaseType.sceneList.Refresh();
+
+        // Report build starting.
+        BuildNotificationList.instance.AddNotification(new BuildNotification(
+            BuildNotification.Category.Notification,
+            notification, configKey,
+            true, null));
 
         // Build player.
         FileUtil.DeleteFileOrDirectory(buildPath);
@@ -304,12 +305,17 @@ public static class BuildProject
             {
                 BuildAction action = buildActions[i];
 
-                BuildNotificationList.instance.AddNotification(new BuildNotification(
-                    BuildNotification.Category.Notification,
-                    string.Format("Performing Pre-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
-                    true, null));
+                // Check if execute method has been overriden.
+                MethodInfo m = action.GetType().GetMethod("Execute");
+                if (m.GetBaseDefinition().DeclaringType != m.DeclaringType)
+                {
+                    BuildNotificationList.instance.AddNotification(new BuildNotification(
+                        BuildNotification.Category.Notification,
+                        string.Format("Performing Pre-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
+                        true, null));
 
-                action.Execute();
+                    action.Execute();
+                }
             }
         }
     }
@@ -328,12 +334,21 @@ public static class BuildProject
             {
                 BuildAction action = buildActions[i];
 
-                BuildNotificationList.instance.AddNotification(new BuildNotification(
-                    BuildNotification.Category.Notification,
-                    string.Format("Performing Pre-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
-                    true, null));
+                // Check if execute method has been overriden.
+                MethodInfo m = action.GetType().GetMethod("PerBuildExecute");
+                if (m.GetBaseDefinition().DeclaringType != m.DeclaringType)
+                {
+                    // Check build filter and execute if true.
+                    if (action.filter == null || action.filter.Evaluate(releaseType, platform, architecture, distribution, configKey))
+                    {
+                        BuildNotificationList.instance.AddNotification(new BuildNotification(
+                            BuildNotification.Category.Notification,
+                            string.Format("Performing Pre-Build Action ({0}/{1}).", i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
+                            true, null));
 
-                action.PerBuildExecute(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
+                        action.PerBuildExecute(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
+                    }
+                }
             }
         }
     }
@@ -348,15 +363,17 @@ public static class BuildProject
             {
                 BuildAction action = buildActions[i];
 
-                BuildNotificationList.instance.AddNotification(new BuildNotification(
-                    BuildNotification.Category.Notification,
-                    string.Format("Performing Post-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
-                    true, null));
-
-                // If execute method was overriden by derived class, call it.
+                // Check if execute method has been overriden.
                 MethodInfo m = action.GetType().GetMethod("Execute");
                 if (m.GetBaseDefinition().DeclaringType != m.DeclaringType)
+                {
+                    BuildNotificationList.instance.AddNotification(new BuildNotification(
+                        BuildNotification.Category.Notification,
+                        string.Format("Performing Post-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
+                        true, null));
+
                     action.Execute();
+                }
             }
         }
     }
@@ -375,15 +392,21 @@ public static class BuildProject
             {
                 BuildAction action = buildActions[i];
 
-                BuildNotificationList.instance.AddNotification(new BuildNotification(
-                    BuildNotification.Category.Notification,
-                    string.Format("Performing Post-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
-                    true, null));
-
-                // If execute method was overriden by derived class, call it.
+                // Check if execute method has been overriden.
                 MethodInfo m = action.GetType().GetMethod("PerBuildExecute");
                 if (m.GetBaseDefinition().DeclaringType != m.DeclaringType)
-                    action.PerBuildExecute(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
+                {
+                    // Check build filter and execute if true.
+                    if (action.filter == null || action.filter.Evaluate(releaseType, platform, architecture, distribution, configKey))
+                    {
+                        BuildNotificationList.instance.AddNotification(new BuildNotification(
+                            BuildNotification.Category.Notification,
+                            string.Format("Performing Post-Build Action ({0}/{1}).", i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
+                            true, null));
+
+                        action.PerBuildExecute(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
+                    }
+                }
             }
         }
     }

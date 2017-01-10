@@ -64,7 +64,7 @@ public class BuildFilterDrawer : PropertyDrawer
                 testType.enumValueIndex = (int)modifiedType;
                 testComparison.enumValueIndex = (int)modifiedComparison;
                 
-                testValue.stringValue = EditorGUILayout.TextArea(testValue.stringValue);
+                testValue.stringValue = GUILayout.TextField(testValue.stringValue);
 
                 if (GUILayout.Button("X", UnityBuildGUIUtility.helpButtonStyle))
                 {
