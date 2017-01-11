@@ -8,6 +8,8 @@ namespace SuperSystems.UnityBuild
 [CustomPropertyDrawer(typeof(BasicSettings))]
 public class BasicSettingsDrawer : PropertyDrawer
 {
+    private string lastBuildPath = string.Empty;
+
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.BeginProperty(position, GUIContent.none, property);
@@ -35,6 +37,21 @@ public class BasicSettingsDrawer : PropertyDrawer
 
             SerializedProperty openBuildFolderAfterBuild = property.FindPropertyRelative("openFolderPostBuild");
             openBuildFolderAfterBuild.boolValue = EditorGUILayout.ToggleLeft(" Open output folder after build", openBuildFolderAfterBuild.boolValue);
+
+            string buildPath = Path.GetFullPath(Path.Combine(BuildSettings.basicSettings.baseBuildFolder, BuildSettings.basicSettings.buildPath));
+            if (!string.Equals(buildPath, lastBuildPath))
+            {
+                lastBuildPath = buildPath;
+
+                if (buildPath.Contains(Path.GetFullPath(Application.dataPath)))
+                {
+                    BuildNotificationList.instance.AddNotification(new BuildNotification(
+                        BuildNotification.Category.Warning,
+                        "Build Folder in Assets.",
+                        "Putting build output in Assets is generally a bad idea.",
+                        true, null));
+                }
+            }
 
             if (GUILayout.Button("Open Build Folder", GUILayout.ExpandWidth(true)))
             {
