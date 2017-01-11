@@ -54,10 +54,16 @@ public class ProjectConfigurations
     {
         List<string> keychains = new List<string>();
 
-        foreach (string key in configSet.Keys)
+        BuildReleaseType[] releaseTypes = BuildSettings.releaseTypeList.releaseTypes;
+        for (int i = 0; i < releaseTypes.Length; i++)
         {
-            Configuration config = configSet[key];
-            BuildKeychainsRecursive(ref keychains, config, key, 0);
+            string key = releaseTypes[i].typeName;
+
+            if (configSet.ContainsKey(key))
+            {
+                Configuration config = configSet[key];
+                BuildKeychainsRecursive(ref keychains, config, key, 0);
+            }
         }
 
         return keychains.ToArray();
