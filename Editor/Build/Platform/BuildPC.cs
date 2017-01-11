@@ -1,53 +1,41 @@
 ﻿using UnityEditor;
 
-namespace UnityBuild
+namespace SuperSystems.UnityBuild
 {
 
+[System.Serializable]
 public class BuildPC : BuildPlatform
 {
-    #region Constants (SET VALUES)
+    #region Constants
 
-    private const BuildTarget _target = BuildTarget.StandaloneWindows;
     private const string _name = "PC";
     private const string _binaryNameFormat = "{0}.exe";
     private const string _dataDirNameFormat = "{0}_Data";
+    private const BuildTargetGroup _targetGroup = BuildTargetGroup.Standalone;
 
     #endregion
 
-    #region Methods & Properties (DO NOT EDIT)
-
-    public override BuildTarget target
+    public BuildPC()
     {
-        get { return _target; }
+        enabled = false;
+        Init();
     }
 
-    public override string name
+    public override void Init()
     {
-        get { return _name; }
-    }
+        platformName = _name;
+        binaryNameFormat = _binaryNameFormat;
+        dataDirNameFormat = _dataDirNameFormat;
+        targetGroup = _targetGroup;
 
-    public override string binaryNameFormat
-    {
-        get { return _binaryNameFormat; }
+        if (architectures == null || architectures.Length == 0)
+        {
+            architectures = new BuildArchitecture[] { 
+                new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true),
+                new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false)
+            };
+        }
     }
-
-    public override string dataDirNameFormat
-    {
-        get { return _dataDirNameFormat; }
-    }
-
-    [MenuItem("Build/Platforms/" + _name)]
-    private static void Toggle()
-    {
-        Toggle(_name);
-    }
-    [MenuItem("Build/Platforms/" + _name, true)]
-    private static bool ToggleValidate()
-    {
-        return ToggleValidate(_name);
-    }
-
-    #endregion
 }
 
 }

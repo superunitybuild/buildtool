@@ -1,30 +1,29 @@
-﻿using UnityEngine;
+﻿using System.IO;
 using UnityEditor;
-using System.IO;
+using UnityEngine;
 
-namespace UnityBuild
+namespace SuperSystems.UnityBuild
 {
 
 public class BaseSettings : ScriptableObject
 {
-    protected const string SettingsPath = "Assets/Editor Default Resources/UnityBuildSettings/";
+    protected const string SettingsPath = "Assets/UnityBuildSettings/{0}.asset";
 
     protected static T CreateAsset<T>(string assetName) where T : BaseSettings
     {
-        T instance = EditorGUIUtility.Load("UnityBuildSettings/" + assetName + ".asset") as T;
+        string assetPath = string.Format(SettingsPath, assetName);
+        T instance = AssetDatabase.LoadAssetAtPath<T>(assetPath) as T;
+
         if (instance == null)
         {    
-            Debug.Log("UnityBuild: Creating settings file - " + SettingsPath + assetName + ".asset");
+            Debug.Log("UnityBuild: Creating settings file - " + assetPath);
             instance = CreateInstance<T>();
             instance.name = assetName;
 
-            if (!Directory.Exists("Assets/Editor Default Resources"))
-                AssetDatabase.CreateFolder("Assets", "Editor Default Resources");
+            if (!Directory.Exists("Assets/UnityBuildSettings"))
+                AssetDatabase.CreateFolder("Assets", "UnityBuildSettings");
 
-            if (!Directory.Exists("Assets/Editor Default Resources/UnityBuildSettings"))
-                AssetDatabase.CreateFolder("Assets/Editor Default Resources", "UnityBuildSettings");
-
-            AssetDatabase.CreateAsset(instance, SettingsPath + assetName + ".asset");
+            AssetDatabase.CreateAsset(instance, assetPath);
         }
 
         return instance;

@@ -1,101 +1,119 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
-using UnityEditor;
 using UnityEngine;
 
-namespace UnityBuild
+namespace SuperSystems.UnityBuild
 {
 
-[InitializeOnLoad]
+[Serializable]
 public class BuildSettings : BaseSettings
 {
     #region Singleton
 
-    private static BuildSettings instance = null;
+    private static BuildSettings _instance = null;
 
-    public static BuildSettings Instance
+    public static BuildSettings instance
     {
         get
         {
-            if (instance == null)
+            if (_instance == null)
             {
-                instance = CreateAsset<BuildSettings>("BuildSettings");
+                _instance = CreateAsset<BuildSettings>("UnityBuildSettings");
             }
 
-            return instance;
+            return _instance;
         }
-    }
-
-    #endregion
-
-    #region MenuItems
-
-    [MenuItem("Build/Edit Settings", priority = 0)]
-    public static void EditSettings()
-    {
-        Selection.activeObject = Instance;
-        EditorApplication.ExecuteMenuItem("Window/Inspector");
     }
 
     #endregion
 
     #region Variables
 
-    [Header("Build Settings (Field Info in Tooltips)")]
-
-    // The name of executable file (e.g. mygame.exe, mygame.app)
     [SerializeField]
-    [Tooltip("The name of executable file (e.g. mygame.exe, mygame.app)")]
-    private string _binName = Application.productName;
-
-    // The base path where builds are output.
-    // Path is relative to the Unity project's base folder unless an absolute path is given.
+    private BasicSettings _basicSettings = new BasicSettings();
     [SerializeField]
-    [Tooltip("The base path where builds are output.")]
-    private string _binPath = "bin";
-
-    // A list of scenes (filepaths) to include in the build. The first listed scene will be loaded first.
+    private ProductParameters _productParameters = new ProductParameters();
     [SerializeField]
-    [Tooltip("A list of scenes to include in the build. First listed scene will be loaded first. ")]
-    private string[] _scenesInBuild = new string[] {
-        // @"Assets/Scenes/scene1.unity",
-        // @"Assets/Scenes/scene2.unity",
-        // ...
-    };
-
-    // A list of files/directories to include with the build. 
-    // Paths are relative to Unity project's base folder unless an absolute path is given.
+    private BuildReleaseTypeList _releaseTypeList = new BuildReleaseTypeList();
     [SerializeField]
-    [Tooltip("A list of files/directories to include with the build.")]
-    private string[] _copyToBuild = new string[] {
-        // @"DirectoryToInclude/",
-        // @"FileToInclude.txt",
-        // ...
-    };
+    private BuildPlatformList _platformList = new BuildPlatformList();
+    [SerializeField]
+    private ProjectConfigurations _projectConfigurations = new ProjectConfigurations();
+    [SerializeField]
+    private BuildActionList _preBuildActions = new BuildActionList();
+    [SerializeField]
+    private BuildActionList _postBuildActions = new BuildActionList();
 
     #endregion
 
-    #region Methods & Properties
+    #region Public Methods
 
-    public static string binName
+    public static void Init()
     {
-        get { return Instance._binName; }
+        if (_instance._preBuildActions == null)
+            _instance._preBuildActions = new BuildActionList();
+
+        if (_instance._postBuildActions == null)
+            _instance._postBuildActions = new BuildActionList();
     }
 
-    public static string binPath
+    #endregion
+
+    #region Properties
+
+    public static BasicSettings basicSettings
     {
-        get { return Instance._binPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar); }
+        get
+        {
+            return instance._basicSettings;
+        }
     }
 
-    public static string[] scenesInBuild
+    public static ProductParameters productParameters
     {
-        get { return Instance._scenesInBuild; }
+        get
+        {
+            return instance._productParameters;
+        }
     }
 
-    public static string[] copyToBuild
+    public static BuildReleaseTypeList releaseTypeList
     {
-        get { return Instance._copyToBuild; }
+        get
+        {
+            return instance._releaseTypeList;
+        }
+    }
+
+    public static BuildPlatformList platformList
+    {
+        get
+        {
+            return instance._platformList;
+        }
+    }
+
+    public static ProjectConfigurations projectConfigurations
+    {
+        get
+        {
+            return instance._projectConfigurations;
+        }
+    }
+
+    public static BuildActionList preBuildActions
+    {
+        get
+        {
+            return instance._preBuildActions;
+        }
+    }
+
+    public static BuildActionList postBuildActions
+    {
+        get
+        {
+            return instance._postBuildActions;
+        }
     }
 
     #endregion
