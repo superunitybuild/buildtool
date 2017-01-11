@@ -44,8 +44,12 @@ public class UnityBuildWindow : EditorWindow
 
     protected void OnEnable()
     {
+#if UNITY_5_1 || UNITY_5_2 || UNITY_5_3 || UNITY_5_4_OR_NEWER
         GUIContent title = new GUIContent("SuperUnityBuild");
         titleContent = title;
+#else
+        title = "SuperUnityBuild";
+#endif
 
         BuildNotificationList.instance.InitializeErrors();
     }

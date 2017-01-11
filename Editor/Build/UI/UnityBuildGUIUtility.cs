@@ -66,9 +66,10 @@ public class UnityBuildGUIUtility
         _dropdownContentStyle.padding = new RectOffset(5, 5, 5, 5);
         _dropdownContentStyle.margin = new RectOffset(5, 5, 0, 0);
 
-        _mainTitleStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
+        _mainTitleStyle = new GUIStyle(EditorStyles.miniBoldLabel);
         _mainTitleStyle.fontSize = 18;
         _mainTitleStyle.fontStyle = FontStyle.Bold;
+        _mainTitleStyle.alignment = TextAnchor.MiddleCenter;
         _mainTitleStyle.fixedHeight = 35;
         _mainTitleStyle.normal.textColor = new Color32(255, 55, 85, 255);
 
