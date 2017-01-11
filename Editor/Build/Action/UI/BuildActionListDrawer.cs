@@ -32,11 +32,11 @@ public class BuildActionListDrawer : PropertyDrawer
         List<Type> actionTypes;
         if (property.name.ToUpper().Contains("PRE"))
         {
-            actionTypes = PreBuildAction.preBuildActions;
+            actionTypes = BuildActionListUtility.preBuildActions;
         }
         else
         {
-            actionTypes = PostBuildAction.postBuildActions;
+            actionTypes = BuildActionListUtility.postBuildActions;
         }
 
         if (show)

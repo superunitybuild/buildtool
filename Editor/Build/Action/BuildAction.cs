@@ -7,6 +7,13 @@ namespace SuperSystems.UnityBuild
 [System.Serializable]
 public class BuildAction : ScriptableObject // This really should be an abstract class but needs to be concrete to work with Unity serialization.
 {
+    public enum ActionType
+    {
+        SingleRun,
+        PerPlatform
+    }
+
+    public ActionType actionType = ActionType.PerPlatform;
     public string actionName = string.Empty;
     public string note = string.Empty;
     public BuildFilter filter = new BuildFilter();
@@ -33,6 +40,34 @@ public class BuildAction : ScriptableObject // This really should be an abstract
     public void Draw(SerializedObject obj)
     {
         DrawProperties(obj);
+
+        System.Type myType = this.GetType();
+        bool actionTypeSelectable = false;
+        if (typeof(IPreBuildAction).IsAssignableFrom(myType) &&
+            typeof(IPreBuildPerPlatformAction).IsAssignableFrom(myType))
+        {
+            actionTypeSelectable = true;
+        }
+        else if (typeof(IPostBuildAction).IsAssignableFrom(myType) &&
+            typeof(IPostBuildPerPlatformAction).IsAssignableFrom(myType))
+        {
+            actionTypeSelectable = true;
+        }
+        else if (typeof(IPreBuildAction).IsAssignableFrom(myType) ||
+            typeof(IPostBuildAction).IsAssignableFrom(myType))
+        {
+            actionType = ActionType.SingleRun;
+        }
+        else if (typeof(IPreBuildPerPlatformAction).IsAssignableFrom(myType) ||
+            typeof(IPostBuildPerPlatformAction).IsAssignableFrom(myType))
+        {
+            actionType = ActionType.PerPlatform;
+        }
+
+        if (actionTypeSelectable)
+        {
+            actionType = (ActionType)EditorGUILayout.EnumPopup("Action Type", actionType);
+        }
         EditorGUILayout.PropertyField(obj.FindProperty("note"));
         EditorGUILayout.PropertyField(obj.FindProperty("filter"), GUILayout.Height(0));
         obj.ApplyModifiedProperties();
@@ -46,6 +81,7 @@ public class BuildAction : ScriptableObject // This really should be an abstract
         while (!done && prop != null)
         {
             if (prop.name == "actionName" ||
+                prop.name == "actionType" ||
                 prop.name == "note" ||
                 prop.name == "filter")
             {

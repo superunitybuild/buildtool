@@ -94,6 +94,15 @@ public static class BuildProject
 
     public static string GenerateBuildPath(string prototype, BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist, DateTime buildTime)
     {
+        string resolvedProto = ResolvePath(prototype, releaseType, buildPlatform, arch, dist, buildTime);
+        string buildPath = Path.Combine(BuildSettings.basicSettings.baseBuildFolder, resolvedProto);
+        buildPath = Path.GetFullPath(buildPath);
+
+        return buildPath;
+    }
+
+    public static string ResolvePath(string prototype, BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist, DateTime buildTime)
+    {
         StringBuilder sb = new StringBuilder(prototype);
 
         sb.Replace("$YEAR", buildTime.ToString("yyyy"));
@@ -109,10 +118,7 @@ public static class BuildProject
         sb.Replace("$BUILD", BuildSettings.productParameters.buildCounter.ToString());
         sb.Replace("$PRODUCT_NAME", SanitizeFolderName(releaseType.productName));
 
-        string buildPath = Path.Combine(BuildSettings.basicSettings.baseBuildFolder, sb.ToString());
-        buildPath = Path.GetFullPath(buildPath);
-
-        return buildPath;
+        return sb.ToString();
     }
 
     // TODO: Convert sanitize string methods into extensions.
@@ -308,7 +314,7 @@ public static class BuildProject
 
                 // Check if execute method has been overriden.
                 MethodInfo m = action.GetType().GetMethod("Execute");
-                if (m.GetBaseDefinition().DeclaringType != m.DeclaringType)
+                if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.SingleRun)
                 {
                     BuildNotificationList.instance.AddNotification(new BuildNotification(
                         BuildNotification.Category.Notification,
@@ -337,7 +343,7 @@ public static class BuildProject
 
                 // Check if execute method has been overriden.
                 MethodInfo m = action.GetType().GetMethod("PerBuildExecute");
-                if (m.GetBaseDefinition().DeclaringType != m.DeclaringType)
+                if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.PerPlatform)
                 {
                     // Check build filter and execute if true.
                     if (action.filter == null || action.filter.Evaluate(releaseType, platform, architecture, distribution, configKey))
@@ -366,7 +372,7 @@ public static class BuildProject
 
                 // Check if execute method has been overriden.
                 MethodInfo m = action.GetType().GetMethod("Execute");
-                if (m.GetBaseDefinition().DeclaringType != m.DeclaringType)
+                if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.SingleRun)
                 {
                     BuildNotificationList.instance.AddNotification(new BuildNotification(
                         BuildNotification.Category.Notification,
@@ -395,7 +401,7 @@ public static class BuildProject
 
                 // Check if execute method has been overriden.
                 MethodInfo m = action.GetType().GetMethod("PerBuildExecute");
-                if (m.GetBaseDefinition().DeclaringType != m.DeclaringType)
+                if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.PerPlatform)
                 {
                     // Check build filter and execute if true.
                     if (action.filter == null || action.filter.Evaluate(releaseType, platform, architecture, distribution, configKey))
