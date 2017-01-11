@@ -11,33 +11,59 @@ Features:
 * **Highly Extensible and Customizable** - SuperUnityBuild's BuildAction framework provides simple hooks for adding in your own additional functionality.
 * **Free and Open-Source** - Some similar tools available only on the AssetStore are as much as $50+.
 
+
+
+
 ## Basic Usage
 
 Requires Unity 5.0 or higher.
 
 ### Install
 
-Just [download][download] the zip of this project (or clone/submodule this repository) and extract its contents into your Unity project's Assets directory.
+Either [download the latest released Unity Package][release] and import it into your project OR [download the zip][download] of this repository and extract its contents into your Unity project's Assets directory.
 
 You may also want to download some of the available BuildAction modules in the [Unity-Build-Actions][unitybuild-actions] repository to expand SuperUnityBuild's capabilities.
 
 ### Basic Setup
 
+See [Standard Usage](https://github.com/Chaser324/unity-build/wiki/Standard-Usage) in the wiki.
+
+
+
+
 ## Customizing and Expanding
 
-#### Creating a new BuildPlatform.
+### Creating BuildPlatforms
 
-#### Creating BuildActions.
+*TODO*
+
+### Creating BuildActions
+
+See [Build Actions](https://github.com/Chaser324/unity-build/wiki/Build-Actions) in the wiki for details.
+
+
+
 
 ## Command Line Interface
 
 The command line interface is still in development. Feel free to let me know if there's specific functionality you want from this feature.
 
+
+
+
 ## Contributing
+
 Bug reports, feature requests, and pull requests are welcome and appreciated.
 
+
+
+
 ## Credits
+
 * **Chase Pettit** - [github](https://github.com/Chaser324), [twitter](http://twitter.com/chasepettit)
+
+
+
 
 ## License
 All code in this repository ([unity-build](https://github.com/Chaser324/unity-build)) is made freely available under the MIT license. This essentially means you're free to use it however you like as long as you provide attribution.
@@ -46,6 +72,7 @@ All code in this repository ([unity-build](https://github.com/Chaser324/unity-bu
 
 
 [download]: https://github.com/Chaser324/unity-build/archive/master.zip
+[release]: https://github.com/Chaser324/unity-build/releases
 [unitybuild]: https://github.com/Chaser324/unity-build
 [unitybuild-actions]: https://github.com/Chaser324/unity-build-actions
 [unitybuild-wiki]: https://github.com/Chaser324/unity-build/wiki/Build-Actions
