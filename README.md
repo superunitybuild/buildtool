@@ -1,6 +1,8 @@
 # SuperUnityBuild
 > A powerful automation tool for quickly and easily generating builds of a game with Unity.
 
+![](https://github.com/Chaser324/unity-build/blob/gh-pages/Unity_2017-01-11_00-38-20.png)
+
 SuperUnityBuild is a Unity utility that automates the process of generating builds of your game. It's easy and quick enough to use on small games, but it's also powerful and extensible enough to be extremely useful on larger projects. The key to this flexibility lies in SuperUnityBuilds configurable degrees of granularity and its "BuildActions" framework which allows additional operations to be added into the build process.
 
 Features:
@@ -16,7 +18,7 @@ Features:
 
 ## Basic Usage
 
-Requires Unity 5.0 or higher.
+Requires Unity 5.0 or higher. Currently supports Windows, OSX, and Linux builds - more platforms soon once they've been tested more thoroughly.
 
 ### Install
 
