@@ -96,7 +96,8 @@ public static class BuildProject
     {
         string resolvedProto = ResolvePath(prototype, releaseType, buildPlatform, arch, dist, buildTime);
         string buildPath = Path.Combine(BuildSettings.basicSettings.baseBuildFolder, resolvedProto);
-        buildPath = Path.GetFullPath(buildPath);
+        buildPath = Path.GetFullPath(buildPath).TrimEnd('\\').TrimEnd('/');
+
 
         return buildPath;
     }
