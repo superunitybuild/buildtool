@@ -257,6 +257,10 @@ public static class BuildProject
         string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
         string exeName = string.Format(platform.binaryNameFormat, SanitizeFileName(releaseType.productName));
 
+        // Set defines.
+        string defines = GenerateDefaultDefines(releaseType, platform, architecture, distribution);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, defines);
+
         // Pre-build actions.
         PerformPreBuild(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
 
