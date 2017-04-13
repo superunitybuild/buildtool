@@ -35,6 +35,7 @@ public class UnityBuildWindow : EditorWindow
             window = EditorWindow.GetWindow<UnityBuildWindow>();
         }
 
+
         window.Show();
     }
 
@@ -52,11 +53,13 @@ public class UnityBuildWindow : EditorWindow
 #endif
 
         BuildNotificationList.instance.InitializeErrors();
+
+        Undo.undoRedoPerformed += UndoHandler;
     }
 
-    protected void OnInspectorUpdate()
+    protected void OnDisable()
     {
-        Repaint();
+        Undo.undoRedoPerformed -= UndoHandler;
     }
 
     protected void OnGUI()
@@ -128,6 +131,11 @@ public class UnityBuildWindow : EditorWindow
         }
         GUI.backgroundColor = UnityBuildGUIUtility.defaultBackgroundColor;
         EditorGUI.EndDisabledGroup();
+    }
+
+    private void UndoHandler()
+    {
+        Repaint();
     }
 
     #endregion
