@@ -189,6 +189,16 @@ public static class BuildProject
         int successCount = 0;
         int failCount = 0;
 
+        // Save current script defines, build constants, etc. so we can restore them after build.
+        string currentDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
+        string buildConstantsPath = BuildConstantsGenerator.FindFile();
+        string currentBuildConstantsFile = null;
+        if (!string.IsNullOrEmpty(buildConstantsPath))
+        {
+            currentBuildConstantsFile = FileUtil.GetUniqueTempPathInProject();
+            File.Copy(buildConstantsPath, currentBuildConstantsFile);
+        }
+
         DateTime buildTime;
         PerformPreBuild(out buildTime);
 
@@ -212,6 +222,14 @@ public static class BuildProject
         }
 
         PerformPostBuild();
+
+        // Restore editor status.
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, currentDefines);
+        if (!string.IsNullOrEmpty(buildConstantsPath))
+        {
+            File.Copy(currentBuildConstantsFile, buildConstantsPath, true);
+            File.Delete(currentBuildConstantsFile);
+        }
 
         // Report success/failure.
         StringBuilder sb = new StringBuilder();

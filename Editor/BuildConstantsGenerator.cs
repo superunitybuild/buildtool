@@ -12,15 +12,8 @@ public static class BuildConstantsGenerator
 {
     public const string NONE = "None";
 
-    public static void Generate(
-        DateTime buildTime,
-        string currentVersion = "",
-        BuildReleaseType currentReleaseType = null,
-        BuildPlatform currentBuildPlatform = null,
-        BuildArchitecture currentBuildArchitecture = null,
-        BuildDistribution currentBuildDistribution = null)
+    public static string FindFile()
     {
-        // Find the BuildConstants file.
         string[] fileSearchResults = Directory.GetFiles(Application.dataPath, "BuildConstants.cs", SearchOption.AllDirectories);
         string filePath = null;
         string desiredFilePath = string.Format("UnityBuild{0}BuildConstants.cs", Path.DirectorySeparatorChar);
@@ -32,6 +25,20 @@ public static class BuildConstantsGenerator
                 break;
             }
         }
+
+        return filePath;
+    }
+
+    public static void Generate(
+        DateTime buildTime,
+        string currentVersion = "",
+        BuildReleaseType currentReleaseType = null,
+        BuildPlatform currentBuildPlatform = null,
+        BuildArchitecture currentBuildArchitecture = null,
+        BuildDistribution currentBuildDistribution = null)
+    {
+        // Find the BuildConstants file.
+        string filePath = FindFile();
 
         if (string.IsNullOrEmpty(filePath))
         {
