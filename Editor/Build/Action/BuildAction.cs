@@ -16,6 +16,7 @@ public class BuildAction : ScriptableObject // This really should be an abstract
     public ActionType actionType = ActionType.PerPlatform;
     public string actionName = string.Empty;
     public string note = string.Empty;
+    public bool actionEnabled = true;
     public BuildFilter filter = new BuildFilter();
 
     /// <summary>
@@ -83,6 +84,7 @@ public class BuildAction : ScriptableObject // This really should be an abstract
             if (prop.name == "actionName" ||
                 prop.name == "actionType" ||
                 prop.name == "note" ||
+                prop.name == "actionEnabled" ||
                 prop.name == "filter")
             {
                 // Already drawn these. Go to next, don't enter into object.

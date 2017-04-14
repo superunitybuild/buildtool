@@ -52,7 +52,11 @@ public class BuildActionListDrawer : PropertyDrawer
 
                 EditorGUILayout.BeginHorizontal();
                 show = listEntry.isExpanded;
+
+                buildAction.actionEnabled = EditorGUILayout.Toggle(buildAction.actionEnabled, GUILayout.Width(15));
+                EditorGUI.BeginDisabledGroup(!buildAction.actionEnabled);
                 UnityBuildGUIUtility.DropdownHeader(buildAction.actionName, ref show, false, GUILayout.ExpandWidth(true));
+                EditorGUI.EndDisabledGroup();
                 listEntry.isExpanded = show;
 
                 EditorGUI.BeginDisabledGroup(i == 0);
@@ -98,7 +102,7 @@ public class BuildActionListDrawer : PropertyDrawer
 
                 EditorGUILayout.EndHorizontal();
 
-                if (show)
+                if (show && buildAction.actionEnabled)
                 {
                     EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
                     buildAction.Draw(serializedBuildAction);

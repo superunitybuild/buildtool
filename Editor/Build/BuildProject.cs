@@ -339,12 +339,22 @@ public static class BuildProject
                 MethodInfo m = action.GetType().GetMethod("Execute");
                 if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.SingleRun)
                 {
-                    BuildNotificationList.instance.AddNotification(new BuildNotification(
-                        BuildNotification.Category.Notification,
-                        string.Format("Performing Pre-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
-                        true, null));
+                    if (action.actionEnabled)
+                    {
+                        BuildNotificationList.instance.AddNotification(new BuildNotification(
+                            BuildNotification.Category.Notification,
+                            string.Format("Performing Pre-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
+                            true, null));
 
-                    action.Execute();
+                        action.Execute();
+                    }
+                    else
+                    {
+                        BuildNotificationList.instance.AddNotification(new BuildNotification(
+                            BuildNotification.Category.Notification,
+                            string.Format("Skipping Pre-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
+                            true, null));
+                    }
                 }
             }
         }
@@ -369,7 +379,7 @@ public static class BuildProject
                 if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.PerPlatform)
                 {
                     // Check build filter and execute if true.
-                    if (action.filter == null || action.filter.Evaluate(releaseType, platform, architecture, distribution, configKey))
+                    if (action.filter == null || action.filter.Evaluate(releaseType, platform, architecture, distribution, configKey) && action.actionEnabled)
                     {
                         BuildNotificationList.instance.AddNotification(new BuildNotification(
                             BuildNotification.Category.Notification,
@@ -382,7 +392,7 @@ public static class BuildProject
                     {
                         BuildNotificationList.instance.AddNotification(new BuildNotification(
                             BuildNotification.Category.Notification,
-                            string.Format("Skipping Pre-Build Action (Not a Valid Filter Match) ({0}/{1}).", i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
+                            string.Format("Skipping Pre-Build Action ({0}/{1}).", i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
                             true, null));
                     }
                 }
@@ -404,12 +414,22 @@ public static class BuildProject
                 MethodInfo m = action.GetType().GetMethod("Execute");
                 if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.SingleRun)
                 {
-                    BuildNotificationList.instance.AddNotification(new BuildNotification(
-                        BuildNotification.Category.Notification,
-                        string.Format("Performing Post-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
-                        true, null));
+                    if (action.actionEnabled)
+                    {
+                        BuildNotificationList.instance.AddNotification(new BuildNotification(
+                            BuildNotification.Category.Notification,
+                            string.Format("Performing Post-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
+                            true, null));
 
-                    action.Execute();
+                        action.Execute();
+                    }
+                    else
+                    {
+                        BuildNotificationList.instance.AddNotification(new BuildNotification(
+                            BuildNotification.Category.Notification,
+                            string.Format("Skipping Post-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
+                            true, null));
+                    }
                 }
             }
         }
@@ -434,7 +454,7 @@ public static class BuildProject
                 if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.PerPlatform)
                 {
                     // Check build filter and execute if true.
-                    if (action.filter == null || action.filter.Evaluate(releaseType, platform, architecture, distribution, configKey))
+                    if (action.filter == null || action.filter.Evaluate(releaseType, platform, architecture, distribution, configKey) && action.actionEnabled)
                     {
                         BuildNotificationList.instance.AddNotification(new BuildNotification(
                             BuildNotification.Category.Notification,
@@ -447,7 +467,7 @@ public static class BuildProject
                     {
                         BuildNotificationList.instance.AddNotification(new BuildNotification(
                             BuildNotification.Category.Notification,
-                            string.Format("Skipping Post-Build Action (Not a Valid Filter Match) ({0}/{1}).", i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
+                            string.Format("Skipping Post-Build Action ({0}/{1}).", i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
                             true, null));
                     }
                 }
