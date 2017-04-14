@@ -27,7 +27,9 @@ public class BuildFilter
     public enum FilterComparison
     {
         Equals,
-        Contains
+        Contains,
+        NotEqual,
+        DoesNotContain
     }
 
     #endregion
@@ -130,13 +132,18 @@ public class BuildFilter
 
         private bool PerformTest(string targetString)
         {
-            if (comparison == FilterComparison.Equals)
+            switch (comparison)
             {
-                return targetString.Equals(test, System.StringComparison.OrdinalIgnoreCase);
-            }
-            else
-            {
-                return targetString.ToUpper().Contains(test);
+                case FilterComparison.Equals:
+                    return targetString.Equals(test, System.StringComparison.OrdinalIgnoreCase);
+                case FilterComparison.NotEqual:
+                    return !(targetString.Equals(test, System.StringComparison.OrdinalIgnoreCase));
+                case FilterComparison.Contains:
+                    return targetString.ToUpper().Contains(test);
+                case FilterComparison.DoesNotContain:
+                    return !(targetString.ToUpper().Contains(test));
+                default:
+                    return false;
             }
         }
     }

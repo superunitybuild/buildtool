@@ -378,6 +378,13 @@ public static class BuildProject
 
                         action.PerBuildExecute(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
                     }
+                    else
+                    {
+                        BuildNotificationList.instance.AddNotification(new BuildNotification(
+                            BuildNotification.Category.Notification,
+                            string.Format("Skipping Pre-Build Action (Not a Valid Filter Match) ({0}/{1}).", i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
+                            true, null));
+                    }
                 }
             }
         }
@@ -435,6 +442,13 @@ public static class BuildProject
                             true, null));
 
                         action.PerBuildExecute(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
+                    }
+                    else
+                    {
+                        BuildNotificationList.instance.AddNotification(new BuildNotification(
+                            BuildNotification.Category.Notification,
+                            string.Format("Skipping Post-Build Action (Not a Valid Filter Match) ({0}/{1}).", i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
+                            true, null));
                     }
                 }
             }
