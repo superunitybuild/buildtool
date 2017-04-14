@@ -48,8 +48,7 @@ See [Build Actions](https://github.com/Chaser324/unity-build/wiki/Build-Actions)
 
 ## Command Line Interface
 
-The command line interface is still in development. Feel free to let me know if there's specific functionality you want from this feature.
-
+See [Command Line Interface](https://github.com/Chaser324/unity-build/wiki/Command-Line-Interface) in the wiki.
 
 
 
