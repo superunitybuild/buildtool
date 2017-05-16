@@ -3,6 +3,8 @@
 
 ![](https://github.com/Chaser324/unity-build/blob/gh-pages/Unity_2017-01-11_00-38-20.png)
 
+[Unity Forums Thread][unity-thread] | [Documentation Wiki][unitybuild-wiki]
+
 SuperUnityBuild is a Unity utility that automates the process of generating builds of your game. It's easy and quick enough to use on small games, but it's also powerful and extensible enough to be extremely useful on larger projects. The key to this flexibility lies in SuperUnityBuilds configurable degrees of granularity and its "BuildActions" framework which allows additional operations to be added into the build process.
 
 Features:
@@ -76,4 +78,5 @@ All code in this repository ([unity-build](https://github.com/Chaser324/unity-bu
 [release]: https://github.com/Chaser324/unity-build/releases
 [unitybuild]: https://github.com/Chaser324/unity-build
 [unitybuild-actions]: https://github.com/Chaser324/unity-build-actions
-[unitybuild-wiki]: https://github.com/Chaser324/unity-build/wiki/Build-Actions
+[unitybuild-wiki]: https://github.com/Chaser324/unity-build/wiki/
+[unity-thread]: https://forum.unity3d.com/threads/super-unity-build-automated-build-tool-and-framework.471114/
