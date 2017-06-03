@@ -270,6 +270,8 @@ public static class BuildProject
             options |= BuildOptions.Development;
         if (releaseType.allowDebugging)
             options |= BuildOptions.AllowDebugging;
+        if (releaseType.enableHeadlessMode)
+            options |= BuildOptions.EnableHeadlessMode;
 
         // Generate build path.
         string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
