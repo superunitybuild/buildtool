@@ -174,7 +174,11 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
 
                         if (GUILayout.Button("Refresh BuildConstants and Apply Defines", GUILayout.ExpandWidth(true)))
                         {
-                            EditorUserBuildSettings.SwitchActiveBuildTarget(arch.target);
+                            #if UNITY_5_6_OR_NEWER
+                                EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, arch.target);
+                            #else
+                                EditorUserBuildSettings.SwitchActiveBuildTarget(arch.target);
+                            #endif
                             PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, defines);
                             BuildConstantsGenerator.Generate(DateTime.Now, BuildSettings.productParameters.lastGeneratedVersion, releaseType, platform, arch, dist);
                         }

@@ -46,9 +46,20 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
 
             SerializedProperty developmentBuild = property.FindPropertyRelative("developmentBuild");
             SerializedProperty allowDebugging = property.FindPropertyRelative("allowDebugging");
+            SerializedProperty enableHeadlessMode = property.FindPropertyRelative("enableHeadlessMode");
+
+            EditorGUI.BeginDisabledGroup(enableHeadlessMode.boolValue);
             developmentBuild.boolValue = EditorGUILayout.ToggleLeft(" Development Build", developmentBuild.boolValue);
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUI.BeginDisabledGroup(!developmentBuild.boolValue);
             allowDebugging.boolValue = EditorGUILayout.ToggleLeft(" Script Debugging", allowDebugging.boolValue);
-            
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUI.BeginDisabledGroup(developmentBuild.boolValue);
+            enableHeadlessMode.boolValue = EditorGUILayout.ToggleLeft(" Headless Mode", enableHeadlessMode.boolValue);
+            EditorGUI.EndDisabledGroup();
+
             EditorGUILayout.PropertyField(property.FindPropertyRelative("sceneList"));
 
             GUILayout.BeginHorizontal();

@@ -11,6 +11,7 @@ public class BuildReleaseType
 
     public bool developmentBuild = false;
     public bool allowDebugging = false;
+    public bool enableHeadlessMode = false;
     public string customDefines = string.Empty;
 
     public SceneList sceneList = new SceneList();
