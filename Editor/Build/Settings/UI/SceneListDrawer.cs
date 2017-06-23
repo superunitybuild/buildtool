@@ -24,14 +24,18 @@ public class SceneListDrawer : PropertyDrawer
         property.isExpanded = show;
 
         EditorGUILayout.EndHorizontal();
-
+/*
+This is extrem imperformant!
+I have a project with 30 files in the list, but we have around 150 scenes in unity.
+So it checks every frame for all 30 files 150 scenes in the sceneList.Refresh(). However even I comment it like below the updated releaseTypelist isn't showing correctly in the Editor.
+I updated the releaseTypeList via custom BuildAction.
         //Refresh all scene lists.
         for (int i = 0; i < BuildSettings.releaseTypeList.releaseTypes.Length; i++)
         {
             BuildReleaseType rt = BuildSettings.releaseTypeList.releaseTypes[i];
             rt.sceneList.Refresh();
         }
-
+*/
         list = property.FindPropertyRelative("enabledScenes");
         PopulateSceneList();
 
