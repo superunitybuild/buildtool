@@ -24,19 +24,24 @@ public class SceneListDrawer : PropertyDrawer
         property.isExpanded = show;
 
         EditorGUILayout.EndHorizontal();
-
+        
+        if (show)
+        {        
+/*
         //Refresh all scene lists.
         for (int i = 0; i < BuildSettings.releaseTypeList.releaseTypes.Length; i++)
         {
             BuildReleaseType rt = BuildSettings.releaseTypeList.releaseTypes[i];
             rt.sceneList.Refresh();
         }
+*/
 
-        list = property.FindPropertyRelative("enabledScenes");
-        PopulateSceneList();
+            list = property.FindPropertyRelative("enabledScenes");
+            if (availableScenesList == null || availableScenesList.Count != list.arraySize){
+                PopulateSceneList();
+            }
 
-        if (show)
-        {
+
             EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
             for (int i = 0; i < list.arraySize; i++)
@@ -53,10 +58,14 @@ public class SceneListDrawer : PropertyDrawer
                 if (GUILayout.Button("↑↑", UnityBuildGUIUtility.helpButtonStyle))
                 {
                     list.MoveArrayElement(i, 0);
+                    property.serializedObject.ApplyModifiedProperties();
+                    PopulateSceneList();
                 }
                 if (GUILayout.Button("↑", UnityBuildGUIUtility.helpButtonStyle))
                 {
                     list.MoveArrayElement(i, i - 1);
+                    property.serializedObject.ApplyModifiedProperties();
+                    PopulateSceneList();
                 }
                 EditorGUI.EndDisabledGroup();
 
@@ -64,17 +73,17 @@ public class SceneListDrawer : PropertyDrawer
                 if (GUILayout.Button("↓", UnityBuildGUIUtility.helpButtonStyle))
                 {
                     list.MoveArrayElement(i, i + 1);
+                    property.serializedObject.ApplyModifiedProperties();
+                    PopulateSceneList();
                 }
                 EditorGUI.EndDisabledGroup();
 
                 if (GUILayout.Button("X", UnityBuildGUIUtility.helpButtonStyle))
                 {
                     list.DeleteArrayElementAtIndex(i);
+                    property.serializedObject.ApplyModifiedProperties();
+                    PopulateSceneList();
                 }
-
-                property.serializedObject.ApplyModifiedProperties();
-
-                PopulateSceneList();
 
                 EditorGUILayout.EndHorizontal();
             }
