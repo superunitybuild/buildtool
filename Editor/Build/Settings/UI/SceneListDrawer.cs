@@ -9,6 +9,8 @@ namespace SuperSystems.UnityBuild
 [CustomPropertyDrawer(typeof(SceneList))]
 public class SceneListDrawer : PropertyDrawer
 {
+    private const int AUTO_COLLAPSE_SIZE = 50;
+
     private int index = 0;
     private List<SceneList.Scene> availableScenesList = null;
     private SerializedProperty list;
@@ -126,6 +128,9 @@ public class SceneListDrawer : PropertyDrawer
                                     AddScene(objGUID);
                                 }
                             }
+
+                            if (list.arraySize >= AUTO_COLLAPSE_SIZE)
+                                list.isExpanded = false;
                         }
                     }
                     break;
@@ -191,6 +196,9 @@ public class SceneListDrawer : PropertyDrawer
             string objGUID = AssetDatabase.AssetPathToGUID(fullpath);
             AddScene(objGUID);
         }
+
+        if (list.arraySize >= AUTO_COLLAPSE_SIZE)
+            list.isExpanded = false;
     }
 
     private void SetFirstSceneByFile()
