@@ -298,7 +298,7 @@ public static class BuildProject
 
         // Build player.
         FileUtil.DeleteFileOrDirectory(buildPath);
-        string error = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneList(), Path.Combine(buildPath, exeName), architecture.target, options);
+        string error = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneFileList(), Path.Combine(buildPath, exeName), architecture.target, options);
 
         if (!string.IsNullOrEmpty(error))
         {

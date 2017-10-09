@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 
 namespace SuperSystems.UnityBuild
@@ -15,23 +16,13 @@ public class SceneList
 
     public void Refresh()
     {
-        string[] allScenes = GetListOfAllScenes();
-
         // Verify that all scenes in list still exist.
         for (int i = 0; i < enabledScenes.Count; i++)
         {
-            string sceneName = enabledScenes[i].filePath;
-            bool sceneExists = false;
-            for (int j = 0; j < allScenes.Length; j++)
-            {
-                if (string.Equals(sceneName, allScenes[j]))
-                {
-                    sceneExists = true;
-                    break;
-                }
-            }
-
-            if (!sceneExists)
+            string sceneGUID = enabledScenes[i].fileGUID;
+            string sceneFilepath = AssetDatabase.GUIDToAssetPath(sceneGUID);
+            
+            if (string.IsNullOrEmpty(sceneFilepath) || !File.Exists(sceneFilepath))
             {
                 enabledScenes.RemoveAt(i);
                 --i;
@@ -39,33 +30,21 @@ public class SceneList
         }
     }
 
-    public string[] GetSceneList()
+    public string[] GetSceneFileList()
     {
         List<string> scenes = new List<string>();
         for (int i = 0; i < enabledScenes.Count; i++)
         {
-            scenes.Add(enabledScenes[i].filePath);
+            scenes.Add(AssetDatabase.GUIDToAssetPath(enabledScenes[i].fileGUID));
         }
 
         return scenes.ToArray();
     }
 
-    public static string[] GetListOfAllScenes()
-    {
-        string[] allScenesGUID = AssetDatabase.FindAssets("t:scene");
-        string[] allScenes = new string[allScenesGUID.Length];
-        for (int i = 0; i < allScenesGUID.Length; i++)
-        {
-            allScenes[i] = AssetDatabase.GUIDToAssetPath(allScenesGUID[i]);
-        }
-
-        return allScenes;
-    }
-
     [System.Serializable]
     public class Scene
     {
-        public string filePath = string.Empty;
+        public string fileGUID = string.Empty;
     }
 }
 

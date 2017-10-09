@@ -34,6 +34,7 @@ public class UnityBuildGUIUtility
     private GUIStyle _popupStyle;
     private GUIStyle _mainTitleStyle;
     private GUIStyle _subTitleStyle;
+    private GUIStyle _dragDropArea;
 
     private Color32 _defaultBackgroundColor = GUI.backgroundColor;
     private Color32 _mainHeaderColor = new Color32(180, 180, 255, 255);
@@ -77,6 +78,11 @@ public class UnityBuildGUIUtility
         _subTitleStyle.fontSize = 9;
         _subTitleStyle.fontStyle = FontStyle.Normal;
         _subTitleStyle.normal.textColor = new Color32(83, 229, 255, 255);
+
+        _dragDropArea = new GUIStyle(GUI.skin.box);
+        _dragDropArea.stretchWidth = true;
+        _dragDropArea.alignment = TextAnchor.MiddleCenter;
+        _dragDropArea.normal.textColor = GUI.skin.textField.normal.textColor;
 
         helpButtonContent = new GUIContent("?", "Help");
     }
@@ -176,6 +182,14 @@ public class UnityBuildGUIUtility
         get
         {
             return instance._mainHeaderColor;
+        }
+    }
+
+    public static GUIStyle dragDropStyle
+    {
+        get
+        {
+            return instance._dragDropArea;
         }
     }
 }
