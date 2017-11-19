@@ -48,6 +48,13 @@ public class BuildActionListDrawer : PropertyDrawer
                 SerializedProperty listEntry = list.GetArrayElementAtIndex(i);
 
                 BuildAction buildAction = listEntry.objectReferenceValue as BuildAction;
+                if (buildAction == null)
+                {
+                    list.DeleteArrayElementAtIndex(i);
+                    --i;
+                    continue;
+                }
+
                 SerializedObject serializedBuildAction = new SerializedObject(buildAction);
 
                 EditorGUILayout.BeginHorizontal();
