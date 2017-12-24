@@ -11,8 +11,6 @@ public class SceneListDrawer : PropertyDrawer
 {
     private const int AUTO_COLLAPSE_SIZE = 50;
 
-    private int index = 0;
-    private List<SceneList.Scene> availableScenesList = null;
     private SerializedProperty list;
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
