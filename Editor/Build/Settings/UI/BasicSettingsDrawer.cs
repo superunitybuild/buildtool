@@ -62,6 +62,8 @@ public class BasicSettingsDrawer : PropertyDrawer
                 System.Diagnostics.Process.Start(path);
             }
 
+            property.serializedObject.ApplyModifiedProperties();
+
             EditorGUILayout.EndVertical();
         }
 
