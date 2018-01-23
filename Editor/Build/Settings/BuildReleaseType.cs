@@ -7,6 +7,7 @@ public class BuildReleaseType
 {
     public string typeName = string.Empty;
     public string bundleIndentifier = string.Empty;
+    public string companyName = string.Empty;
     public string productName = string.Empty;
 
     public bool developmentBuild = false;

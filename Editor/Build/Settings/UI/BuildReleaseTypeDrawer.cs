@@ -38,6 +38,7 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
 
             EditorGUILayout.PropertyField(property.FindPropertyRelative("bundleIndentifier"));
             EditorGUILayout.PropertyField(property.FindPropertyRelative("productName"));
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("companyName"));
 
             GUILayout.Space(20);
             GUILayout.Label("Build Options", UnityBuildGUIUtility.midHeaderStyle);
@@ -79,6 +80,8 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
+
+            property.serializedObject.ApplyModifiedProperties();
 
             EditorGUILayout.EndVertical();
         }

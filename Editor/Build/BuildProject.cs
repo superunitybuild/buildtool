@@ -291,6 +291,10 @@ public static class BuildProject
         PlayerSettings.SetApplicationIdentifier(platform.targetGroup, releaseType.bundleIndentifier);
 #endif
 
+        // Set product name.
+        PlayerSettings.companyName = releaseType.companyName;
+        PlayerSettings.productName = releaseType.productName;
+
         // Apply build variant.
         platform.ApplyVariant();
 
