@@ -151,11 +151,22 @@ public class ProjectConfigurations
         // Parse platform.
         if (keyCount > ++targetKey)
         {
+            // Scan ahead and try to parse a variant key.
+            string variantKey = "";
+            if (keys[targetKey + 1].Contains("("))
+            {
+                int startIndex = keys[targetKey + 1].IndexOf('(');
+                int endIndex = keys[targetKey + 1].IndexOf(')');
+                variantKey = keys[targetKey + 1].Substring(startIndex + 1, endIndex - startIndex - 1);
+
+                keys[targetKey + 1] = keys[targetKey + 1].Remove(startIndex).Trim();
+            }
+
             for (int i = 0; i < BuildSettings.platformList.platforms.Count; i++)
             {
                 BuildPlatform p = BuildSettings.platformList.platforms[i];
 
-                if (keys[targetKey] == p.platformName)
+                if (keys[targetKey] == p.platformName && p.variantKey == variantKey)
                 {
                     platform = p;
                     break;
@@ -170,6 +181,7 @@ public class ProjectConfigurations
         if (platform.architectures.Length == 1)
         {
             // Only one architecture, so it won't even appear in dictionary. Just get it directly.
+            ++targetKey;
             architecture = platform.architectures[0];
             success = true;
         }

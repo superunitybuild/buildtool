@@ -21,6 +21,10 @@ public class BuildPlatform
     {
     }
 
+    public virtual void ApplyVariant()
+    {
+    }
+
     #region Public Properties
 
     public bool atLeastOneArch
@@ -58,8 +62,11 @@ public class BuildPlatform
             string retVal = "";
 
             // Build key string.
-            foreach (var variant in variants)
-                retVal += variant.variantKey + ",";
+            if (variants != null && variants.Length > 0)
+            {
+                foreach (var variant in variants)
+                    retVal += variant.variantKey + ",";
+            }
 
             // Remove trailing delimiter.
             if (retVal.Length > 0)

@@ -88,6 +88,7 @@ public static class BuildProject
 
         string retVal = sb.ToString();
         productParameters.lastGeneratedVersion = retVal;
+        PlayerSettings.bundleVersion = retVal;
 
         return retVal;
     }
@@ -111,9 +112,13 @@ public static class BuildProject
         sb.Replace("$DAY", buildTime.ToString("dd"));
         sb.Replace("$TIME", buildTime.ToString("hhmmss"));
 
+        string archName = arch.name;
+        if (buildPlatform.variants != null && buildPlatform.variants.Length > 0)
+            archName += "(" + buildPlatform.variantKey + ")";
+
         sb.Replace("$RELEASE_TYPE", SanitizeFolderName(releaseType.typeName));
         sb.Replace("$PLATFORM", SanitizeFolderName(buildPlatform.platformName));
-        sb.Replace("$ARCHITECTURE", SanitizeFolderName(arch.name));
+        sb.Replace("$ARCHITECTURE", SanitizeFolderName(archName));
         sb.Replace("$DISTRIBUTION", SanitizeFolderName(dist != null ? dist.distributionName : BuildConstantsGenerator.NONE));
         sb.Replace("$VERSION", SanitizeFolderName(BuildSettings.productParameters.lastGeneratedVersion));
         sb.Replace("$BUILD", BuildSettings.productParameters.buildCounter.ToString());
@@ -190,7 +195,6 @@ public static class BuildProject
         int failCount = 0;
 
         // Save current script defines, build constants, etc. so we can restore them after build.
-        string currentDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
         string buildConstantsPath = BuildConstantsGenerator.FindFile();
         string currentBuildConstantsFile = null;
         if (!string.IsNullOrEmpty(buildConstantsPath))
@@ -224,7 +228,6 @@ public static class BuildProject
         PerformPostBuild();
 
         // Restore editor status.
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, currentDefines);
         if (!string.IsNullOrEmpty(buildConstantsPath))
         {
             File.Copy(currentBuildConstantsFile, buildConstantsPath, true);
@@ -277,9 +280,19 @@ public static class BuildProject
         string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
         string exeName = string.Format(platform.binaryNameFormat, SanitizeFileName(releaseType.productName));
 
-        // Set defines.
-        string defines = GenerateDefaultDefines(releaseType, platform, architecture, distribution);
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, defines);
+        // Save current user defines, and then set target defines.
+        string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
+        string buildDefines = GenerateDefaultDefines(releaseType, platform, architecture, distribution);
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, buildDefines);
+
+        // Set bundle info.
+        // Unfortunately, there's not a good way to do this pre-5.6 that doesn't break building w/ batch mode.
+#if UNITY_5_6_OR_NEWER
+        PlayerSettings.SetApplicationIdentifier(platform.targetGroup, releaseType.bundleIndentifier);
+#endif
+
+        // Apply build variant.
+        platform.ApplyVariant();
 
         // Pre-build actions.
         PerformPreBuild(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
@@ -312,6 +325,9 @@ public static class BuildProject
 
         // Post-build actions.
         PerformPostBuild(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
+
+        // Restore pre-build settings.
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, preBuildDefines);
 
         return success;
     }
