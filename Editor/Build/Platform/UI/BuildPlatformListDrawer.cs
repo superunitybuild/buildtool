@@ -13,13 +13,16 @@ public class BuildPlatformListDrawer : PropertyDrawer
     private int index = 0;
     private SerializedProperty list = null;
     private BuildPlatformList platformList = null;
-    private List<string> availablePlatformList = new List<string>();
+
+    private List<string> availablePlatformNameList = new List<string>();
+    private List<Type> availablePlatformTypeList = new List<Type>();
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         EditorGUI.BeginProperty(position, label, property);
 
         EditorGUILayout.BeginHorizontal();
+        property.serializedObject.Update();
 
         bool show = property.isExpanded;
         UnityBuildGUIUtility.DropdownHeader("Build Platforms", ref show, false, GUILayout.ExpandWidth(true));
@@ -33,64 +36,47 @@ public class BuildPlatformListDrawer : PropertyDrawer
             platformList = fieldInfo.GetValue(property.serializedObject.targetObject) as BuildPlatformList;
             PopulateList();
             list = property.FindPropertyRelative("platforms");
+            list.serializedObject.Update();
         //}
 
         if (show)
         {
             EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
+            // Draw all created/enabled platforms.
             int enabledCount = 0;
             for (int i = 0; i < list.arraySize; i++)
             {
                 SerializedProperty platformProperty = list.GetArrayElementAtIndex(i);
                 SerializedProperty platformEnabled = platformProperty.FindPropertyRelative("enabled");
 
-                string platformName = platformList.platforms[i].platformName;
-
                 if (platformEnabled.boolValue)
                 {
                     ++enabledCount;
                     EditorGUILayout.PropertyField(platformProperty, GUILayout.MaxHeight(0));
-                    if (availablePlatformList.Contains(platformName))
-                        availablePlatformList.Remove(platformName);
-                }
-                else if (!availablePlatformList.Contains(platformName))
-                {
-                    availablePlatformList.Add(platformName);
                 }
             }
 
-            if (availablePlatformList.Count > 0)
+            if (enabledCount > 0)
+                GUILayout.Space(20);
+
+            // Draw all available platforms.
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            index = EditorGUILayout.Popup(index, availablePlatformNameList.ToArray(), UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));
+            if (GUILayout.Button("Add Platform", GUILayout.ExpandWidth(false), GUILayout.MaxWidth(150)))
             {
-                if (enabledCount > 0)
+                platformList.platforms.Add((BuildPlatform)Activator.CreateInstance(availablePlatformTypeList[index]));
+                platformList.platforms[platformList.platforms.Count - 1].enabled = true;
+
+                for (int i = platformList.platforms.Count - 1; i >= 0; i--)
                 {
-                    GUILayout.Space(20);
+                    if (!platformList.platforms[i].enabled)
+                        platformList.platforms.RemoveAt(i);
                 }
-
-                GUILayout.BeginHorizontal();
-                GUILayout.FlexibleSpace();
-                index = EditorGUILayout.Popup(index, availablePlatformList.ToArray(), UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));
-                if (GUILayout.Button("Add Platform", GUILayout.ExpandWidth(false), GUILayout.MaxWidth(150)))
-                {
-                    for (int i = 0; i < list.arraySize; i++)
-                    {
-                        SerializedProperty platformProperty = list.GetArrayElementAtIndex(i);
-                        string platformName = platformList.platforms[i].platformName;
-
-                        if (availablePlatformList[index] == platformName)
-                        {
-                            SerializedProperty platformEnabled = platformProperty.FindPropertyRelative("enabled");
-                            platformEnabled.boolValue = true;
-
-                            platformProperty.serializedObject.ApplyModifiedProperties();
-                        }
-                    }
-
-                    index = 0;
-                }
-                GUILayout.FlexibleSpace();
-                GUILayout.EndHorizontal();
             }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
 
             EditorGUILayout.EndVertical();
         }
@@ -101,7 +87,9 @@ public class BuildPlatformListDrawer : PropertyDrawer
     private void PopulateList()
     {
         Type ti = typeof(BuildPlatform);
-        List<BuildPlatform> platforms = new List<BuildPlatform>(platformList.platforms);
+
+        availablePlatformNameList.Clear();
+        availablePlatformTypeList.Clear();
         foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
         {
             foreach (Type t in asm.GetTypes())
@@ -109,37 +97,11 @@ public class BuildPlatformListDrawer : PropertyDrawer
                 if (ti.IsAssignableFrom(t) && ti != t)
                 {
                     BuildPlatform instance = (BuildPlatform)Activator.CreateInstance(t);
-                    bool alreadyPresent = false;
-                    for (int i = 0; i < platforms.Count; i++)
-                    {
-                        if (platforms[i].platformName.Equals(instance.platformName))
-                        {
-                            alreadyPresent = true;
-                            BuildPlatform oldInstance = platforms[i];
-
-                            instance.enabled = oldInstance.enabled;
-
-                            if (instance.enabled)
-                            {
-                                instance.architectures = oldInstance.architectures;
-                                instance.variants = oldInstance.variants;
-                                instance.distributionList = oldInstance.distributionList;
-                            }
-
-                            platforms[i] = instance;
-                            break;
-                        }
-                    }
-
-                    if (!alreadyPresent)
-                    {
-                        platforms.Add(instance);
-                    }
+                    availablePlatformNameList.Add(instance.platformName);
+                    availablePlatformTypeList.Add(t);
                 }
             }
         }
-
-        platformList.platforms = platforms.ToArray();
     }
 }
 

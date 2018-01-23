@@ -151,7 +151,7 @@ public class ProjectConfigurations
         // Parse platform.
         if (keyCount > ++targetKey)
         {
-            for (int i = 0; i < BuildSettings.platformList.platforms.Length; i++)
+            for (int i = 0; i < BuildSettings.platformList.platforms.Count; i++)
             {
                 BuildPlatform p = BuildSettings.platformList.platforms[i];
 
@@ -217,8 +217,8 @@ public class ProjectConfigurations
     {
         List<string> childKeys = new List<string>();
 
-        BuildPlatform[] platforms = BuildSettings.platformList.platforms;
-        for (int i = 0; i < platforms.Length; i++)
+        List<BuildPlatform> platforms = BuildSettings.platformList.platforms;
+        for (int i = 0; i < platforms.Count; i++)
         {
             // Skip if platform is disabled or if it doesn't have any enabled architectures.
             if (!platforms[i].enabled || !platforms[i].atLeastOneArch)
@@ -240,7 +240,26 @@ public class ProjectConfigurations
             // Refresh architectures.
             BuildArchitecture[] architectures = platforms[i].architectures;
             if (architectures.Length > 0)
-                relConfig.childKeys = RefreshArchitectures(key, refreshedConfigSet, architectures, platforms[i].distributionList.distributions, prevConfigSet);
+                relConfig.childKeys = RefreshArchitectures(key, refreshedConfigSet, platforms[i].variantKey, architectures, platforms[i].distributionList.distributions, prevConfigSet);
+
+            // Scan ahead for other versions of this platform with different variants.
+            for (int j = i; j < platforms.Count; j++)
+            {
+                BuildPlatform otherPlatform = platforms[j];
+                if (otherPlatform.platformName == platforms[i].platformName && otherPlatform.enabled && otherPlatform.atLeastOneArch)
+                {
+                    List<string> currentKeys = new List<string>(relConfig.childKeys);
+                    string[] additionalKeys = RefreshArchitectures(key, refreshedConfigSet, otherPlatform.variantKey, otherPlatform.architectures, otherPlatform.distributionList.distributions, prevConfigSet);
+                    
+                    for (int k = 0; k < additionalKeys.Length; k++)
+                    {
+                        if (!currentKeys.Contains(additionalKeys[k]))
+                            currentKeys.Add(additionalKeys[k]);
+                    }
+
+                    relConfig.childKeys = currentKeys.ToArray();
+                }
+            }
 
             // Save configuration.
             refreshedConfigSet.Add(key, relConfig);
@@ -252,7 +271,7 @@ public class ProjectConfigurations
         return childKeys.ToArray();
     }
 
-    private string[] RefreshArchitectures(string keyChain, ConfigDictionary refreshedConfigSet, BuildArchitecture[] architectures, BuildDistribution[] distributions, ConfigDictionary prevConfigSet)
+    private string[] RefreshArchitectures(string keyChain, ConfigDictionary refreshedConfigSet, string variantKey, BuildArchitecture[] architectures, BuildDistribution[] distributions, ConfigDictionary prevConfigSet)
     {
         List<string> childKeys = new List<string>();
 
@@ -263,6 +282,9 @@ public class ProjectConfigurations
                 continue;
 
             string key = keyChain + "/" + architectures[i].name;
+            if (variantKey.Length > 0)
+                key += " (" + variantKey + ")";
+
             Configuration relConfig = new Configuration();
 
             // Check for a duplicate key.

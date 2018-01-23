@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace SuperSystems.UnityBuild
@@ -35,11 +36,39 @@ public class BuildPlatformDrawer : PropertyDrawer
                 }
             }
 
+            SerializedProperty variantList = property.FindPropertyRelative("variants");
+
+            if (variantList.arraySize > 0)
+            {
+                GUILayout.Label("Variant Options", UnityBuildGUIUtility.midHeaderStyle);
+
+                for (int i = 0; i < variantList.arraySize; i++)
+                {
+                    SerializedProperty variantProperty = variantList.GetArrayElementAtIndex(i);
+                    SerializedProperty variantName = variantProperty.FindPropertyRelative("variantName");
+                    SerializedProperty variantValues = variantProperty.FindPropertyRelative("values");
+                    SerializedProperty selectedVariantIndex = variantProperty.FindPropertyRelative("selectedIndex");
+
+                    List<string> valueNames = new List<string>(variantValues.arraySize);
+                    for (int j = 0; j < variantValues.arraySize; j++)
+                    {
+                        valueNames.Add(variantValues.GetArrayElementAtIndex(j).stringValue);
+                    }
+
+                    GUILayout.BeginHorizontal();
+
+                    EditorGUILayout.LabelField(variantName.stringValue);
+                    selectedVariantIndex.intValue =
+                        EditorGUILayout.Popup(selectedVariantIndex.intValue, valueNames.ToArray(), UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));
+
+                    GUILayout.EndHorizontal();
+                }
+            }
+
             SerializedProperty distList = property.FindPropertyRelative("distributionList.distributions");
 
             if (distList.arraySize > 0)
             {
-                GUILayout.Space(20);
                 GUILayout.Label("Distributions", UnityBuildGUIUtility.midHeaderStyle);
 
                 for (int i = 0; i < distList.arraySize; i++)
@@ -82,7 +111,7 @@ public class BuildPlatformDrawer : PropertyDrawer
                 property.serializedObject.ApplyModifiedProperties();
                 GUIUtility.keyboardControl = 0;
             }
-            if (GUILayout.Button("Delete", GUILayout.MaxWidth(150)))
+            if (GUILayout.Button("Delete Platform", GUILayout.MaxWidth(150)))
             {
                 property.FindPropertyRelative("enabled").boolValue = false;
             }

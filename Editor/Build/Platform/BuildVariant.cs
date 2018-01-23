@@ -1,19 +1,28 @@
-﻿
+﻿using System.Collections.Generic;
+
 namespace SuperSystems.UnityBuild
 {
 
 [System.Serializable]
 public class BuildVariant
 {
-    public string type;
-    public string name;
-    public bool enabled;
+    public string variantName;
+    public int selectedIndex;
+    public List<string> values;
 
-    public BuildVariant(string type, string name, bool enabled)
+    public BuildVariant(string variantName, string[] values, int selectedIndex)
     {
-        this.type = type;
-        this.name = name;
-        this.enabled = enabled;
+        this.variantName = variantName;
+        this.values = new List<string>(values);
+        this.selectedIndex = selectedIndex;
+    }
+
+    public string variantKey
+    {
+        get
+        {
+            return values[selectedIndex];
+        }
     }
 }
 

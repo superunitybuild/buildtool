@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace SuperSystems.UnityBuild
 {
@@ -6,7 +7,7 @@ namespace SuperSystems.UnityBuild
 [System.Serializable]
 public class BuildPlatformList
 {
-    public BuildPlatform[] platforms = new BuildPlatform[0];
+    public List<BuildPlatform> platforms = new List<BuildPlatform>();
 }
 
 }

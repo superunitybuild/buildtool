@@ -136,7 +136,7 @@ public class BuildNotificationList
             {
                 bool validError = true;
 
-                int platformCount = BuildSettings.platformList.platforms.Length;
+                int platformCount = BuildSettings.platformList.platforms.Count;
                 if (platformCount > 0)
                 {
                     for (int i = 0; i < platformCount; i++)
@@ -186,7 +186,7 @@ public class BuildNotificationList
             {
                 bool validError = false;
 
-                int platformCount = BuildSettings.platformList.platforms.Length;
+                int platformCount = BuildSettings.platformList.platforms.Count;
                 for (int i = 0; i < platformCount; i++)
                 {
                     BuildPlatform platform = BuildSettings.platformList.platforms[i];

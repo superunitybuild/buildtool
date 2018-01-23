@@ -51,6 +51,24 @@ public class BuildPlatform
         }
     }
 
+    public string variantKey
+    {
+        get
+        {
+            string retVal = "";
+
+            // Build key string.
+            foreach (var variant in variants)
+                retVal += variant.variantKey + ",";
+
+            // Remove trailing delimiter.
+            if (retVal.Length > 0)
+                retVal = retVal.Substring(0, retVal.Length - 1);
+
+            return retVal;
+        }
+    }
+
     #endregion
 }
 
