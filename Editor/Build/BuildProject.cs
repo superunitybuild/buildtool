@@ -315,8 +315,15 @@ public static class BuildProject
 
         // Build player.
         FileUtil.DeleteFileOrDirectory(buildPath);
-        string error = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneFileList(), Path.Combine(buildPath, exeName), architecture.target, options);
 
+        string error = "";
+#if UNITY_2018_1_OR_NEWER
+        UnityEditor.Build.Reporting.BuildReport buildReport = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneFileList(), Path.Combine(buildPath, exeName), architecture.target, options);
+        if (buildReport.summary.result == UnityEditor.Build.Reporting.BuildResult.Failed)
+            error = buildReport.summary.totalErrors + " occurred.";
+#else
+        error = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneFileList(), Path.Combine(buildPath, exeName), architecture.target, options);
+#endif
         if (!string.IsNullOrEmpty(error))
         {
             success = false;

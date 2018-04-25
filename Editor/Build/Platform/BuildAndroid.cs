@@ -65,7 +65,11 @@ public class BuildAndroid : BuildPlatform
 
     private void SetDeviceType(string key)
     {
+#if UNITY_2018_1_OR_NEWER
+        PlayerSettings.Android.targetArchitectures = (AndroidArchitecture)System.Enum.Parse(typeof(AndroidArchitecture), key);
+#else
         PlayerSettings.Android.targetDevice = (AndroidTargetDevice)System.Enum.Parse(typeof(AndroidTargetDevice), key);
+#endif
     }
 
     private void SetTextureCompression(string key)
