@@ -1,52 +1,56 @@
 ﻿using System;
 using System.Reflection;
 using System.Collections.Generic;
+using SuperSystems.UnityBuild.Interfaces;
 using UnityEditor;
 using UnityEngine;
 
 namespace SuperSystems.UnityBuild
 {
-
-[InitializeOnLoad]
-public sealed class BuildActionListUtility
-{
-    public static List<Type> preBuildActions = new List<Type>();
-    public static List<Type> postBuildActions = new List<Type>();
-
-    #region Contructor
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    static BuildActionListUtility()
+    [InitializeOnLoad]
+    public sealed class BuildActionListUtility
     {
-        // Find all classes that inherit from PostBuildAction and register them.
-        Type ti = typeof(BuildAction);
+        public static List<Type> preBuildActions = new List<Type>();
+        public static List<Type> postBuildActions = new List<Type>();
+        public static List<Type> postProcessBuildActions = new List<Type>();
 
-        foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+        #region Contructor
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        static BuildActionListUtility()
         {
-            foreach (Type t in asm.GetTypes())
-            {
-                if (ti.IsAssignableFrom(t) && ti != t)
-                {
-                    // We've found a BuildAction, now check what interfaces it implements.
-                    if (typeof(IPreBuildAction).IsAssignableFrom(t) ||
-                        typeof(IPreBuildPerPlatformAction).IsAssignableFrom(t))
-                    {
-                        preBuildActions.Add(t);
-                    }
+            // Find all classes that inherit from PostBuildAction and register them.
+            Type ti = typeof(BuildAction);
 
-                    if (typeof(IPostBuildAction).IsAssignableFrom(t) ||
-                        typeof(IPostBuildPerPlatformAction).IsAssignableFrom(t))
+            foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (Type t in asm.GetTypes())
+                {
+                    if (ti.IsAssignableFrom(t) && ti != t)
                     {
-                        postBuildActions.Add(t);
+                        // We've found a BuildAction, now check what interfaces it implements.
+                        if (typeof(IPreBuildAction).IsAssignableFrom(t) ||
+                            typeof(IPreBuildPerPlatformAction).IsAssignableFrom(t))
+                        {
+                            preBuildActions.Add(t);
+                        }
+
+                        if (typeof(IPostBuildAction).IsAssignableFrom(t) ||
+                            typeof(IPostBuildPerPlatformAction).IsAssignableFrom(t))
+                        {
+                            postBuildActions.Add(t);
+                        }
+
+                        if (typeof(IPostProcessAction).IsAssignableFrom(t) ||
+                            typeof(IPostProcessPerPlatformAction).IsAssignableFrom(t))
+                            postProcessBuildActions.Add(t);
                     }
                 }
             }
         }
+
+        #endregion
     }
-
-    #endregion
-}
-
 }

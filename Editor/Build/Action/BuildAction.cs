@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using SuperSystems.UnityBuild.Interfaces;
+using UnityEditor;
 using UnityEngine;
 
 namespace SuperSystems.UnityBuild
@@ -37,6 +38,9 @@ public class BuildAction : ScriptableObject // This really should be an abstract
         System.DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
     {
     }
+    
+    public virtual void PostProcessExecute(BuildTarget target, string buildPath)
+    {}
 
     public void Draw(SerializedObject obj)
     {
@@ -54,13 +58,18 @@ public class BuildAction : ScriptableObject // This really should be an abstract
         {
             actionTypeSelectable = true;
         }
+        else if (typeof(IPostProcessAction).IsAssignableFrom(myType) &&
+                 typeof(IPostProcessPerPlatformAction).IsAssignableFrom(myType))
+        {
+            actionTypeSelectable = true;
+        }
         else if (typeof(IPreBuildAction).IsAssignableFrom(myType) ||
-            typeof(IPostBuildAction).IsAssignableFrom(myType))
+            typeof(IPostBuildAction).IsAssignableFrom(myType) || typeof(IPostProcessAction).IsAssignableFrom(myType))
         {
             actionType = ActionType.SingleRun;
         }
         else if (typeof(IPreBuildPerPlatformAction).IsAssignableFrom(myType) ||
-            typeof(IPostBuildPerPlatformAction).IsAssignableFrom(myType))
+            typeof(IPostBuildPerPlatformAction).IsAssignableFrom(myType) || typeof(IPostProcessPerPlatformAction).IsAssignableFrom(myType))
         {
             actionType = ActionType.PerPlatform;
         }

@@ -110,6 +110,7 @@ public class UnityBuildWindow : EditorWindow
         EditorGUILayout.PropertyField(settings.FindProperty("_platformList"), GUILayout.MaxHeight(10));
         EditorGUILayout.PropertyField(settings.FindProperty("_preBuildActions"), new GUIContent("Pre-Build Actions"), GUILayout.MaxHeight(10));
         EditorGUILayout.PropertyField(settings.FindProperty("_postBuildActions"), new GUIContent("Post-Build Actions"), GUILayout.MaxHeight(10));
+        EditorGUILayout.PropertyField(settings.FindProperty("_postProcessBuildActions"), new GUIContent("Post-Process-Build Actions"), GUILayout.MaxHeight(10));
 
         BuildSettings.projectConfigurations.Refresh();
         EditorGUILayout.PropertyField(settings.FindProperty("_projectConfigurations"), GUILayout.MaxHeight(10));

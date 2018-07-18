@@ -42,6 +42,8 @@ public class BuildSettings : BaseSettings
     private BuildActionList _preBuildActions = new BuildActionList();
     [SerializeField]
     private BuildActionList _postBuildActions = new BuildActionList();
+    [SerializeField]
+    private BuildActionList _postProcessBuildActions = new BuildActionList();
 
     #endregion
 
@@ -54,6 +56,9 @@ public class BuildSettings : BaseSettings
 
         if (_instance._postBuildActions == null)
             _instance._postBuildActions = new BuildActionList();
+        
+        if(_instance._postProcessBuildActions == null)
+            _instance._postProcessBuildActions = new BuildActionList();
     }
 
     #endregion
@@ -114,6 +119,11 @@ public class BuildSettings : BaseSettings
         {
             return instance._postBuildActions;
         }
+    }
+
+    public static BuildActionList postProcessBuildActions
+    {
+        get { return instance._postProcessBuildActions; }
     }
 
     #endregion
