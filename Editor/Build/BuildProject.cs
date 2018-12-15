@@ -12,6 +12,15 @@ namespace SuperSystems.UnityBuild
 
 public static class BuildProject
 {
+    #region Constants & Enums
+
+    private const string BUILD_TYPE = "BUILD_TYPE_";
+    private const string BUILD_PLATFORM = "BUILD_PLATFORM_";
+    private const string BUILD_ARCH = "BUILD_ARCH_";
+    private const string BUILD_DIST = "BUILD_DIST_";
+
+    #endregion
+
     #region Public Methods
 
     public static void BuildAll()
@@ -31,16 +40,16 @@ public static class BuildProject
         List<string> defines = new List<string>();
 
         if (releaseType != null)
-            defines.Add("BUILD_TYPE_" + SanitizeCodeString(releaseType.typeName.ToUpper().Replace(" ", "")));
+            defines.Add(BUILD_TYPE + SanitizeCodeString(releaseType.typeName.ToUpper().Replace(" ", "")));
 
         if (buildPlatform != null)
-            defines.Add("BUILD_PLATFORM_" + SanitizeCodeString(buildPlatform.platformName.ToUpper().Replace(" ", "")));
+            defines.Add(BUILD_PLATFORM + SanitizeCodeString(buildPlatform.platformName.ToUpper().Replace(" ", "")));
 
         if (arch != null)
-            defines.Add("BUILD_ARCH_" + SanitizeCodeString(arch.name.ToUpper().Replace(" ", "")));
+            defines.Add(BUILD_ARCH + SanitizeCodeString(arch.name.ToUpper().Replace(" ", "")));
 
         if (dist != null)
-            defines.Add("BUILD_DIST_" + SanitizeCodeString(dist.distributionName.ToUpper().Replace(" ", "")));
+            defines.Add(BUILD_DIST + SanitizeCodeString(dist.distributionName.ToUpper().Replace(" ", "")));
 
         if (releaseType != null && !string.IsNullOrEmpty(releaseType.customDefines))
         {
@@ -48,6 +57,53 @@ public static class BuildProject
             for (int i = 0; i < customDefines.Length; i++)
             {
                 defines.Add(SanitizeCodeString(customDefines[i]).ToUpper());
+            }
+        }
+
+        return string.Join(";", defines.ToArray());
+    }
+
+    public static string MergeDefines(string currentDefines, string unityBuildDefines)
+    {
+        string stripped = StripBuildDefines(currentDefines);
+        string retVal = unityBuildDefines;
+        if (stripped.Length > 0)
+        {
+            retVal = unityBuildDefines + ";" + stripped;
+        }
+
+        return retVal;
+    }
+
+    public static string StripBuildDefines(string defineString)
+    {
+        List<string> defines = new List<string>(defineString.Split(';'));
+        List<BuildReleaseType> releaseTypes = new List<BuildReleaseType>(BuildSettings.releaseTypeList.releaseTypes);
+
+        for (int i = 0; i < defines.Count; i++)
+        {
+            string testString = defines[i];
+
+            // Check for default define strings.
+            if (testString.StartsWith(BUILD_TYPE) ||
+                testString.StartsWith(BUILD_PLATFORM) ||
+                testString.StartsWith(BUILD_ARCH) ||
+                testString.StartsWith(BUILD_DIST))
+                {
+                    defines.RemoveAt(i);
+                    --i;
+                    continue;
+                }
+
+            // Check for custom define strings.
+            foreach (var rt in releaseTypes)
+            {
+                if (rt.customDefines.Contains(testString))
+                {
+                    defines.RemoveAt(i);
+                    --i;
+                    break;
+                }
             }
         }
 
@@ -283,7 +339,10 @@ public static class BuildProject
         // Save current user defines, and then set target defines.
         string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
         string buildDefines = GenerateDefaultDefines(releaseType, platform, architecture, distribution);
+        buildDefines = MergeDefines(preBuildDefines, buildDefines);
+
         PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, buildDefines);
+        //Debug.Log("Build Defines: " + buildDefines);
 
         // Set bundle info.
         // Unfortunately, there's not a good way to do this pre-5.6 that doesn't break building w/ batch mode.

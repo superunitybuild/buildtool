@@ -179,7 +179,11 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                             #else
                                 EditorUserBuildSettings.SwitchActiveBuildTarget(arch.target);
                             #endif
-                            PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, defines);
+                            
+                            string currentDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
+                            string appliedDefines = BuildProject.MergeDefines(currentDefines, defines);
+                            PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, appliedDefines);
+
                             BuildConstantsGenerator.Generate(DateTime.Now, BuildSettings.productParameters.lastGeneratedVersion, releaseType, platform, arch, dist);
                         }
                     }
