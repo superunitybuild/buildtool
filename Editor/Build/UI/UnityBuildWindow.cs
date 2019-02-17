@@ -9,6 +9,7 @@ namespace SuperSystems.UnityBuild
 [System.Serializable]
 public class UnityBuildWindow : EditorWindow
 {
+    public BuildSettings currentBuildSettings;
     public BuildNotificationList notifications = BuildNotificationList.instance;
     private Vector2 scrollPos = Vector2.zero;
 
@@ -53,6 +54,7 @@ public class UnityBuildWindow : EditorWindow
 #endif
 
         BuildNotificationList.instance.InitializeErrors();
+        currentBuildSettings = BuildSettings.instance;
 
         Undo.undoRedoPerformed += UndoHandler;
     }
@@ -64,12 +66,12 @@ public class UnityBuildWindow : EditorWindow
 
     protected void OnGUI()
     {
+        DrawTitle();
+        
         Init();
 
         settings.Update();
         go.Update();
-
-        DrawTitle();
 
         scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false);
 
@@ -89,6 +91,14 @@ public class UnityBuildWindow : EditorWindow
         if (go == null)
             go = new SerializedObject(this);
 
+        // Add field to switch BuildSettings
+        currentBuildSettings = EditorGUILayout.ObjectField(currentBuildSettings, typeof(BuildSettings), false) as BuildSettings;
+        if (currentBuildSettings != BuildSettings.instance)
+        {
+            BuildSettings.instance = currentBuildSettings;
+            settings = null;
+        }
+        
         if (settings == null)
             settings = new SerializedObject(BuildSettings.instance);
 
