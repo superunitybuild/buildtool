@@ -1,4 +1,5 @@
-﻿
+﻿using UnityEditor;
+
 namespace SuperSystems.UnityBuild
 {
 
@@ -10,9 +11,7 @@ public class BuildReleaseType
     public string companyName = string.Empty;
     public string productName = string.Empty;
 
-    public bool developmentBuild = false;
-    public bool allowDebugging = false;
-    public bool enableHeadlessMode = false;
+    public BuildOptions buildOptions;
     public string customDefines = string.Empty;
 
     public SceneList sceneList = new SceneList();

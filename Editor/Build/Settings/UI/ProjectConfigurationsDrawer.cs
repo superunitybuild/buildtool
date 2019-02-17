@@ -110,6 +110,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                     BuildPlatform platform;
                     BuildArchitecture arch;
                     BuildDistribution dist;
+                    BuildOptions buildOptions = BuildOptions.None;
 
                     bool parseSuccess = BuildSettings.projectConfigurations.ParseKeychain(selectedKeyChain.stringValue, out releaseType, out platform, out arch, out dist);
 
@@ -123,6 +124,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
 
                         if (releaseType != null)
                         {
+                            buildOptions = releaseType.buildOptions;
                             EditorGUILayout.LabelField("Release Type", UnityBuildGUIUtility.midHeaderStyle);
                             EditorGUILayout.LabelField("Type Name:\t" + releaseType.typeName);
                             
@@ -154,20 +156,26 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                         GUI.backgroundColor = Color.green;
                         if (GUILayout.Button("Build", GUILayout.ExpandWidth(true)))
                         {
+                            BuildOptions finalBuildOptions = buildOptions;
                             EditorApplication.delayCall += () =>
-                                BuildProject.BuildSingle(selectedKeyChain.stringValue);
+                                BuildProject.BuildSingle(selectedKeyChain.stringValue, finalBuildOptions);
                         }
                         if (GUILayout.Button("Build and Run", GUILayout.ExpandWidth(true)))
                         {
+                            buildOptions |= BuildOptions.AutoRunPlayer;
+                            BuildOptions finalBuildOptions = buildOptions;
                             EditorApplication.delayCall += () =>
-                                BuildProject.BuildSingle(selectedKeyChain.stringValue, BuildOptions.AutoRunPlayer);
+                                BuildProject.BuildSingle(selectedKeyChain.stringValue, finalBuildOptions);
                         }
 
-                        EditorGUI.BeginDisabledGroup(!releaseType.developmentBuild);
+                        EditorGUI.BeginDisabledGroup((buildOptions & BuildOptions.Development) != BuildOptions.Development);
                         if (GUILayout.Button("Build and Run w/ Profiler", GUILayout.ExpandWidth(true)))
                         {
+                            buildOptions |= BuildOptions.AutoRunPlayer;
+                            buildOptions |= BuildOptions.ConnectWithProfiler;
+                            BuildOptions finalBuildOptions = buildOptions;
                             EditorApplication.delayCall += () =>
-                                BuildProject.BuildSingle(selectedKeyChain.stringValue, BuildOptions.AutoRunPlayer | BuildOptions.ConnectWithProfiler);
+                                BuildProject.BuildSingle(selectedKeyChain.stringValue, finalBuildOptions);
                         }
                         EditorGUI.EndDisabledGroup();
                         GUI.backgroundColor = defaultBackgroundColor;

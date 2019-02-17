@@ -29,7 +29,7 @@ public static class BuildProject
         PerformBuild(buildConfigs);
     }
 
-    public static void BuildSingle(string keyChain, BuildOptions options = BuildOptions.None)
+    public static void BuildSingle(string keyChain, BuildOptions options)
     {
         string[] buildConfigs = new string[] { keyChain };
         PerformBuild(buildConfigs, options);
@@ -324,13 +324,8 @@ public static class BuildProject
     {
         bool success = true;
 
-        // Get build options.
-        if (releaseType.developmentBuild)
-            options |= BuildOptions.Development;
-        if (releaseType.allowDebugging)
-            options |= BuildOptions.AllowDebugging;
-        if (releaseType.enableHeadlessMode)
-            options |= BuildOptions.EnableHeadlessMode;
+        if (options == BuildOptions.None)
+            options = releaseType.buildOptions;
 
         // Generate build path.
         string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
