@@ -24,15 +24,14 @@ public class BuildPC : BuildPlatform
     public override void Init()
     {
         platformName = _name;
-        binaryNameFormat = _binaryNameFormat;
         dataDirNameFormat = _dataDirNameFormat;
         targetGroup = _targetGroup;
 
         if (architectures == null || architectures.Length == 0)
         {
             architectures = new BuildArchitecture[] { 
-                new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true),
-                new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false)
+                new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true, _binaryNameFormat),
+                new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false, _binaryNameFormat)
             };
         }
     }
