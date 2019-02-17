@@ -38,7 +38,6 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
 
             EditorGUILayout.PropertyField(property.FindPropertyRelative("bundleIndentifier"));
             EditorGUILayout.PropertyField(property.FindPropertyRelative("productName"));
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("binaryNameOverride"), new GUIContent("Binary Name Override", "This will replace the product name in the binary file names"));
             EditorGUILayout.PropertyField(property.FindPropertyRelative("companyName"));
 
             GUILayout.Space(20);

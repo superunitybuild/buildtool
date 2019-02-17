@@ -334,8 +334,7 @@ public static class BuildProject
 
         // Generate build path.
         string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
-        string productNameForBin = string.IsNullOrEmpty(releaseType.binaryNameOverride) ? releaseType.productName : releaseType.binaryNameOverride;
-        string binName = string.Format(architecture.binaryNameFormat, SanitizeFileName(productNameForBin));
+        string binName = string.Format(architecture.binaryNameFormat, SanitizeFileName(releaseType.productName));
 
         // Save current user defines, and then set target defines.
         string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
