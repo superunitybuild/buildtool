@@ -126,8 +126,8 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                             EditorGUILayout.LabelField("Release Type", UnityBuildGUIUtility.midHeaderStyle);
                             EditorGUILayout.LabelField("Type Name:\t" + releaseType.typeName);
                             
-                            if (!string.IsNullOrEmpty(releaseType.bundleIndentifier))
-                                EditorGUILayout.LabelField("Bundle Identifier:\t" + releaseType.bundleIndentifier);
+                            if (!string.IsNullOrEmpty(releaseType.bundleIdentifier))
+                                EditorGUILayout.LabelField("Bundle Identifier:\t" + releaseType.bundleIdentifier);
 
                             EditorGUILayout.LabelField("Product Name:\t" + releaseType.productName);
                         }
