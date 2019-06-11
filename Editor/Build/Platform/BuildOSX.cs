@@ -24,7 +24,6 @@ public class BuildOSX : BuildPlatform
     public override void Init()
     {
         platformName = _name;
-        binaryNameFormat = _binaryNameFormat;
         dataDirNameFormat = _dataDirNameFormat;
         targetGroup = _targetGroup;
 
@@ -32,11 +31,11 @@ public class BuildOSX : BuildPlatform
         {
             architectures = new BuildArchitecture[] { 
 #if UNITY_2017_3_OR_NEWER
-                new BuildArchitecture(BuildTarget.StandaloneOSX, "OSX", true),
+                new BuildArchitecture(BuildTarget.StandaloneOSX, "OSX", true, _binaryNameFormat),
 #else
-                new BuildArchitecture(BuildTarget.StandaloneOSXUniversal, "OSX Universal", true),
-                new BuildArchitecture(BuildTarget.StandaloneOSXIntel, "OSX Intel", false),
-                new BuildArchitecture(BuildTarget.StandaloneOSXIntel64, "OSX Intel64", false)
+                new BuildArchitecture(BuildTarget.StandaloneOSXUniversal, "OSX Universal", true, _binaryNameFormat),
+                new BuildArchitecture(BuildTarget.StandaloneOSXIntel, "OSX Intel", false, _binaryNameFormat),
+                new BuildArchitecture(BuildTarget.StandaloneOSXIntel64, "OSX Intel64", false, _binaryNameFormat)
 #endif
             };
         }

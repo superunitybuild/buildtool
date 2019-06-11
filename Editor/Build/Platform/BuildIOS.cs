@@ -25,14 +25,13 @@
 //    public override void Init()
 //    {
 //        platformName = _name;
-//        binaryNameFormat = _binaryNameFormat;
 //        dataDirNameFormat = _dataDirNameFormat;
 //        targetGroup = _targetGroup;
 
 //        if (architectures == null || architectures.Length == 0)
 //        {
 //            architectures = new BuildArchitecture[] { 
-//                new BuildArchitecture(BuildTarget.iOS, "iOS", true)
+//                new BuildArchitecture(BuildTarget.iOS, "iOS", true, _binaryNameFormat)
 //            };
 //        }
 //        if (variants == null || variants.Length == 0)

@@ -334,7 +334,7 @@ public static class BuildProject
 
         // Generate build path.
         string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
-        string exeName = string.Format(platform.binaryNameFormat, SanitizeFileName(releaseType.productName));
+        string binName = string.Format(architecture.binaryNameFormat, SanitizeFileName(releaseType.productName));
 
         // Save current user defines, and then set target defines.
         string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
@@ -377,11 +377,11 @@ public static class BuildProject
 
         string error = "";
 #if UNITY_2018_1_OR_NEWER
-        UnityEditor.Build.Reporting.BuildReport buildReport = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneFileList(), Path.Combine(buildPath, exeName), architecture.target, options);
+        UnityEditor.Build.Reporting.BuildReport buildReport = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneFileList(), Path.Combine(buildPath, binName), architecture.target, options);
         if (buildReport.summary.result == UnityEditor.Build.Reporting.BuildResult.Failed)
             error = buildReport.summary.totalErrors + " occurred.";
 #else
-        error = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneFileList(), Path.Combine(buildPath, exeName), architecture.target, options);
+        error = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneFileList(), Path.Combine(buildPath, binName), architecture.target, options);
 #endif
         if (!string.IsNullOrEmpty(error))
         {
