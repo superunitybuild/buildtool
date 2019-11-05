@@ -344,15 +344,19 @@ public static class BuildProject
         PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, buildDefines);
         //Debug.Log("Build Defines: " + buildDefines);
 
+        // Save current player settings, and then set target settings.
+        string preBuildCompanyName = PlayerSettings.companyName;
+        string preBuildProductName = PlayerSettings.productName;
+
+        PlayerSettings.companyName = releaseType.companyName;
+        PlayerSettings.productName = releaseType.productName;
+
         // Set bundle info.
         // Unfortunately, there's not a good way to do this pre-5.6 that doesn't break building w/ batch mode.
 #if UNITY_5_6_OR_NEWER
+        string preBuildBundleIdentifier = PlayerSettings.GetApplicationIdentifier(platform.targetGroup);
         PlayerSettings.SetApplicationIdentifier(platform.targetGroup, releaseType.bundleIndentifier);
 #endif
-
-        // Set product name.
-        PlayerSettings.companyName = releaseType.companyName;
-        PlayerSettings.productName = releaseType.productName;
 
         // Apply build variant.
         platform.ApplyVariant();
@@ -398,6 +402,12 @@ public static class BuildProject
 
         // Restore pre-build settings.
         PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, preBuildDefines);
+        PlayerSettings.companyName = preBuildCompanyName;
+        PlayerSettings.productName = preBuildProductName;
+
+#if UNITY_5_6_OR_NEWER
+        PlayerSettings.SetApplicationIdentifier(platform.targetGroup, preBuildBundleIdentifier);
+#endif
 
         return success;
     }
