@@ -24,7 +24,7 @@ public class BuildActionListDrawer : PropertyDrawer
         UnityBuildGUIUtility.DropdownHeader(label.text, ref show, false, GUILayout.ExpandWidth(true));
         property.isExpanded = show;
 
-        UnityBuildGUIUtility.HelpButton("Parameter-Details#build-actions");
+        UnityBuildGUIUtility.HelpButton("Parameter-Details#prepost-build-actions");
         EditorGUILayout.EndHorizontal();
 
         list = property.FindPropertyRelative("buildActions");
