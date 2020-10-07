@@ -36,7 +36,11 @@ public class BuildAndroid : BuildPlatform
         if (variants == null || variants.Length == 0)
         {
             variants = new BuildVariant[] {
+#if UNITY_2018_1_OR_NEWER
+                new BuildVariant("Device Type", new string[] { "ARMv7", "ARM64", "All" }, 0),
+#else
                 new BuildVariant("Device Type", new string[] { "FAT", "ARMv7", "x86" }, 0),
+#endif
                 new BuildVariant("Texture Compression", new string[] { "ETC", "ETC2", "ASTC", "DXT", "PVRTC", "ATC", "Generic" }, 0),
                 new BuildVariant("Build System", new string[] { "Internal", "Gradle", "ADT (Legacy)" }, 0)
             };
