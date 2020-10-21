@@ -53,7 +53,7 @@ public class BuildAndroid : BuildPlatform
         {
             switch (variantOption.variantName)
             {
-                case "DeviceType":
+                case "Device Type":
                     SetDeviceType(variantOption.variantKey);
                     break;
                 case "Texture Compression":
