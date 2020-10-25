@@ -63,7 +63,7 @@ public class UnityBuildGUIUtility
         _midHeaderStyle = new GUIStyle(EditorStyles.helpBox);
         _midHeaderStyle.fontStyle = FontStyle.Bold;
 
-        _dropdownContentStyle = new GUIStyle(GUI.skin.textField);
+        _dropdownContentStyle = new GUIStyle(GUI.skin.textArea);
         _dropdownContentStyle.padding = new RectOffset(5, 5, 5, 5);
         _dropdownContentStyle.margin = new RectOffset(5, 5, 0, 0);
 

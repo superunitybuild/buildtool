@@ -334,7 +334,7 @@ public static class BuildProject
 
         // Generate build path.
         string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
-        string exeName = string.Format(platform.binaryNameFormat, SanitizeFileName(releaseType.productName));
+        string binName = string.Format(architecture.binaryNameFormat, SanitizeFileName(releaseType.productName));
 
         // Save current user defines, and then set target defines.
         string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
@@ -344,15 +344,19 @@ public static class BuildProject
         PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, buildDefines);
         //Debug.Log("Build Defines: " + buildDefines);
 
+        // Save current player settings, and then set target settings.
+        string preBuildCompanyName = PlayerSettings.companyName;
+        string preBuildProductName = PlayerSettings.productName;
+
+        PlayerSettings.companyName = releaseType.companyName;
+        PlayerSettings.productName = releaseType.productName;
+
         // Set bundle info.
         // Unfortunately, there's not a good way to do this pre-5.6 that doesn't break building w/ batch mode.
 #if UNITY_5_6_OR_NEWER
+        string preBuildBundleIdentifier = PlayerSettings.GetApplicationIdentifier(platform.targetGroup);
         PlayerSettings.SetApplicationIdentifier(platform.targetGroup, releaseType.bundleIdentifier);
 #endif
-
-        // Set product name.
-        PlayerSettings.companyName = releaseType.companyName;
-        PlayerSettings.productName = releaseType.productName;
 
         // Apply build variant.
         platform.ApplyVariant();
@@ -377,11 +381,11 @@ public static class BuildProject
 
         string error = "";
 #if UNITY_2018_1_OR_NEWER
-        UnityEditor.Build.Reporting.BuildReport buildReport = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneFileList(), Path.Combine(buildPath, exeName), architecture.target, options);
+        UnityEditor.Build.Reporting.BuildReport buildReport = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneFileList(), Path.Combine(buildPath, binName), architecture.target, options);
         if (buildReport.summary.result == UnityEditor.Build.Reporting.BuildResult.Failed)
             error = buildReport.summary.totalErrors + " occurred.";
 #else
-        error = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneFileList(), Path.Combine(buildPath, exeName), architecture.target, options);
+        error = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneFileList(), Path.Combine(buildPath, binName), architecture.target, options);
 #endif
         if (!string.IsNullOrEmpty(error))
         {
@@ -398,6 +402,12 @@ public static class BuildProject
 
         // Restore pre-build settings.
         PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, preBuildDefines);
+        PlayerSettings.companyName = preBuildCompanyName;
+        PlayerSettings.productName = preBuildProductName;
+
+#if UNITY_5_6_OR_NEWER
+        PlayerSettings.SetApplicationIdentifier(platform.targetGroup, preBuildBundleIdentifier);
+#endif
 
         return success;
     }

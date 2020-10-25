@@ -24,14 +24,13 @@ public class BuildWebGL : BuildPlatform
     public override void Init()
     {
         platformName = _name;
-        binaryNameFormat = _binaryNameFormat;
         dataDirNameFormat = _dataDirNameFormat;
         targetGroup = _targetGroup;
 
         if (architectures == null || architectures.Length == 0)
         {
             architectures = new BuildArchitecture[] { 
-                new BuildArchitecture(BuildTarget.WebGL, "WebGL", true),
+                new BuildArchitecture(BuildTarget.WebGL, "WebGL", true, _binaryNameFormat),
             };
         }
     }

@@ -13,7 +13,6 @@ public class BuildPlatform
     public BuildVariant[] variants = new BuildVariant[0];
 
     public string platformName;
-    public string binaryNameFormat;
     public string dataDirNameFormat;
     public BuildTargetGroup targetGroup;
     

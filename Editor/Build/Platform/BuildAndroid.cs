@@ -13,6 +13,11 @@ public class BuildAndroid : BuildPlatform
     private const string _dataDirNameFormat = "{0}_Data";
     private const BuildTargetGroup _targetGroup = BuildTargetGroup.Android;
 
+    private const string _deviceTypeVariantId = "Device Type";
+    private const string _textureCompressionVariantId = "Texture Compression";
+    private const string _buildSystemVariantId = "Build System";
+    private const string _splitAPKsVariantId = "Split APKs";
+    
     #endregion
 
     public BuildAndroid()
@@ -24,22 +29,26 @@ public class BuildAndroid : BuildPlatform
     public override void Init()
     {
         platformName = _name;
-        binaryNameFormat = _binaryNameFormat;
         dataDirNameFormat = _dataDirNameFormat;
         targetGroup = _targetGroup;
 
         if (architectures == null || architectures.Length == 0)
         {
             architectures = new BuildArchitecture[] {
-                new BuildArchitecture(BuildTarget.Android, "Android", true)
+                new BuildArchitecture(BuildTarget.Android, "Android", true, _binaryNameFormat)
             };
         }
         if (variants == null || variants.Length == 0)
         {
             variants = new BuildVariant[] {
-                new BuildVariant("Device Type", new string[] { "FAT", "ARMv7", "x86" }, 0),
-                new BuildVariant("Texture Compression", new string[] { "ETC", "ETC2", "ASTC", "DXT", "PVRTC", "ATC", "Generic" }, 0),
-                new BuildVariant("Build System", new string[] { "Internal", "Gradle", "ADT (Legacy)" }, 0)
+#if UNITY_2018_1_OR_NEWER
+                new BuildVariant(_deviceTypeVariantId, new string[] { "ARMv7", "ARM64", "All" }, 0),
+#else
+                new BuildVariant(_deviceTypeVariantId, new string[] { "FAT", "ARMv7", "x86" }, 0),
+#endif
+                new BuildVariant(_textureCompressionVariantId, new string[] { "ETC", "ETC2", "ASTC", "DXT", "PVRTC", "ATC", "Generic" }, 0),
+                new BuildVariant(_buildSystemVariantId, new string[] { "Internal", "Gradle", "ADT (Legacy)" }, 0),
+                new BuildVariant(_splitAPKsVariantId, new string[] { "Disabled", "Enabled" }, 0)
             };
         }
     }
@@ -50,14 +59,17 @@ public class BuildAndroid : BuildPlatform
         {
             switch (variantOption.variantName)
             {
-                case "DeviceType":
+                case _deviceTypeVariantId:
                     SetDeviceType(variantOption.variantKey);
                     break;
-                case "Texture Compression":
+                case _textureCompressionVariantId:
                     SetTextureCompression(variantOption.variantKey);
                     break;
-                case "Build System":
+                case _buildSystemVariantId:
                     SetBuildSystem(variantOption.variantKey);
+                    break;
+                case _splitAPKsVariantId:
+                    SetSplitAPKs(variantOption.variantKey);
                     break;
             }
         }
@@ -82,6 +94,11 @@ public class BuildAndroid : BuildPlatform
     {
         EditorUserBuildSettings.androidBuildSystem
             = (AndroidBuildSystem)System.Enum.Parse(typeof(AndroidBuildSystem), key);
+    }
+
+    private void SetSplitAPKs(string key)
+    {
+        PlayerSettings.Android.buildApkPerCpuArchitecture = key == "Enabled";
     }
 }
 
