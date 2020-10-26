@@ -1,4 +1,6 @@
-﻿
+using UnityEditor;
+using UnityEngine.Serialization;
+
 namespace SuperSystems.UnityBuild
 {
 
@@ -6,7 +8,8 @@ namespace SuperSystems.UnityBuild
 public class BuildReleaseType
 {
     public string typeName = string.Empty;
-    public string bundleIndentifier = string.Empty;
+    [FormerlySerializedAs("bundleIndentifier")]
+    public string bundleIdentifier = string.Empty;
     public string companyName = string.Empty;
     public string productName = string.Empty;
 

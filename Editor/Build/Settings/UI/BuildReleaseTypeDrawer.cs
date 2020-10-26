@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 
 namespace SuperSystems.UnityBuild
@@ -36,7 +36,7 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
             typeName.stringValue = BuildProject.SanitizeFolderName(GUILayout.TextArea(typeName.stringValue));
             EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("bundleIndentifier"));
+            EditorGUILayout.PropertyField(property.FindPropertyRelative("bundleIdentifier"));
             EditorGUILayout.PropertyField(property.FindPropertyRelative("productName"));
             EditorGUILayout.PropertyField(property.FindPropertyRelative("companyName"));
 

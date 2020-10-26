@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -355,7 +355,7 @@ public static class BuildProject
         // Unfortunately, there's not a good way to do this pre-5.6 that doesn't break building w/ batch mode.
 #if UNITY_5_6_OR_NEWER
         string preBuildBundleIdentifier = PlayerSettings.GetApplicationIdentifier(platform.targetGroup);
-        PlayerSettings.SetApplicationIdentifier(platform.targetGroup, releaseType.bundleIndentifier);
+        PlayerSettings.SetApplicationIdentifier(platform.targetGroup, releaseType.bundleIdentifier);
 #endif
 
         // Apply build variant.
