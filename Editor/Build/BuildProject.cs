@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
 
 namespace SuperSystems.UnityBuild
@@ -378,8 +379,8 @@ public static class BuildProject
 
         // Build player.
         FileUtil.DeleteFileOrDirectory(buildPath);
-		
-		// Build addressable assets
+
+        // Build addressable assets
         #if UNITY_5_6_OR_NEWER
             EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, architecture.target);
         #else
