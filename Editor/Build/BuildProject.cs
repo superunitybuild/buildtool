@@ -378,6 +378,15 @@ public static class BuildProject
 
         // Build player.
         FileUtil.DeleteFileOrDirectory(buildPath);
+		
+		// Build addressable assets
+        #if UNITY_5_6_OR_NEWER
+            EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, architecture.target);
+        #else
+            EditorUserBuildSettings.SwitchActiveBuildTarget(arch.target);
+        #endif
+        
+        AddressableAssetSettings.BuildPlayerContent();
 
         string error = "";
 #if UNITY_2018_1_OR_NEWER
