@@ -1,0 +1,9 @@
+{
+  "name": "com.supersystems.unitybuild",
+  "displayName": "Super Unity Build",
+  "version": "0.9.9",
+  "unity": "2019.1",
+  "description": "Super Unity Build is a Unity utility that automates the process of generating builds of your game. It's easy and quick enough to use on small games, but it's also powerful and extensible enough to be extremely useful on larger projects. The key to this flexibility lies in Super Unity Builds configurable degrees of granularity and its BuildActions framework which allows additional operations to be added into the build process.",
+  "documentationUrl": "https://github.com/Chaser324/unity-build/wiki",
+  "type": "tool"
+}
