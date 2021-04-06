@@ -24,15 +24,27 @@ public class ProductParametersDrawer : PropertyDrawer
         if (show)
         {
             EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
+            
+            SerializedProperty autoGenerate = property.FindPropertyRelative("autoGenerate");
+            SerializedProperty syncWithPlayerSettings = property.FindPropertyRelative("syncWithPlayerSettings");
 
+            EditorGUI.BeginDisabledGroup(syncWithPlayerSettings.boolValue);
             EditorGUILayout.PropertyField(property.FindPropertyRelative("version"));
 
             EditorGUI.BeginDisabledGroup(true);
             EditorGUILayout.PropertyField(property.FindPropertyRelative("lastGeneratedVersion"));
             EditorGUI.EndDisabledGroup();
 
-            SerializedProperty autoGenerate = property.FindPropertyRelative("autoGenerate");
             autoGenerate.boolValue = EditorGUILayout.ToggleLeft("Auto-Generate Version", autoGenerate.boolValue);
+            EditorGUI.EndDisabledGroup();
+            
+            EditorGUI.BeginDisabledGroup(autoGenerate.boolValue);
+            syncWithPlayerSettings.boolValue = EditorGUILayout.ToggleLeft("Sync Version with Player Settings", syncWithPlayerSettings.boolValue);
+            EditorGUI.EndDisabledGroup();
+            if (syncWithPlayerSettings.boolValue)
+            {
+                property.FindPropertyRelative("version").stringValue = PlayerSettings.bundleVersion;
+            }
 
             EditorGUILayout.PropertyField(property.FindPropertyRelative("buildCounter"));
 
