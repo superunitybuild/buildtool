@@ -11,11 +11,13 @@ public class BaseSettings : ScriptableObject
 
     protected static T CreateAsset<T>(string assetName) where T : BaseSettings
     {
-        string assetPath = string.Format(SettingsPath, assetName);
+        string assetPath = EditorPrefs.GetString("SuperSystems.UnityBuildSettings", string.Format(SettingsPath, assetName));
         T instance = AssetDatabase.LoadAssetAtPath<T>(assetPath) as T;
 
         if (instance == null)
-        {    
+        {
+            assetPath = string.Format(SettingsPath, assetName);
+            
             Debug.Log("UnityBuild: Creating settings file - " + assetPath);
             instance = CreateInstance<T>();
             instance.name = assetName;

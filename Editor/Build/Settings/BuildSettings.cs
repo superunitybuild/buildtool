@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace SuperSystems.UnityBuild
@@ -21,6 +22,11 @@ public class BuildSettings : BaseSettings
             }
 
             return _instance;
+        }
+        internal set
+        {
+            _instance = value;
+            EditorPrefs.SetString("SuperSystems.UnityBuildSettings", AssetDatabase.GetAssetPath(_instance));
         }
     }
 
