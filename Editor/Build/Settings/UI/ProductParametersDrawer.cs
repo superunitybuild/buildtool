@@ -41,6 +41,7 @@ public class ProductParametersDrawer : PropertyDrawer
             EditorGUI.BeginDisabledGroup(autoGenerate.boolValue);
             syncWithPlayerSettings.boolValue = EditorGUILayout.ToggleLeft("Sync Version with Player Settings", syncWithPlayerSettings.boolValue);
             EditorGUI.EndDisabledGroup();
+
             if (syncWithPlayerSettings.boolValue)
             {
                 property.FindPropertyRelative("version").stringValue = PlayerSettings.bundleVersion;
@@ -53,7 +54,7 @@ public class ProductParametersDrawer : PropertyDrawer
                 property.FindPropertyRelative("buildCounter").intValue = 0;
             }
 
-            if (!autoGenerate.boolValue && GUILayout.Button("Generate Version String Now", GUILayout.ExpandWidth(true)))
+            if (!autoGenerate.boolValue && !syncWithPlayerSettings.boolValue && GUILayout.Button("Generate Version String Now", GUILayout.ExpandWidth(true)))
             {
                 BuildProject.GenerateVersionString(BuildSettings.productParameters, DateTime.Now);
             }
