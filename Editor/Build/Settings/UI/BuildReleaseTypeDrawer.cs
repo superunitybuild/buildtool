@@ -45,21 +45,27 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
 
             EditorGUILayout.PropertyField(property.FindPropertyRelative("customDefines"));
 
-            SerializedProperty developmentBuild = property.FindPropertyRelative("developmentBuild");
-            SerializedProperty allowDebugging = property.FindPropertyRelative("allowDebugging");
-            SerializedProperty enableHeadlessMode = property.FindPropertyRelative("enableHeadlessMode");
+            SerializedProperty buildOptions = property.FindPropertyRelative("buildOptions");
+            
+            bool enableHeadlessMode = ((BuildOptions)buildOptions.intValue & BuildOptions.EnableHeadlessMode) == BuildOptions.EnableHeadlessMode;
+            bool developmentBuild = ((BuildOptions)buildOptions.intValue & BuildOptions.Development) == BuildOptions.Development;
+            bool allowDebugging = ((BuildOptions)buildOptions.intValue & BuildOptions.AllowDebugging) == BuildOptions.AllowDebugging;
+            
+            enableHeadlessMode = EditorGUILayout.ToggleLeft(" Server Build", enableHeadlessMode);
+            if (enableHeadlessMode) buildOptions.intValue |= (int)BuildOptions.EnableHeadlessMode;
+            else buildOptions.intValue &= ~(int)BuildOptions.EnableHeadlessMode;
+            
+            developmentBuild = EditorGUILayout.ToggleLeft(" Development Build", developmentBuild);
+            if (developmentBuild) buildOptions.intValue |= (int)BuildOptions.Development;
+            else buildOptions.intValue &= ~(int)BuildOptions.Development;
 
-            EditorGUI.BeginDisabledGroup(enableHeadlessMode.boolValue);
-            developmentBuild.boolValue = EditorGUILayout.ToggleLeft(" Development Build", developmentBuild.boolValue);
+            EditorGUI.BeginDisabledGroup(!developmentBuild);
+            allowDebugging = EditorGUILayout.ToggleLeft(" Script Debugging", allowDebugging);
             EditorGUI.EndDisabledGroup();
-
-            EditorGUI.BeginDisabledGroup(!developmentBuild.boolValue);
-            allowDebugging.boolValue = EditorGUILayout.ToggleLeft(" Script Debugging", allowDebugging.boolValue);
-            EditorGUI.EndDisabledGroup();
-
-            EditorGUI.BeginDisabledGroup(developmentBuild.boolValue);
-            enableHeadlessMode.boolValue = EditorGUILayout.ToggleLeft(" Headless Mode", enableHeadlessMode.boolValue);
-            EditorGUI.EndDisabledGroup();
+            if (allowDebugging) buildOptions.intValue |= (int)BuildOptions.AllowDebugging;
+            else buildOptions.intValue &= ~(int)BuildOptions.AllowDebugging;
+            
+            buildOptions.intValue = (int)(BuildOptions)EditorGUILayout.EnumFlagsField("Advanced", (BuildOptions)buildOptions.intValue);
 
             EditorGUILayout.PropertyField(property.FindPropertyRelative("sceneList"));
 
