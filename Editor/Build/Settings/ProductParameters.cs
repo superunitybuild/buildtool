@@ -12,6 +12,7 @@ public class ProductParameters
     // $NOUN, $ADJECTIVE, $DAYSSINCE("DATE"), $SECONDS, $BUILDS
     public string version = "1.0.$DAYSSINCE(\"January 1, 2015\").$SECONDS";
     public bool autoGenerate = true;
+    public bool syncWithPlayerSettings = false;
 }
 
 }
