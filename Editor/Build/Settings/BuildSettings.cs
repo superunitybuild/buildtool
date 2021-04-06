@@ -1,9 +1,11 @@
 ﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace SuperSystems.UnityBuild
 {
 
+[CreateAssetMenu(fileName = "UnityBuildSettings", menuName = "UnityBuild Settings", order = 1)]
 [Serializable]
 public class BuildSettings : BaseSettings
 {
@@ -21,6 +23,11 @@ public class BuildSettings : BaseSettings
             }
 
             return _instance;
+        }
+        internal set
+        {
+            _instance = value;
+            EditorPrefs.SetString(SettingsPrefsKey, AssetDatabase.GetAssetPath(_instance));
         }
     }
 
