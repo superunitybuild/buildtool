@@ -91,8 +91,18 @@ public class UnityBuildWindow : EditorWindow
         if (go == null)
             go = new SerializedObject(this);
 
-        // Add field to switch BuildSettings
-        currentBuildSettings = EditorGUILayout.ObjectField(currentBuildSettings, typeof(BuildSettings), false) as BuildSettings;
+        // Add field to switch the BuildSettings asset
+        EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
+        currentBuildSettings = EditorGUILayout.ObjectField("Build Settings", currentBuildSettings, typeof(BuildSettings), false) as BuildSettings;
+        EditorGUILayout.EndVertical();
+        GUILayout.Space(15);
+
+        // Override a 'None' selection for the BuildSettings asset
+        if (currentBuildSettings == null)
+        {
+            currentBuildSettings = BuildSettings.instance;
+        }
+
         if (currentBuildSettings != BuildSettings.instance)
         {
             BuildSettings.instance = currentBuildSettings;
