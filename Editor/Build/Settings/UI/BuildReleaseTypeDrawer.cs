@@ -65,7 +65,8 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
             if (allowDebugging) buildOptions.intValue |= (int)BuildOptions.AllowDebugging;
             else buildOptions.intValue &= ~(int)BuildOptions.AllowDebugging;
             
-            buildOptions.intValue = (int)(BuildOptions)EditorGUILayout.EnumFlagsField("Advanced", (BuildOptions)buildOptions.intValue);
+            GUILayout.Space(15);
+            buildOptions.intValue = (int)(BuildOptions)EditorGUILayout.EnumFlagsField("Advanced Options", (BuildOptions)buildOptions.intValue);
 
             EditorGUILayout.PropertyField(property.FindPropertyRelative("sceneList"));
 

@@ -12,14 +12,16 @@ public static class BuildConstantsGenerator
 {
     public const string NONE = "None";
 
+    private const string FileName = "BuildConstants.cs";
+    private static readonly string DefaultFilePath = Path.Combine(Constants.SettingsDirectoryName, FileName);
+
     public static string FindFile()
     {
-        string[] fileSearchResults = Directory.GetFiles(Application.dataPath, "BuildConstants.cs", SearchOption.AllDirectories);
+        string[] fileSearchResults = Directory.GetFiles(Application.dataPath, FileName, SearchOption.AllDirectories);
         string filePath = null;
-        string desiredFilePath = string.Format("UnityBuild{0}BuildConstants.cs", Path.DirectorySeparatorChar);
         for (int i = 0; i < fileSearchResults.Length; i++)
         {
-            if (fileSearchResults[i].EndsWith(desiredFilePath))
+            if (fileSearchResults[i].EndsWith(DefaultFilePath))
             {
                 filePath = fileSearchResults[i];
                 break;
@@ -38,37 +40,15 @@ public static class BuildConstantsGenerator
         BuildDistribution currentBuildDistribution = null)
     {
         // Find the BuildConstants file.
-        string filePath = FindFile();
+        string currentFilePath = FindFile();
+        string filePath = !string.IsNullOrEmpty(currentFilePath) ? currentFilePath : Path.Combine(Constants.AssetsDirectoryName, DefaultFilePath);
 
-        if (string.IsNullOrEmpty(filePath))
-        {
-            return;
-        }
-
-        // Cache any current values if needed.
-        string versionString = string.IsNullOrEmpty(currentVersion) ? BuildConstants.version.ToString() : currentVersion;
-        string releaseTypeString = currentReleaseType == null ? BuildConstants.releaseType.ToString() : SanitizeString(currentReleaseType.typeName);
-        string platformString = currentBuildPlatform == null ? BuildConstants.platform.ToString() : SanitizeString(currentBuildPlatform.platformName);
-        string archString = currentBuildArchitecture == null ? BuildConstants.architecture.ToString() : SanitizeString(currentBuildArchitecture.name);
-        
-        string distributionString = string.Empty;
-        if (currentBuildDistribution == null)
-        {
-            if (currentReleaseType == null)
-            {
-                // No new parameter specified, so use the old value.
-                distributionString = BuildConstants.architecture.ToString();
-            }
-            else
-            {
-                // There are new parameters but no distribution. Should be intentional, so distribution is NONE.
-                distributionString = NONE;
-            }
-        }
-        else
-        {
-            distributionString = SanitizeString(currentBuildDistribution.distributionName);
-        }
+        // Generate strings
+        string versionString = currentVersion;
+        string releaseTypeString = currentReleaseType == null ? NONE : SanitizeString(currentReleaseType.typeName);
+        string platformString = currentBuildPlatform == null ? NONE : SanitizeString(currentBuildPlatform.platformName);
+        string archString = currentBuildArchitecture == null ? NONE : SanitizeString(currentBuildArchitecture.name);
+        string distributionString = currentBuildDistribution == null ? NONE : SanitizeString(currentBuildDistribution.distributionName);
 
         // Delete any existing version.
         if (File.Exists(filePath))

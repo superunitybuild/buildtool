@@ -7,15 +7,13 @@ namespace SuperSystems.UnityBuild
 
 public class BaseSettings : ScriptableObject
 {
-    protected const string SettingsFolderName = "UnityBuildSettings";
-    protected const string SettingsPath = "Assets/{0}";
     protected const string SettingsPrefsKey = "SuperSystems.UnityBuildSettings";
 
     protected static T CreateAsset<T>(string assetName) where T : BaseSettings
     {
         // Try to load an existing settings asset at the path specified in EditorPrefs, or fallback to a default path
-        string settingsRoot = string.Format(SettingsPath, SettingsFolderName);
-        string defaultAssetPath = settingsRoot + "/" + string.Format("{0}.asset", assetName);
+        string settingsRoot = Path.Combine(Constants.AssetsDirectoryName, Constants.SettingsDirectoryName);
+        string defaultAssetPath = Path.Combine(settingsRoot, string.Format("{0}.asset", assetName));
         string prefsAssetPath = EditorPrefs.HasKey(SettingsPrefsKey) ?
             EditorPrefs.GetString(SettingsPrefsKey, defaultAssetPath) :
             defaultAssetPath;
@@ -30,7 +28,7 @@ public class BaseSettings : ScriptableObject
             instance.name = assetName;
 
             if (!Directory.Exists(settingsRoot))
-                AssetDatabase.CreateFolder("Assets", SettingsFolderName);
+                AssetDatabase.CreateFolder(Constants.AssetsDirectoryName, Constants.SettingsDirectoryName);
 
             AssetDatabase.CreateAsset(instance, defaultAssetPath);
         }
