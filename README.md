@@ -24,7 +24,7 @@ Requires Unity 5.0 or higher. Currently supports Windows, OSX, and Linux builds 
 
 ### Install
 
-Either [download the latest released Unity Package][release] and import it into your project OR [download the zip][download] of this repository and extract its contents into your Unity project's Assets directory.
+ You can [add the link from our git repository](https://github.com/Chaser324/unity-build.git) and load this package using [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-manager-ui@2.0/manual/index.html), you can also [download the latest released Unity Package][release] and import it into your project OR [download the zip][download] of this repository and extract its contents into your Unity project's Assets directory.
 
 You may also want to download some of the available BuildAction modules in the [Unity-Build-Actions][unitybuild-actions] repository to expand SuperUnityBuild's capabilities.
 
