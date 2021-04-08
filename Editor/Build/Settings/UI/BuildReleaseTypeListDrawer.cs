@@ -47,6 +47,8 @@ public class BuildReleaseTypeListDrawer : PropertyDrawer
                 SerializedProperty addedEntry = list.GetArrayElementAtIndex(addedIndex);
                 addedEntry.FindPropertyRelative("typeName").stringValue = "NewReleaseType";
                 addedEntry.FindPropertyRelative("productName").stringValue = Application.productName;
+                addedEntry.FindPropertyRelative("bundleIdentifier").stringValue = Application.identifier;
+                addedEntry.FindPropertyRelative("companyName").stringValue = Application.companyName;
 
                 list.serializedObject.ApplyModifiedProperties();
 
