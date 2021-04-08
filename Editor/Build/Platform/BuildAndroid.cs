@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
 
 [Serializable]

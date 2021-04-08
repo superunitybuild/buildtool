@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
 
 [Serializable]

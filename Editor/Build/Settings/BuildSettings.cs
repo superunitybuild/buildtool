@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
 
 [CreateAssetMenu(fileName = "UnityBuildSettings", menuName = "UnityBuild Settings", order = 1)]

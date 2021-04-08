@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine.Serialization;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
 
 [System.Serializable]

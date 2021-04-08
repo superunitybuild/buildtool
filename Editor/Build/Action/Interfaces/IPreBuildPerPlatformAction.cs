@@ -1,4 +1,5 @@
 ﻿
-public interface IPreBuildPerPlatformAction
+namespace SuperUnityBuild.BuildTool
 {
+    public interface IPreBuildPerPlatformAction { }
 }

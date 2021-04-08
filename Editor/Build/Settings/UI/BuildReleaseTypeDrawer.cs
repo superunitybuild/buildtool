@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
 
 [CustomPropertyDrawer(typeof(BuildReleaseType))]

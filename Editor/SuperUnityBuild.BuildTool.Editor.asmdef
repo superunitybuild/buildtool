@@ -1,6 +1,6 @@
 {
-    "name": "SuperSystems.UnityBuild.Editor",
-    "rootNamespace": "SuperSystems.UnityBuild",
+    "name": "SuperUnityBuild.BuildTool.Editor",
+    "rootNamespace": "SuperUnityBuild.BuildTool",
     "references": [],
     "includePlatforms": [
         "Editor"

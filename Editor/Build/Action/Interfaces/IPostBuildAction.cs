@@ -1,4 +1,5 @@
 ﻿
-public interface IPostBuildAction
+namespace SuperUnityBuild.BuildTool
 {
+    public interface IPostBuildAction { }
 }

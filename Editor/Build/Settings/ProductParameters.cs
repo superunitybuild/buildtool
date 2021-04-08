@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
 
 [Serializable]

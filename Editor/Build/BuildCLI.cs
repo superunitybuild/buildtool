@@ -1,6 +1,6 @@
 ﻿using UnityEditor;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
 
 public static class BuildCLI

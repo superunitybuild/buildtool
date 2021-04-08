@@ -2,12 +2,12 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
 
 public class BaseSettings : ScriptableObject
 {
-    protected const string SettingsPrefsKey = "SuperSystems.UnityBuildSettings";
+    protected const string SettingsPrefsKey = "SuperUnityBuild.BuildTool.BuildSettings";
 
     protected static T CreateAsset<T>(string assetName) where T : BaseSettings
     {

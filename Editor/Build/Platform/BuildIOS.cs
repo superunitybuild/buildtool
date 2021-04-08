@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEditor;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
 
     [Serializable]
