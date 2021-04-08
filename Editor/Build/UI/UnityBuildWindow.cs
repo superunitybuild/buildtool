@@ -117,9 +117,8 @@ public class UnityBuildWindow : EditorWindow
 
     private void DrawTitle()
     {
-        EditorGUILayout.LabelField("Super Unity Build", UnityBuildGUIUtility.mainTitleStyle);
-        EditorGUILayout.LabelField("by Super Systems Softworks", UnityBuildGUIUtility.subTitleStyle);
-        GUILayout.Space(15);
+        EditorGUILayout.LabelField("SuperUnityBuild", UnityBuildGUIUtility.mainTitleStyle);
+        GUILayout.Space(25);
     }
 
     private void DrawProperties()

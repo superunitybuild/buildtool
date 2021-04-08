@@ -5,12 +5,12 @@
 
 [Unity Forums Thread][unity-thread] | [Documentation Wiki][unitybuild-wiki]
 
-SuperUnityBuild is a Unity utility that automates the process of generating builds of your game. It's easy and quick enough to use on small games, but it's also powerful and extensible enough to be extremely useful on larger projects. The key to this flexibility lies in SuperUnityBuilds configurable degrees of granularity and its "BuildActions" framework which allows additional operations to be added into the build process.
+SuperUnityBuild is a Unity utility that automates the process of generating builds of your game. It's easy and quick enough to use on small games, but it's also powerful and extensible enough to be extremely useful on larger projects. The key to this flexibility lies in SuperUnityBuild's configurable degrees of granularity and its "BuildActions" framework which allows additional operations to be added into the build process.
 
 Features:
 * **Manage and Build Multiple Versions** - If you're targetting more than one platform or distribution storefront, the build process can quickly become very cumbersome with Unity's built in tools. SuperUnityBuild makes it easy to manage a wide array of build configurations targetting any number of versions, platforms, architectures, or distribution methods.
 * **One-Click Batch Builds** - Easily kick-off batch builds for all or a specific subset of your build configurations.
-* **Expanded Build Capability** - SuperUnityBuild overs many features not available in Unity's built in build workflow such as version number generation, and the BuildAction framework provides options for even more expanded build capabilities like automated file copying/moving, creating zip files, and building AssetBundles.
+* **Expanded Build Capability** - SuperUnityBuild offers many features not available in Unity's built in build workflow such as version number generation, and the BuildAction framework provides options for even more expanded build capabilities like automated file copying/moving, creating zip files, and building AssetBundles.
 * **Quick Initial Setup** - If all you need is the bare essentials, you can be up and running in minutes. SuperUnityBuild scales to fit your project's specific needs whether it be large or small.
 * **Highly Extensible and Customizable** - SuperUnityBuild's BuildAction framework provides simple hooks for adding in your own additional functionality.
 * **Free and Open-Source** - Some similar tools available only on the AssetStore are as much as $50+.
