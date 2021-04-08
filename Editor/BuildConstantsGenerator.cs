@@ -13,7 +13,7 @@ public static class BuildConstantsGenerator
     public const string NONE = "None";
 
     private const string FileName = "BuildConstants.cs";
-    private static readonly string DefaultFilePath = Path.Combine(Constants.SettingsDirectoryName, FileName);
+    private static readonly string DefaultFilePath = Path.Combine(Constants.RootDirectoryName, FileName);
 
     public static string FindFile()
     {
@@ -58,6 +58,8 @@ public static class BuildConstantsGenerator
 
         // Create a buffer that we'll use to check for any duplicated names.
         List<string> enumBuffer = new List<string>();
+
+        AssetDatabaseUtil.EnsureDirectoriesExist();
 
         using (StreamWriter writer = new StreamWriter(filePath))
         {

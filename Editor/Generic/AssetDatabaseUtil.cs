@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
@@ -15,6 +16,23 @@ namespace SuperUnityBuild.BuildTool
 #endif
 
             AssetDatabase.ImportAsset(path, options);
+        }
+
+        public static void EnsureDirectoriesExist()
+        {
+            string assetsRoot = Path.Combine(Constants.AssetsDirectoryName, Constants.RootDirectoryName);
+            string buildActionsRoot = Path.Combine(assetsRoot, Constants.BuildActionsDirectoryName);
+            string settingsRoot = Path.Combine(assetsRoot, Constants.SettingsDirectoryName);
+
+            CreateFolder(assetsRoot, Constants.AssetsDirectoryName, Constants.RootDirectoryName);
+            CreateFolder(buildActionsRoot, assetsRoot, Constants.BuildActionsDirectoryName);
+            CreateFolder(settingsRoot, assetsRoot, Constants.SettingsDirectoryName);
+        }
+
+        private static void CreateFolder(string path, string parentFolderName, string folderName)
+        {
+            if (!Directory.Exists(path))
+                AssetDatabase.CreateFolder(parentFolderName, folderName);
         }
     }
 }
