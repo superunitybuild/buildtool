@@ -30,34 +30,19 @@ public class BuildPlatformListDrawer : PropertyDrawer
 
         UnityBuildGUIUtility.HelpButton("Parameter-Details#build-platforms");
         EditorGUILayout.EndHorizontal();
-
-        //if (list == null)
-        //{
-            platformList = fieldInfo.GetValue(property.serializedObject.targetObject) as BuildPlatformList;
-            PopulateList();
-            list = property.FindPropertyRelative("platforms");
-            list.serializedObject.Update();
-        //}
+ 
+        platformList = fieldInfo.GetValue(property.serializedObject.targetObject) as BuildPlatformList;
+        PopulateList();
+        list = property.FindPropertyRelative("platforms");
+        list.serializedObject.Update();
 
         if (show)
         {
             EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
-            // Draw all created/enabled platforms.
-            int enabledCount = 0;
-            for (int i = 0; i < list.arraySize; i++)
-            {
-                SerializedProperty platformProperty = list.GetArrayElementAtIndex(i);
-                SerializedProperty platformEnabled = platformProperty.FindPropertyRelative("enabled");
+            DrawPlatforms(property);
 
-                if (platformEnabled.boolValue)
-                {
-                    ++enabledCount;
-                    EditorGUILayout.PropertyField(platformProperty, GUILayout.MaxHeight(0));
-                }
-            }
-
-            if (enabledCount > 0)
+            if (list.arraySize > 0)
                 GUILayout.Space(20);
 
             // Draw all available platforms.
@@ -66,7 +51,12 @@ public class BuildPlatformListDrawer : PropertyDrawer
             index = EditorGUILayout.Popup(index, availablePlatformNameList.ToArray(), UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));
             if (GUILayout.Button("Add Platform", GUILayout.ExpandWidth(false), GUILayout.MaxWidth(150)))
             {
-                platformList.platforms.Add((BuildPlatform)Activator.CreateInstance(availablePlatformTypeList[index]));
+                BuildPlatform addedBuildPlatform = ScriptableObject.CreateInstance(availablePlatformTypeList[index]) as BuildPlatform;
+                platformList.platforms.Add(addedBuildPlatform);
+
+                AssetDatabase.AddObjectToAsset(addedBuildPlatform, BuildSettings.instance);
+                AssetDatabaseUtil.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
+
                 platformList.platforms[platformList.platforms.Count - 1].enabled = true;
 
                 for (int i = platformList.platforms.Count - 1; i >= 0; i--)
@@ -84,6 +74,55 @@ public class BuildPlatformListDrawer : PropertyDrawer
         EditorGUI.EndProperty();
     }
 
+    private void DrawPlatforms(SerializedProperty property)
+    {
+        for (int i = 0; i < list.arraySize; i++)
+        {
+            SerializedProperty listEntry = list.GetArrayElementAtIndex(i);
+
+            BuildPlatform buildPlatform = listEntry.objectReferenceValue as BuildPlatform;
+            if (buildPlatform == null)
+            {
+                list.DeleteArrayElementAtIndex(i);
+                --i;
+                continue;
+            }
+
+            SerializedObject serializedBuildPlatform = new SerializedObject(buildPlatform);
+
+            EditorGUILayout.BeginHorizontal();
+            bool show = listEntry.isExpanded;
+
+            UnityBuildGUIUtility.DropdownHeader(buildPlatform.platformName, ref show, false, GUILayout.ExpandWidth(true));
+
+            listEntry.isExpanded = show;
+
+            if (GUILayout.Button("X", UnityBuildGUIUtility.helpButtonStyle))
+            {
+                List<BuildPlatform> buildPlatforms = BuildSettings.platformList.platforms;
+
+                // Destroy underlying object.
+                ScriptableObject.DestroyImmediate(buildPlatforms[i], true);
+                AssetDatabaseUtil.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
+
+                // Remove object reference from list.
+                // TODO: Why do I need to call this twice? First call nulls reference, second one then deletes null entry.
+                list.DeleteArrayElementAtIndex(i);
+                list.DeleteArrayElementAtIndex(i);
+                show = false;
+            }
+
+            EditorGUILayout.EndHorizontal();
+
+            if (show && buildPlatform.enabled)
+            {
+                EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
+                buildPlatform.Draw(serializedBuildPlatform);
+                EditorGUILayout.EndVertical();
+            }
+        }
+    }
+
     private void PopulateList()
     {
         Type ti = typeof(BuildPlatform);
@@ -96,7 +135,7 @@ public class BuildPlatformListDrawer : PropertyDrawer
             {
                 if (ti.IsAssignableFrom(t) && ti != t)
                 {
-                    BuildPlatform instance = (BuildPlatform)Activator.CreateInstance(t);
+                    BuildPlatform instance = ScriptableObject.CreateInstance(t) as BuildPlatform;
                     availablePlatformNameList.Add(instance.platformName);
                     availablePlatformTypeList.Add(t);
                 }

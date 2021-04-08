@@ -116,7 +116,7 @@ public class BuildActionListDrawer : PropertyDrawer
 
                 // Destroy underlying object.
                 ScriptableObject.DestroyImmediate(buildActions[i], true);
-                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
+                AssetDatabaseUtil.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
 
                 // Remove object reference from list.
                 // TODO: Why do I need to call this twice? First call nulls reference, second one then deletes null entry.
@@ -167,14 +167,13 @@ public class BuildActionListDrawer : PropertyDrawer
                     buildActions = BuildSettings.postBuildActions.buildActions;
                 }
 
-                //buildActions[addedIndex] = Activator.CreateInstance(addedType) as BuildAction;
                 buildActions[addedIndex] = ScriptableObject.CreateInstance(addedType) as BuildAction;
                 buildActions[addedIndex].name = addedType.Name;
                 buildActions[addedIndex].actionName = addedType.Name;
                 buildActions[addedIndex].filter = new BuildFilter();
 
                 AssetDatabase.AddObjectToAsset(buildActions[addedIndex], BuildSettings.instance);
-                AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
+                AssetDatabaseUtil.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
 
                 index = 0;
             }
