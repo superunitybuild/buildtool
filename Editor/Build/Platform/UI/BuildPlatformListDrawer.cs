@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -32,7 +33,7 @@ public class BuildPlatformListDrawer : PropertyDrawer
         EditorGUILayout.EndHorizontal();
  
         platformList = fieldInfo.GetValue(property.serializedObject.targetObject) as BuildPlatformList;
-        PopulateList();
+        PopulateAvailablePlatforms();
         list = property.FindPropertyRelative("platforms");
         list.serializedObject.Update();
 
@@ -123,8 +124,11 @@ public class BuildPlatformListDrawer : PropertyDrawer
         }
     }
 
-    private void PopulateList()
+    private void PopulateAvailablePlatforms()
     {
+        if (availablePlatformTypeList.Count > 0)
+            return;
+        
         Type ti = typeof(BuildPlatform);
 
         availablePlatformNameList.Clear();
