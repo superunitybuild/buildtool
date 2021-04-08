@@ -181,11 +181,8 @@ namespace SuperUnityBuild.BuildTool
 
                             if (GUILayout.Button("Refresh BuildConstants and Apply Defines", GUILayout.ExpandWidth(true)))
                             {
-#if UNITY_5_6_OR_NEWER
                                 EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, arch.target);
-#else
-                                EditorUserBuildSettings.SwitchActiveBuildTarget(arch.target);
-#endif
+
 
                                 string currentDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
                                 string appliedDefines = BuildProject.MergeDefines(currentDefines, defines);

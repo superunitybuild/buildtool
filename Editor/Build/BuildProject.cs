@@ -346,11 +346,8 @@ namespace SuperUnityBuild.BuildTool
             PlayerSettings.productName = releaseType.productName;
 
             // Set bundle info.
-            // Unfortunately, there's not a good way to do this pre-5.6 that doesn't break building w/ batch mode.
-#if UNITY_5_6_OR_NEWER
             string preBuildBundleIdentifier = PlayerSettings.GetApplicationIdentifier(platform.targetGroup);
             PlayerSettings.SetApplicationIdentifier(platform.targetGroup, releaseType.bundleIdentifier);
-#endif
 
             // Apply build variant.
             platform.ApplyVariant();
@@ -399,9 +396,7 @@ namespace SuperUnityBuild.BuildTool
             PlayerSettings.companyName = preBuildCompanyName;
             PlayerSettings.productName = preBuildProductName;
 
-#if UNITY_5_6_OR_NEWER
             PlayerSettings.SetApplicationIdentifier(platform.targetGroup, preBuildBundleIdentifier);
-#endif
 
             return success;
         }
