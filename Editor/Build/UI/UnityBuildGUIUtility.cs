@@ -6,7 +6,7 @@ namespace SuperSystems.UnityBuild
 
 public class UnityBuildGUIUtility
 {
-    private const string HELP_URL = @"https://github.com/Chaser324/unity-build/wiki/{0}";
+    private const string HELP_URL = @"https://github.com/superunitybuild/buildtool/wiki/{0}";
 
     #region Singleton
 

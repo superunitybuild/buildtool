@@ -1,7 +1,7 @@
 # SuperUnityBuild
 > A powerful automation tool for quickly and easily generating builds of a game with Unity.
 
-![](https://github.com/Chaser324/unity-build/blob/gh-pages/Unity_2017-01-11_00-38-20.png)
+![](https://github.com/superunitybuild/buildtool/blob/gh-pages/Unity_2017-01-11_00-38-20.png)
 
 [Unity Forums Thread][unity-thread] | [Documentation Wiki][unitybuild-wiki]
 
@@ -24,13 +24,13 @@ Requires Unity 5.0 or higher. Currently supports Windows, OSX, and Linux builds 
 
 ### Install
 
- You can [add the link from our git repository](https://github.com/Chaser324/unity-build.git) and load this package using [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-manager-ui@2.0/manual/index.html), you can also [download the latest released Unity Package][release] and import it into your project OR [download the zip][download] of this repository and extract its contents into your Unity project's Assets directory.
+ You can [add the link from our git repository](https://github.com/superunitybuild/buildtool.git) and load this package using [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-manager-ui@2.0/manual/index.html), you can also [download the latest released Unity Package][release] and import it into your project OR [download the zip][download] of this repository and extract its contents into your Unity project's Assets directory.
 
 You may also want to download some of the available BuildAction modules in the [Unity-Build-Actions][unitybuild-actions] repository to expand SuperUnityBuild's capabilities.
 
 ### Basic Setup
 
-See [Standard Usage](https://github.com/Chaser324/unity-build/wiki/Standard-Usage) in the wiki.
+See [Standard Usage](https://github.com/superunitybuild/buildtool/wiki/Standard-Usage) in the wiki.
 
 
 
@@ -43,14 +43,14 @@ See [Standard Usage](https://github.com/Chaser324/unity-build/wiki/Standard-Usag
 
 ### Creating BuildActions
 
-See [Build Actions](https://github.com/Chaser324/unity-build/wiki/Build-Actions) in the wiki for details.
+See [Build Actions](https://github.com/superunitybuild/buildtool/wiki/Build-Actions) in the wiki for details.
 
 
 
 
 ## Command Line Interface
 
-See [Command Line Interface](https://github.com/Chaser324/unity-build/wiki/Command-Line-Interface) in the wiki.
+See [Command Line Interface](https://github.com/superunitybuild/buildtool/wiki/Command-Line-Interface) in the wiki.
 
 
 
@@ -69,14 +69,14 @@ Bug reports, feature requests, and pull requests are welcome and appreciated.
 
 
 ## License
-All code in this repository ([unity-build](https://github.com/Chaser324/unity-build)) is made freely available under the MIT license. This essentially means you're free to use it however you like as long as you provide attribution.
+All code in this repository ([unity-build](https://github.com/superunitybuild/buildtool)) is made freely available under the MIT license. This essentially means you're free to use it however you like as long as you provide attribution.
 
 
 
 
-[download]: https://github.com/Chaser324/unity-build/archive/master.zip
-[release]: https://github.com/Chaser324/unity-build/releases
-[unitybuild]: https://github.com/Chaser324/unity-build
-[unitybuild-actions]: https://github.com/Chaser324/unity-build-actions
-[unitybuild-wiki]: https://github.com/Chaser324/unity-build/wiki/
+[download]: https://github.com/superunitybuild/buildtool/archive/master.zip
+[release]: https://github.com/superunitybuild/buildtool/releases
+[unitybuild]: https://github.com/superunitybuild/buildtool
+[unitybuild-actions]: https://github.com/superunitybuild/buildactions
+[unitybuild-wiki]: https://github.com/superunitybuild/buildtool/wiki/
 [unity-thread]: https://forum.unity3d.com/threads/super-unity-build-automated-build-tool-and-framework.471114/
