@@ -1,9 +1,12 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 
 namespace SuperSystems.UnityBuild
 {
 
-[System.Serializable]
+[Serializable]
 public class BuildAndroid : BuildPlatform
 {
     #region Constants
@@ -16,7 +19,10 @@ public class BuildAndroid : BuildPlatform
     private const string _deviceTypeVariantId = "Device Type";
     private const string _textureCompressionVariantId = "Texture Compression";
     private const string _buildSystemVariantId = "Build System";
-    private const string _splitAPKsVariantId = "Split APKs";
+    private const string _splitApksVariantId = "Split APKs";
+    private const string _minSdkVersionVariantId = "Min SDK Version";
+
+    private const string _androidApiLevelEnumPrefix = "AndroidApiLevel";
     
     #endregion
 
@@ -42,13 +48,18 @@ public class BuildAndroid : BuildPlatform
         {
             variants = new BuildVariant[] {
 #if UNITY_2018_1_OR_NEWER
-                new BuildVariant(_deviceTypeVariantId, new string[] { "ARMv7", "ARM64", "All" }, 0),
+                new BuildVariant(_deviceTypeVariantId, Enum.GetNames(typeof(AndroidArchitecture)).Skip(1).ToArray(), 0),
 #else
-                new BuildVariant(_deviceTypeVariantId, new string[] { "FAT", "ARMv7", "x86" }, 0),
+                new BuildVariant(_deviceTypeVariantId, Enum.GetNames(typeof(AndroidTargetDevice)), 0),
 #endif
-                new BuildVariant(_textureCompressionVariantId, new string[] { "ETC", "ETC2", "ASTC", "DXT", "PVRTC", "ATC", "Generic" }, 0),
-                new BuildVariant(_buildSystemVariantId, new string[] { "Internal", "Gradle", "ADT (Legacy)" }, 0),
-                new BuildVariant(_splitAPKsVariantId, new string[] { "Disabled", "Enabled" }, 0)
+                new BuildVariant(_textureCompressionVariantId, Enum.GetNames(typeof(MobileTextureSubtarget)), 0),
+#if UNITY_2019_1_OR_NEWER
+                new BuildVariant(_buildSystemVariantId, new string[] { "Gradle" }, 0),
+#else
+                new BuildVariant(_buildSystemVariantId, new string[] { "Internal", "Gradle" }, 0),
+#endif
+                new BuildVariant(_splitApksVariantId, new string[] { "Disabled", "Enabled" }, 0),
+                new BuildVariant(_minSdkVersionVariantId, Enum.GetNames(typeof(AndroidSdkVersions)).Select(i => i.Replace(_androidApiLevelEnumPrefix, "")).ToArray(), 0)
             };
         }
     }
@@ -57,19 +68,24 @@ public class BuildAndroid : BuildPlatform
     {
         foreach (var variantOption in variants)
         {
+            string key = variantOption.variantKey;
+            
             switch (variantOption.variantName)
             {
                 case _deviceTypeVariantId:
-                    SetDeviceType(variantOption.variantKey);
+                    SetDeviceType(key);
                     break;
                 case _textureCompressionVariantId:
-                    SetTextureCompression(variantOption.variantKey);
+                    SetTextureCompression(key);
                     break;
                 case _buildSystemVariantId:
-                    SetBuildSystem(variantOption.variantKey);
+                    SetBuildSystem(key);
                     break;
-                case _splitAPKsVariantId:
-                    SetSplitAPKs(variantOption.variantKey);
+                case _splitApksVariantId:
+                    SetSplitApks(key);
+                    break;
+                case _minSdkVersionVariantId:
+                    SetMinSdkVersion(key);
                     break;
             }
         }
@@ -78,27 +94,33 @@ public class BuildAndroid : BuildPlatform
     private void SetDeviceType(string key)
     {
 #if UNITY_2018_1_OR_NEWER
-        PlayerSettings.Android.targetArchitectures = (AndroidArchitecture)System.Enum.Parse(typeof(AndroidArchitecture), key);
+        PlayerSettings.Android.targetArchitectures = (AndroidArchitecture)Enum.Parse(typeof(AndroidArchitecture), key);
 #else
-        PlayerSettings.Android.targetDevice = (AndroidTargetDevice)System.Enum.Parse(typeof(AndroidTargetDevice), key);
+        PlayerSettings.Android.targetDevice = (AndroidTargetDevice)Enum.Parse(typeof(AndroidTargetDevice), key);
 #endif
     }
 
     private void SetTextureCompression(string key)
     {
         EditorUserBuildSettings.androidBuildSubtarget
-            = (MobileTextureSubtarget)System.Enum.Parse(typeof(MobileTextureSubtarget), key);
+            = (MobileTextureSubtarget)Enum.Parse(typeof(MobileTextureSubtarget), key);
     }
 
     private void SetBuildSystem(string key)
     {
         EditorUserBuildSettings.androidBuildSystem
-            = (AndroidBuildSystem)System.Enum.Parse(typeof(AndroidBuildSystem), key);
+            = (AndroidBuildSystem)Enum.Parse(typeof(AndroidBuildSystem), key);
     }
 
-    private void SetSplitAPKs(string key)
+    private void SetSplitApks(string key)
     {
         PlayerSettings.Android.buildApkPerCpuArchitecture = key == "Enabled";
+    }
+
+    private void SetMinSdkVersion(string key)
+    {
+        PlayerSettings.Android.minSdkVersion
+            = (AndroidSdkVersions)Enum.Parse(typeof(AndroidSdkVersions), _androidApiLevelEnumPrefix + key);
     }
 }
 
