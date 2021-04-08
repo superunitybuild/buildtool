@@ -77,6 +77,8 @@ public class BuildNotificationListDrawer : PropertyDrawer
 
             EditorGUILayout.EndVertical();
         }
+
+        EditorGUILayout.Space(15);
     }
 
     private void DrawWarnings()
@@ -130,6 +132,8 @@ public class BuildNotificationListDrawer : PropertyDrawer
 
             EditorGUILayout.EndVertical();
         }
+
+        EditorGUILayout.Space(15);
     }
 
     private void DrawNotifications()

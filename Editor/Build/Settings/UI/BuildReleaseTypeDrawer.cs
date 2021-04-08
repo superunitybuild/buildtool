@@ -70,9 +70,7 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
 
             EditorGUILayout.PropertyField(property.FindPropertyRelative("sceneList"));
 
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Delete", GUILayout.MaxWidth(150)))
+            if (GUILayout.Button("Delete", GUILayout.ExpandWidth(true)))
             {
                 BuildReleaseType[] types = BuildSettings.releaseTypeList.releaseTypes;
                 for (int i = 0; i < types.Length; i++)
@@ -85,8 +83,6 @@ public class BuildReleaseTypeDrawer : PropertyDrawer
                     }
                 }
             }
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
 
             property.serializedObject.ApplyModifiedProperties();
 

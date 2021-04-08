@@ -70,14 +70,8 @@ public class UnityBuildGUIUtility
         _mainTitleStyle = new GUIStyle(EditorStyles.miniBoldLabel);
         _mainTitleStyle.fontSize = 18;
         _mainTitleStyle.fontStyle = FontStyle.Bold;
-        _mainTitleStyle.alignment = TextAnchor.MiddleCenter;
-        _mainTitleStyle.fixedHeight = 35;
-        _mainTitleStyle.normal.textColor = new Color32(255, 55, 85, 255);
-
-        _subTitleStyle = new GUIStyle(_mainTitleStyle);
-        _subTitleStyle.fontSize = 9;
-        _subTitleStyle.fontStyle = FontStyle.Normal;
-        _subTitleStyle.normal.textColor = new Color32(83, 229, 255, 255);
+        _mainTitleStyle.alignment = TextAnchor.MiddleLeft;
+        _mainTitleStyle.fixedHeight = 36;
 
         _dragDropArea = new GUIStyle(GUI.skin.box);
         _dragDropArea.stretchWidth = true;

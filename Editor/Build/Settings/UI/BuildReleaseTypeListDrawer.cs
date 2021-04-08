@@ -35,9 +35,8 @@ public class BuildReleaseTypeListDrawer : PropertyDrawer
             }
 
             GUILayout.Space(20);
-            GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Add Release Type", GUILayout.ExpandWidth(false), GUILayout.MaxWidth(150)))
+
+            if (GUILayout.Button("Add Release Type", GUILayout.ExpandWidth(true)))
             {
                 // Add new entry.
                 int addedIndex = list.arraySize;
@@ -56,8 +55,6 @@ public class BuildReleaseTypeListDrawer : PropertyDrawer
 
                 GUIUtility.keyboardControl = 0;
             }
-            GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
 
             EditorGUILayout.EndVertical();
         }

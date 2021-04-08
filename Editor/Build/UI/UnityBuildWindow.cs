@@ -66,6 +66,8 @@ public class UnityBuildWindow : EditorWindow
 
     protected void OnGUI()
     {
+        EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
+        
         DrawTitle();
         
         Init();
@@ -73,13 +75,19 @@ public class UnityBuildWindow : EditorWindow
         settings.Update();
         go.Update();
 
-        scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false);
+        scrollPos = EditorGUILayout.BeginScrollView(scrollPos, false, false, GUILayout.ExpandHeight(false));
 
         DrawProperties();
-        DrawBuildButtons();
-        GUILayout.Space(30);
 
         EditorGUILayout.EndScrollView();
+
+        GUILayout.Space(15);
+
+        DrawBuildButtons();
+
+        GUILayout.Space(10);
+
+        EditorGUILayout.EndVertical();
     }
 
     #endregion
@@ -92,8 +100,10 @@ public class UnityBuildWindow : EditorWindow
             go = new SerializedObject(this);
 
         // Add field to switch the BuildSettings asset
+        EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
         EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
         currentBuildSettings = EditorGUILayout.ObjectField("Build Settings", currentBuildSettings, typeof(BuildSettings), false) as BuildSettings;
+        EditorGUILayout.EndVertical();
         EditorGUILayout.EndVertical();
         GUILayout.Space(15);
 
@@ -142,6 +152,7 @@ public class UnityBuildWindow : EditorWindow
     {
         int totalBuildCount = BuildSettings.projectConfigurations.GetEnabledBuildsCount();
 
+        EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
         EditorGUI.BeginDisabledGroup(totalBuildCount < 1);
         GUI.backgroundColor = Color.green;
         if (GUILayout.Button("Perform All Enabled Builds (" + totalBuildCount + " Builds)", GUILayout.ExpandWidth(true), GUILayout.MinHeight(30)))
@@ -150,6 +161,7 @@ public class UnityBuildWindow : EditorWindow
         }
         GUI.backgroundColor = UnityBuildGUIUtility.defaultBackgroundColor;
         EditorGUI.EndDisabledGroup();
+        EditorGUILayout.EndVertical();
     }
 
     private void UndoHandler()
