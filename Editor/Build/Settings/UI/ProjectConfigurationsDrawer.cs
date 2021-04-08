@@ -197,7 +197,7 @@ public class ProjectConfigurationsDrawer : PropertyDrawer
                     }
                     else
                     {
-                        EditorGUILayout.HelpBox("Could not parse selected configuration. It may no longer be valid due to a changes. Select again.", MessageType.Info);
+                        EditorGUILayout.HelpBox("Could not parse selected configuration. It may no longer be valid due to a change. Select again.", MessageType.Info);
                     }
                 }
 

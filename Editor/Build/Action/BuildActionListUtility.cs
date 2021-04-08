@@ -20,7 +20,7 @@ public sealed class BuildActionListUtility
     /// </summary>
     static BuildActionListUtility()
     {
-        // Find all classes that inherit from PostBuildAction and register them.
+        // Find all classes that inherit from BuildAction and register them.
         Type ti = typeof(BuildAction);
 
         foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
