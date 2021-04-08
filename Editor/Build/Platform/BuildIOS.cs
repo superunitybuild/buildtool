@@ -3,7 +3,6 @@ using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
 {
-
     [Serializable]
     public class BuildIOS : BuildPlatform
     {
@@ -17,7 +16,7 @@ namespace SuperUnityBuild.BuildTool
         private const string _deviceTypeVariantId = "Device Type";
         private const string _sdkVersionVariantId = "Target SDK";
         private const string _buildConfigTypeVariantId = "Build Type";
-        
+
         #endregion
 
         public BuildIOS()
@@ -53,7 +52,7 @@ namespace SuperUnityBuild.BuildTool
             foreach (var variantOption in variants)
             {
                 string key = variantOption.variantKey;
-                
+
                 switch (variantOption.variantName)
                 {
                     case _buildConfigTypeVariantId:
@@ -73,7 +72,7 @@ namespace SuperUnityBuild.BuildTool
         {
             EditorUserBuildSettings.iOSBuildConfigType = (iOSBuildType)Enum.Parse(typeof(iOSBuildType), key);
         }
-        
+
         private void SetDeviceType(string key)
         {
             PlayerSettings.iOS.targetDevice = (iOSTargetDevice)Enum.Parse(typeof(iOSTargetDevice), key);

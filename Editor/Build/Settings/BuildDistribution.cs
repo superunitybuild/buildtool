@@ -1,24 +1,22 @@
 ﻿
 namespace SuperUnityBuild.BuildTool
 {
-
-[System.Serializable]
-public class BuildDistribution
-{
-    public string distributionName;
-    public bool enabled;
-
-    public BuildDistribution()
+    [System.Serializable]
+    public class BuildDistribution
     {
-        this.distributionName = string.Empty;
-        this.enabled = true;
-    }
+        public string distributionName;
+        public bool enabled;
 
-    public BuildDistribution(string distributionName, bool enabled)
-    {
-        this.distributionName = distributionName;
-        this.enabled = enabled;
-    }
-}
+        public BuildDistribution()
+        {
+            this.distributionName = string.Empty;
+            this.enabled = true;
+        }
 
+        public BuildDistribution(string distributionName, bool enabled)
+        {
+            this.distributionName = distributionName;
+            this.enabled = enabled;
+        }
+    }
 }

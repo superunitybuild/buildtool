@@ -4,71 +4,69 @@ using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
 {
-
-[CustomPropertyDrawer(typeof(BasicSettings))]
-public class BasicSettingsDrawer : PropertyDrawer
-{
-    private string lastBuildPath = string.Empty;
-
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    [CustomPropertyDrawer(typeof(BasicSettings))]
+    public class BasicSettingsDrawer : PropertyDrawer
     {
-        EditorGUI.BeginProperty(position, GUIContent.none, property);
+        private string lastBuildPath = string.Empty;
 
-        EditorGUILayout.BeginHorizontal();
-
-        bool show = property.isExpanded;
-        UnityBuildGUIUtility.DropdownHeader("Basic Settings", ref show, false, GUILayout.ExpandWidth(true));
-        property.isExpanded = show;
-
-        UnityBuildGUIUtility.HelpButton("Parameter-Details#basic-settings");
-        EditorGUILayout.EndHorizontal();
-
-        if (show)
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
+            EditorGUI.BeginProperty(position, GUIContent.none, property);
 
-            GUILayout.Label("Build Path Options", UnityBuildGUIUtility.midHeaderStyle);
-            
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("baseBuildFolder"));
-            EditorGUILayout.PropertyField(property.FindPropertyRelative("buildPath"));
+            EditorGUILayout.BeginHorizontal();
 
-            GUILayout.Space(20);
-            GUILayout.Label("Post-Build Options", UnityBuildGUIUtility.midHeaderStyle);
+            bool show = property.isExpanded;
+            UnityBuildGUIUtility.DropdownHeader("Basic Settings", ref show, false, GUILayout.ExpandWidth(true));
+            property.isExpanded = show;
 
-            SerializedProperty openBuildFolderAfterBuild = property.FindPropertyRelative("openFolderPostBuild");
-            openBuildFolderAfterBuild.boolValue = EditorGUILayout.ToggleLeft(" Open output folder after build", openBuildFolderAfterBuild.boolValue);
+            UnityBuildGUIUtility.HelpButton("Parameter-Details#basic-settings");
+            EditorGUILayout.EndHorizontal();
 
-            string buildPath = Path.GetFullPath(Path.Combine(BuildSettings.basicSettings.baseBuildFolder, BuildSettings.basicSettings.buildPath));
-            if (!string.Equals(buildPath, lastBuildPath))
+            if (show)
             {
-                lastBuildPath = buildPath;
+                EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
-                if (buildPath.Contains(Path.GetFullPath(Application.dataPath)))
+                GUILayout.Label("Build Path Options", UnityBuildGUIUtility.midHeaderStyle);
+
+                EditorGUILayout.PropertyField(property.FindPropertyRelative("baseBuildFolder"));
+                EditorGUILayout.PropertyField(property.FindPropertyRelative("buildPath"));
+
+                GUILayout.Space(20);
+                GUILayout.Label("Post-Build Options", UnityBuildGUIUtility.midHeaderStyle);
+
+                SerializedProperty openBuildFolderAfterBuild = property.FindPropertyRelative("openFolderPostBuild");
+                openBuildFolderAfterBuild.boolValue = EditorGUILayout.ToggleLeft(" Open output folder after build", openBuildFolderAfterBuild.boolValue);
+
+                string buildPath = Path.GetFullPath(Path.Combine(BuildSettings.basicSettings.baseBuildFolder, BuildSettings.basicSettings.buildPath));
+                if (!string.Equals(buildPath, lastBuildPath))
                 {
-                    BuildNotificationList.instance.AddNotification(new BuildNotification(
-                        BuildNotification.Category.Warning,
-                        "Build Folder in Assets.",
-                        "Putting build output in Assets is generally a bad idea.",
-                        true, null));
+                    lastBuildPath = buildPath;
+
+                    if (buildPath.Contains(Path.GetFullPath(Application.dataPath)))
+                    {
+                        BuildNotificationList.instance.AddNotification(new BuildNotification(
+                            BuildNotification.Category.Warning,
+                            "Build Folder in Assets.",
+                            "Putting build output in Assets is generally a bad idea.",
+                            true, null));
+                    }
                 }
+
+                if (GUILayout.Button("Open Build Folder", GUILayout.ExpandWidth(true)))
+                {
+                    string path = BuildSettings.basicSettings.baseBuildFolder;
+                    if (!Directory.Exists(path))
+                        Directory.CreateDirectory(path);
+
+                    System.Diagnostics.Process.Start(path);
+                }
+
+                property.serializedObject.ApplyModifiedProperties();
+
+                EditorGUILayout.EndVertical();
             }
 
-            if (GUILayout.Button("Open Build Folder", GUILayout.ExpandWidth(true)))
-            {
-                string path = BuildSettings.basicSettings.baseBuildFolder;
-                if (!Directory.Exists(path))
-                    Directory.CreateDirectory(path);
-
-                System.Diagnostics.Process.Start(path);
-            }
-
-            property.serializedObject.ApplyModifiedProperties();
-
-            EditorGUILayout.EndVertical();
+            EditorGUI.EndProperty();
         }
-
-        EditorGUI.EndProperty();
     }
-}
-
 }
