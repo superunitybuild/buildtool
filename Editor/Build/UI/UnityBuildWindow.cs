@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class UnityBuildWindow : EditorWindow
     {
         public BuildSettings currentBuildSettings;
@@ -28,13 +28,12 @@ namespace SuperUnityBuild.BuildTool
             UnityBuildWindow window;
             if (inspWndType != null)
             {
-                window = EditorWindow.GetWindow<UnityBuildWindow>(inspWndType);
+                window = GetWindow<UnityBuildWindow>(inspWndType);
             }
             else
             {
-                window = EditorWindow.GetWindow<UnityBuildWindow>();
+                window = GetWindow<UnityBuildWindow>();
             }
-
 
             window.Show();
         }
@@ -67,6 +66,8 @@ namespace SuperUnityBuild.BuildTool
             DrawTitle();
 
             Init();
+
+            GUILayout.Space(15);
 
             settings.Update();
             go.Update();
@@ -101,7 +102,6 @@ namespace SuperUnityBuild.BuildTool
             currentBuildSettings = EditorGUILayout.ObjectField("Build Settings", currentBuildSettings, typeof(BuildSettings), false) as BuildSettings;
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
-            GUILayout.Space(15);
 
             // Override a 'None' selection for the BuildSettings asset
             if (currentBuildSettings == null)
@@ -123,8 +123,10 @@ namespace SuperUnityBuild.BuildTool
 
         private void DrawTitle()
         {
+            EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
             EditorGUILayout.LabelField("SuperUnityBuild", UnityBuildGUIUtility.mainTitleStyle);
-            GUILayout.Space(25);
+            GUILayout.Space(30);
+            EditorGUILayout.EndVertical();
         }
 
         private void DrawProperties()
