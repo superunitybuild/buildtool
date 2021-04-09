@@ -2,7 +2,7 @@
 
 > A powerful automation tool for quickly and easily generating builds of a game with Unity.
 
-![](https://github.com/superunitybuild/buildtool/blob/gh-pages/Unity_2017-01-11_00-38-20.png)
+![Screenshot](https://github.com/superunitybuild/buildtool/blob/gh-pages/Screenshot_v1.0.0.png)
 
 [Unity Forums Thread][unity-thread] | [Documentation Wiki][unitybuild-wiki]
 
