@@ -45,7 +45,8 @@ namespace SuperUnityBuild.BuildTool
 
         protected void OnEnable()
         {
-            GUIContent title = new GUIContent("SuperUnityBuild");
+            GUIContent icon = EditorGUIUtility.IconContent("Packages/com.github.superunitybuild.buildtool/Editor/Assets/Textures/icon.png");
+            GUIContent title = new GUIContent("SuperUnityBuild", icon.image);
             titleContent = title;
 
             BuildNotificationList.instance.InitializeErrors();
