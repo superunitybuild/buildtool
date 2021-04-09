@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
 {
@@ -8,8 +9,7 @@ namespace SuperUnityBuild.BuildTool
         public int buildCounter = 0;
         public string lastGeneratedVersion = string.Empty;
 
-        // $NOUN, $ADJECTIVE, $DAYSSINCE("DATE"), $SECONDS, $BUILDS
-        public string version = "1.0.$DAYSSINCE(\"January 1, 2015\").$SECONDS";
+        [Tooltip("Recognized tokens for the version: $ADJECTIVE, $NOUN, $YEAR, $MONTH, $DAY, $TIME, $DAYSSINCE(\"Date\"), $SECONDS, $BUILD")] public string version = "1.0.0.$BUILD";
         public bool autoGenerate = true;
         public bool syncWithPlayerSettings = false;
     }
