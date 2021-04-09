@@ -1,24 +1,21 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
-
-[System.Serializable]
-public class BuildArchitecture
-{
-    public BuildTarget target;
-    public string name;
-    public bool enabled;
-    public string binaryNameFormat;
-
-    public BuildArchitecture(BuildTarget target, string name, bool enabled, string binaryNameFormat)
+    [System.Serializable]
+    public class BuildArchitecture
     {
-        this.target = target;
-        this.name = name;
-        this.enabled = enabled;
-        this.binaryNameFormat = binaryNameFormat;
-    }
-}
+        public BuildTarget target;
+        public string name;
+        public bool enabled;
+        public string binaryNameFormat;
 
+        public BuildArchitecture(BuildTarget target, string name, bool enabled, string binaryNameFormat)
+        {
+            this.target = target;
+            this.name = name;
+            this.enabled = enabled;
+            this.binaryNameFormat = binaryNameFormat;
+        }
+    }
 }

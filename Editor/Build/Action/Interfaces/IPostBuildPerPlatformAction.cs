@@ -1,4 +1,5 @@
 ﻿
-public interface IPostBuildPerPlatformAction
+namespace SuperUnityBuild.BuildTool
 {
+    public interface IPostBuildPerPlatformAction { }
 }

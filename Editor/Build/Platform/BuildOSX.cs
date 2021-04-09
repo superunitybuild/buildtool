@@ -1,35 +1,34 @@
 ﻿using UnityEditor;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
-
-[System.Serializable]
-public class BuildOSX : BuildPlatform
-{
-    #region Constants
-
-    private const string _name = "OSX";
-    private const string _binaryNameFormat = "{0}.app";
-    private const string _dataDirNameFormat = "{0}.app/Contents";
-    private const BuildTargetGroup _targetGroup = BuildTargetGroup.Standalone;
-
-    #endregion
-
-    public BuildOSX()
+    [System.Serializable]
+    public class BuildOSX : BuildPlatform
     {
-        enabled = false;
-        Init();
-    }
+        #region Constants
 
-    public override void Init()
-    {
-        platformName = _name;
-        dataDirNameFormat = _dataDirNameFormat;
-        targetGroup = _targetGroup;
+        private const string _name = "OSX";
+        private const string _binaryNameFormat = "{0}.app";
+        private const string _dataDirNameFormat = "{0}.app/Contents";
+        private const BuildTargetGroup _targetGroup = BuildTargetGroup.Standalone;
 
-        if (architectures == null || architectures.Length == 0)
+        #endregion
+
+        public BuildOSX()
         {
-            architectures = new BuildArchitecture[] { 
+            enabled = false;
+            Init();
+        }
+
+        public override void Init()
+        {
+            platformName = _name;
+            dataDirNameFormat = _dataDirNameFormat;
+            targetGroup = _targetGroup;
+
+            if (architectures == null || architectures.Length == 0)
+            {
+                architectures = new BuildArchitecture[] { 
 #if UNITY_2017_3_OR_NEWER
                 new BuildArchitecture(BuildTarget.StandaloneOSX, "OSX", true, _binaryNameFormat),
 #else
@@ -38,8 +37,7 @@ public class BuildOSX : BuildPlatform
                 new BuildArchitecture(BuildTarget.StandaloneOSXIntel64, "OSX Intel64", false, _binaryNameFormat)
 #endif
             };
+            }
         }
     }
-}
-
 }

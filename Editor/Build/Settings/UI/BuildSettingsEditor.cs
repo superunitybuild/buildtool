@@ -1,24 +1,22 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
-
-[CustomEditor(typeof(BuildSettings))]
-public class BuildSettingsEditor : Editor
-{
-    public override void OnInspectorGUI()
+    [CustomEditor(typeof(BuildSettings))]
+    public class BuildSettingsEditor : Editor
     {
-        Color defaultBackgroundColor = GUI.backgroundColor;
-        GUI.backgroundColor = Color.green;
-
-        if (GUILayout.Button("Open SuperUnityBuild", GUILayout.ExpandWidth(true), GUILayout.MinHeight(30)))
+        public override void OnInspectorGUI()
         {
-            UnityBuildWindow.ShowWindow();
+            Color defaultBackgroundColor = GUI.backgroundColor;
+            GUI.backgroundColor = Color.green;
+
+            if (GUILayout.Button("Open SuperUnityBuild", GUILayout.ExpandWidth(true), GUILayout.MinHeight(30)))
+            {
+                UnityBuildWindow.ShowWindow();
+            }
+
+            GUI.backgroundColor = defaultBackgroundColor;
         }
-
-        GUI.backgroundColor = defaultBackgroundColor;
     }
-}
-
 }

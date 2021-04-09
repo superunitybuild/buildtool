@@ -1,9 +1,9 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
-
-    [System.Serializable]
+    [Serializable]
     public class BuildIOS : BuildPlatform
     {
         #region Constants
@@ -12,6 +12,10 @@ namespace SuperSystems.UnityBuild
         private const string _binaryNameFormat = "{0}";
         private const string _dataDirNameFormat = "{0}_Data";
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.iOS;
+
+        private const string _deviceTypeVariantId = "Device Type";
+        private const string _sdkVersionVariantId = "Target SDK";
+        private const string _buildConfigTypeVariantId = "Build Type";
 
         #endregion
 
@@ -36,11 +40,47 @@ namespace SuperSystems.UnityBuild
             if (variants == null || variants.Length == 0)
             {
                 variants = new BuildVariant[] {
-                    new BuildVariant("XCode", new string[] {"Release", "Debug"}, 0),
-                    new BuildVariant("Symlink Unity Libraries", new string[] {"Disabled", "Enabled"}, 0)
+                    new BuildVariant(_deviceTypeVariantId, Enum.GetNames(typeof(iOSTargetDevice)), 0),
+                    new BuildVariant(_sdkVersionVariantId, Enum.GetNames(typeof(iOSSdkVersion)), 0),
+                    new BuildVariant(_buildConfigTypeVariantId, Enum.GetNames(typeof(iOSBuildType)), 0),
                 };
             }
         }
-    }
 
+        public override void ApplyVariant()
+        {
+            foreach (var variantOption in variants)
+            {
+                string key = variantOption.variantKey;
+
+                switch (variantOption.variantName)
+                {
+                    case _buildConfigTypeVariantId:
+                        SetBuildConfigType(key);
+                        break;
+                    case _deviceTypeVariantId:
+                        SetDeviceType(key);
+                        break;
+                    case _sdkVersionVariantId:
+                        SetSdkVersion(key);
+                        break;
+                }
+            }
+        }
+
+        private void SetBuildConfigType(string key)
+        {
+            EditorUserBuildSettings.iOSBuildConfigType = (iOSBuildType)Enum.Parse(typeof(iOSBuildType), key);
+        }
+
+        private void SetDeviceType(string key)
+        {
+            PlayerSettings.iOS.targetDevice = (iOSTargetDevice)Enum.Parse(typeof(iOSTargetDevice), key);
+        }
+
+        private void SetSdkVersion(string key)
+        {
+            PlayerSettings.iOS.sdkVersion = (iOSSdkVersion)Enum.Parse(typeof(iOSSdkVersion), key);
+        }
+    }
 }

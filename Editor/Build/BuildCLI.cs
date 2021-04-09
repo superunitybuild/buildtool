@@ -1,19 +1,17 @@
 ﻿using UnityEditor;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
-
-public static class BuildCLI
-{
-    public static void PerformBuild()
+    public static class BuildCLI
     {
-        //string[] args = System.Environment.GetCommandLineArgs();
-        BuildProject.BuildAll();
+        public static void PerformBuild()
+        {
+            //string[] args = System.Environment.GetCommandLineArgs();
+            BuildProject.BuildAll();
 
-        // Exit w/ 0 to indicate success.
-        EditorApplication.Exit(0);
+            // Exit w/ 0 to indicate success.
+            EditorApplication.Exit(0);
+        }
+
     }
-
-}
-
 }

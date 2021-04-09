@@ -1,40 +1,38 @@
 ﻿using UnityEditor;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
-
-[System.Serializable]
-public class BuildPC : BuildPlatform
-{
-    #region Constants
-
-    private const string _name = "PC";
-    private const string _binaryNameFormat = "{0}.exe";
-    private const string _dataDirNameFormat = "{0}_Data";
-    private const BuildTargetGroup _targetGroup = BuildTargetGroup.Standalone;
-
-    #endregion
-
-    public BuildPC()
+    [System.Serializable]
+    public class BuildPC : BuildPlatform
     {
-        enabled = false;
-        Init();
-    }
+        #region Constants
 
-    public override void Init()
-    {
-        platformName = _name;
-        dataDirNameFormat = _dataDirNameFormat;
-        targetGroup = _targetGroup;
+        private const string _name = "PC";
+        private const string _binaryNameFormat = "{0}.exe";
+        private const string _dataDirNameFormat = "{0}_Data";
+        private const BuildTargetGroup _targetGroup = BuildTargetGroup.Standalone;
 
-        if (architectures == null || architectures.Length == 0)
+        #endregion
+
+        public BuildPC()
         {
-            architectures = new BuildArchitecture[] { 
+            enabled = false;
+            Init();
+        }
+
+        public override void Init()
+        {
+            platformName = _name;
+            dataDirNameFormat = _dataDirNameFormat;
+            targetGroup = _targetGroup;
+
+            if (architectures == null || architectures.Length == 0)
+            {
+                architectures = new BuildArchitecture[] {
                 new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true, _binaryNameFormat),
                 new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false, _binaryNameFormat)
             };
+            }
         }
     }
-}
-
 }

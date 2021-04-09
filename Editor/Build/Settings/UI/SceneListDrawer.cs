@@ -1,242 +1,239 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
-
-[CustomPropertyDrawer(typeof(SceneList))]
-public class SceneListDrawer : PropertyDrawer
-{
-    private const int AUTO_COLLAPSE_SIZE = 50;
-
-    private SerializedProperty list;
-
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    [CustomPropertyDrawer(typeof(SceneList))]
+    public class SceneListDrawer : PropertyDrawer
     {
-        EditorGUI.BeginProperty(position, label, property);
+        private const int AUTO_COLLAPSE_SIZE = 50;
 
-        EditorGUILayout.BeginHorizontal();
+        private SerializedProperty list;
 
-        bool show = property.isExpanded;
-        UnityBuildGUIUtility.DropdownHeader("SceneList", ref show, false, GUILayout.ExpandWidth(true));
-        property.isExpanded = show;
-
-        EditorGUILayout.EndHorizontal();
-
-        //Refresh all scene lists.
-        for (int i = 0; i < BuildSettings.releaseTypeList.releaseTypes.Length; i++)
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            BuildReleaseType rt = BuildSettings.releaseTypeList.releaseTypes[i];
-            rt.sceneList.Refresh();
-        }
-
-        list = property.FindPropertyRelative("enabledScenes");
-
-        if (show)
-        {
-            EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
-
-            SerializedProperty platformProperty;
-            string fileGUID;
-            string filePath;
-            string sceneName = "N/A";
-            if (list.arraySize > 0)
-            {
-                platformProperty = list.GetArrayElementAtIndex(0);
-                fileGUID = platformProperty.FindPropertyRelative("fileGUID").stringValue;
-                filePath = AssetDatabase.GUIDToAssetPath(fileGUID);
-                sceneName = Path.GetFileNameWithoutExtension(filePath);
-            }
+            EditorGUI.BeginProperty(position, label, property);
 
             EditorGUILayout.BeginHorizontal();
 
-            show = list.isExpanded;
-            UnityBuildGUIUtility.DropdownHeader(string.Format("Scenes ({0}) (First Scene: {1})", list.arraySize, sceneName), ref show, false, GUILayout.ExpandWidth(true));
-            list.isExpanded = show;
+            bool show = property.isExpanded;
+            UnityBuildGUIUtility.DropdownHeader("SceneList", ref show, false, GUILayout.ExpandWidth(true));
+            property.isExpanded = show;
 
             EditorGUILayout.EndHorizontal();
 
+            //Refresh all scene lists.
+            for (int i = 0; i < BuildSettings.releaseTypeList.releaseTypes.Length; i++)
+            {
+                BuildReleaseType rt = BuildSettings.releaseTypeList.releaseTypes[i];
+                rt.sceneList.Refresh();
+            }
+
+            list = property.FindPropertyRelative("enabledScenes");
+
             if (show)
             {
+                EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
-                for (int i = 0; i < list.arraySize; i++)
+                SerializedProperty platformProperty;
+                string fileGUID;
+                string filePath;
+                string sceneName = "N/A";
+                if (list.arraySize > 0)
                 {
-                    platformProperty = list.GetArrayElementAtIndex(i);
+                    platformProperty = list.GetArrayElementAtIndex(0);
                     fileGUID = platformProperty.FindPropertyRelative("fileGUID").stringValue;
                     filePath = AssetDatabase.GUIDToAssetPath(fileGUID);
                     sceneName = Path.GetFileNameWithoutExtension(filePath);
-
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.TextArea(sceneName + " (" + filePath + ")");
-
-                    EditorGUI.BeginDisabledGroup(i == 0);
-                    if (GUILayout.Button("↑↑", UnityBuildGUIUtility.helpButtonStyle))
-                    {
-                        list.MoveArrayElement(i, 0);
-                    }
-                    if (GUILayout.Button("↑", UnityBuildGUIUtility.helpButtonStyle))
-                    {
-                        list.MoveArrayElement(i, i - 1);
-                    }
-                    EditorGUI.EndDisabledGroup();
-
-                    EditorGUI.BeginDisabledGroup(i == list.arraySize - 1);
-                    if (GUILayout.Button("↓", UnityBuildGUIUtility.helpButtonStyle))
-                    {
-                        list.MoveArrayElement(i, i + 1);
-                    }
-                    EditorGUI.EndDisabledGroup();
-
-                    if (GUILayout.Button("X", UnityBuildGUIUtility.helpButtonStyle))
-                    {
-                        list.DeleteArrayElementAtIndex(i);
-                    }
-
-                    property.serializedObject.ApplyModifiedProperties();
-
-                    EditorGUILayout.EndHorizontal();
                 }
-            }
 
-            GUILayout.Space(20);
+                EditorGUILayout.BeginHorizontal();
 
-            Rect dropArea = GUILayoutUtility.GetRect(0, 50.0f, GUILayout.ExpandWidth(true));
-            GUI.Box(dropArea, "Drag and Drop scene files here to add to list.", UnityBuildGUIUtility.dragDropStyle);
-            Event currentEvent = Event.current;
+                show = list.isExpanded;
+                UnityBuildGUIUtility.DropdownHeader(string.Format("Scenes ({0}) (First Scene: {1})", list.arraySize, sceneName), ref show, false, GUILayout.ExpandWidth(true));
+                list.isExpanded = show;
 
-            switch (currentEvent.type)
-            {
-                case EventType.DragUpdated:
-                case EventType.DragPerform:
-                    if (dropArea.Contains(currentEvent.mousePosition))
+                EditorGUILayout.EndHorizontal();
+
+                if (show)
+                {
+
+                    for (int i = 0; i < list.arraySize; i++)
                     {
-                        DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-                        if (currentEvent.type == EventType.DragPerform)
+                        platformProperty = list.GetArrayElementAtIndex(i);
+                        fileGUID = platformProperty.FindPropertyRelative("fileGUID").stringValue;
+                        filePath = AssetDatabase.GUIDToAssetPath(fileGUID);
+                        sceneName = Path.GetFileNameWithoutExtension(filePath);
+
+                        EditorGUILayout.BeginHorizontal();
+                        EditorGUILayout.TextArea(sceneName + " (" + filePath + ")");
+
+                        EditorGUI.BeginDisabledGroup(i == 0);
+                        if (GUILayout.Button("↑↑", UnityBuildGUIUtility.helpButtonStyle))
                         {
-                            DragAndDrop.AcceptDrag();
-
-                            foreach (Object obj in DragAndDrop.objectReferences)
-                            {
-                                if (obj.GetType() == typeof(UnityEditor.SceneAsset))
-                                {
-                                    string objFilepath = AssetDatabase.GetAssetPath(obj);
-                                    string objGUID = AssetDatabase.AssetPathToGUID(objFilepath);
-                                    AddScene(objGUID);
-                                }
-                            }
-
-                            if (list.arraySize >= AUTO_COLLAPSE_SIZE)
-                                list.isExpanded = false;
+                            list.MoveArrayElement(i, 0);
                         }
+                        if (GUILayout.Button("↑", UnityBuildGUIUtility.helpButtonStyle))
+                        {
+                            list.MoveArrayElement(i, i - 1);
+                        }
+                        EditorGUI.EndDisabledGroup();
+
+                        EditorGUI.BeginDisabledGroup(i == list.arraySize - 1);
+                        if (GUILayout.Button("↓", UnityBuildGUIUtility.helpButtonStyle))
+                        {
+                            list.MoveArrayElement(i, i + 1);
+                        }
+                        EditorGUI.EndDisabledGroup();
+
+                        if (GUILayout.Button("X", UnityBuildGUIUtility.helpButtonStyle))
+                        {
+                            list.DeleteArrayElementAtIndex(i);
+                        }
+
+                        property.serializedObject.ApplyModifiedProperties();
+
+                        EditorGUILayout.EndHorizontal();
                     }
+                }
+
+                GUILayout.Space(20);
+
+                Rect dropArea = GUILayoutUtility.GetRect(0, 50.0f, GUILayout.ExpandWidth(true));
+                GUI.Box(dropArea, "Drag and Drop scene files here to add to list.", UnityBuildGUIUtility.dragDropStyle);
+                Event currentEvent = Event.current;
+
+                switch (currentEvent.type)
+                {
+                    case EventType.DragUpdated:
+                    case EventType.DragPerform:
+                        if (dropArea.Contains(currentEvent.mousePosition))
+                        {
+                            DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                            if (currentEvent.type == EventType.DragPerform)
+                            {
+                                DragAndDrop.AcceptDrag();
+
+                                foreach (Object obj in DragAndDrop.objectReferences)
+                                {
+                                    if (obj.GetType() == typeof(UnityEditor.SceneAsset))
+                                    {
+                                        string objFilepath = AssetDatabase.GetAssetPath(obj);
+                                        string objGUID = AssetDatabase.AssetPathToGUID(objFilepath);
+                                        AddScene(objGUID);
+                                    }
+                                }
+
+                                if (list.arraySize >= AUTO_COLLAPSE_SIZE)
+                                    list.isExpanded = false;
+                            }
+                        }
+                        break;
+                }
+
+                if (GUILayout.Button("Clear Scene List", GUILayout.ExpandWidth(true)))
+                {
+                    list.ClearArray();
+                }
+
+                if (GUILayout.Button("Add Scene File Directory", GUILayout.ExpandWidth(true)))
+                {
+                    GetSceneFileDirectory("Add Scene Files");
+                }
+
+                if (GUILayout.Button("Set First Scene by File", GUILayout.ExpandWidth(true)))
+                {
+                    SetFirstSceneByFile();
+                }
+
+                list.serializedObject.ApplyModifiedProperties();
+                property.serializedObject.ApplyModifiedProperties();
+
+                EditorGUILayout.EndVertical();
+            }
+
+            EditorGUI.EndProperty();
+        }
+
+        private bool CheckForDuplicate(string newFileGUID)
+        {
+            bool duplicateFound = false;
+
+            for (int i = 0; i < list.arraySize; i++)
+            {
+                SerializedProperty platformProperty = list.GetArrayElementAtIndex(i);
+                string fileGUID = platformProperty.FindPropertyRelative("fileGUID").stringValue;
+
+                if (fileGUID == newFileGUID)
+                {
+                    duplicateFound = true;
                     break;
+                }
+
             }
 
-            if (GUILayout.Button("Clear Scene List", GUILayout.ExpandWidth(true)))
-            {
-                list.ClearArray();
-            }
-
-            if (GUILayout.Button("Add Scene File Directory", GUILayout.ExpandWidth(true)))
-            {
-                GetSceneFileDirectory("Add Scene Files");
-            }
-
-            if (GUILayout.Button("Set First Scene by File", GUILayout.ExpandWidth(true)))
-            {
-                SetFirstSceneByFile();
-            }
-
-            list.serializedObject.ApplyModifiedProperties();
-            property.serializedObject.ApplyModifiedProperties();
-
-            EditorGUILayout.EndVertical();
+            return duplicateFound;
         }
 
-        EditorGUI.EndProperty();
-    }
-
-    private bool CheckForDuplicate(string newFileGUID)
-    {
-        bool duplicateFound = false;
-
-        for (int i = 0; i < list.arraySize; i++)
+        private void GetSceneFileDirectory(string message)
         {
-            SerializedProperty platformProperty = list.GetArrayElementAtIndex(i);
-            string fileGUID = platformProperty.FindPropertyRelative("fileGUID").stringValue;
+            string directory = EditorUtility.OpenFolderPanel(message, Application.dataPath, "");
 
-            if (fileGUID == newFileGUID)
+            if (string.IsNullOrEmpty(directory))
             {
-                duplicateFound = true;
-                break;
+                return;
             }
 
+            string[] files = Directory.GetFiles(directory, "*.unity", SearchOption.AllDirectories);
+            foreach (string filepath in files)
+            {
+                string fullpath = "Assets" + Path.GetFullPath(filepath).Substring(Path.GetFullPath(Application.dataPath).Length);
+                string objGUID = AssetDatabase.AssetPathToGUID(fullpath);
+                AddScene(objGUID);
+            }
+
+            if (list.arraySize >= AUTO_COLLAPSE_SIZE)
+                list.isExpanded = false;
         }
 
-        return duplicateFound;
-    }
-
-    private void GetSceneFileDirectory(string message)
-    {
-        string directory = EditorUtility.OpenFolderPanel(message, Application.dataPath, "");
-
-        if (string.IsNullOrEmpty(directory))
+        private void SetFirstSceneByFile()
         {
-            return;
-        }
+            string filepath = EditorUtility.OpenFilePanel("Select Scene File", Application.dataPath, "unity");
 
-        string[] files = Directory.GetFiles(directory, "*.unity", SearchOption.AllDirectories);
-        foreach (string filepath in files)
-        {
+            if (string.IsNullOrEmpty(filepath))
+            {
+                return;
+            }
+
             string fullpath = "Assets" + Path.GetFullPath(filepath).Substring(Path.GetFullPath(Application.dataPath).Length);
             string objGUID = AssetDatabase.AssetPathToGUID(fullpath);
-            AddScene(objGUID);
-        }
 
-        if (list.arraySize >= AUTO_COLLAPSE_SIZE)
-            list.isExpanded = false;
-    }
-
-    private void SetFirstSceneByFile()
-    {
-        string filepath = EditorUtility.OpenFilePanel("Select Scene File", Application.dataPath, "unity");
-
-        if (string.IsNullOrEmpty(filepath))
-        {
-            return;
-        }
-
-        string fullpath = "Assets" + Path.GetFullPath(filepath).Substring(Path.GetFullPath(Application.dataPath).Length);
-        string objGUID = AssetDatabase.AssetPathToGUID(fullpath);
-
-        for (int i = 0; i < list.arraySize; i++)
-        {
-            SerializedProperty platformProperty = list.GetArrayElementAtIndex(i);
-            string fileGUID = platformProperty.FindPropertyRelative("fileGUID").stringValue;
-
-            if (fileGUID == objGUID)
+            for (int i = 0; i < list.arraySize; i++)
             {
-                list.DeleteArrayElementAtIndex(i);
-                break;
+                SerializedProperty platformProperty = list.GetArrayElementAtIndex(i);
+                string fileGUID = platformProperty.FindPropertyRelative("fileGUID").stringValue;
+
+                if (fileGUID == objGUID)
+                {
+                    list.DeleteArrayElementAtIndex(i);
+                    break;
+                }
+
             }
 
+            list.InsertArrayElementAtIndex(0);
+            list.GetArrayElementAtIndex(0).FindPropertyRelative("fileGUID").stringValue = objGUID;
         }
 
-        list.InsertArrayElementAtIndex(0);
-        list.GetArrayElementAtIndex(0).FindPropertyRelative("fileGUID").stringValue = objGUID;
-    }
-
-    private void AddScene(string objGUID)
-    {
-        if (!CheckForDuplicate(objGUID))
+        private void AddScene(string objGUID)
         {
-            int addedIndex = list.arraySize;
-            list.InsertArrayElementAtIndex(addedIndex);
-            list.GetArrayElementAtIndex(addedIndex).FindPropertyRelative("fileGUID").stringValue = objGUID;
+            if (!CheckForDuplicate(objGUID))
+            {
+                int addedIndex = list.arraySize;
+                list.InsertArrayElementAtIndex(addedIndex);
+                list.GetArrayElementAtIndex(addedIndex).FindPropertyRelative("fileGUID").stringValue = objGUID;
+            }
         }
     }
-}
-
 }

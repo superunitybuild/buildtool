@@ -2,41 +2,37 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
-
-public class BaseSettings : ScriptableObject
-{
-    protected const string SettingsFolderName = "UnityBuildSettings";
-    protected const string SettingsPath = "Assets/{0}";
-    protected const string SettingsPrefsKey = "SuperSystems.UnityBuildSettings";
-
-    protected static T CreateAsset<T>(string assetName) where T : BaseSettings
+    public class BaseSettings : ScriptableObject
     {
-        // Try to load an existing settings asset at the path specified in EditorPrefs, or fallback to a default path
-        string settingsRoot = string.Format(SettingsPath, SettingsFolderName);
-        string defaultAssetPath = settingsRoot + "/" + string.Format("{0}.asset", assetName);
-        string prefsAssetPath = EditorPrefs.HasKey(SettingsPrefsKey) ?
-            EditorPrefs.GetString(SettingsPrefsKey, defaultAssetPath) :
-            defaultAssetPath;
-        string assetPath = File.Exists(prefsAssetPath) ? prefsAssetPath : defaultAssetPath;
+        protected const string SettingsPrefsKey = "SuperUnityBuild.BuildTool.BuildSettings";
 
-        T instance = AssetDatabase.LoadAssetAtPath<T>(assetPath) as T;
-
-        if (instance == null)
+        protected static T CreateAsset<T>(string assetName) where T : BaseSettings
         {
-            Debug.Log("UnityBuild: Creating settings file - " + defaultAssetPath);
-            instance = CreateInstance<T>();
-            instance.name = assetName;
+            // Try to load an existing settings asset at the path specified in EditorPrefs, or fallback to a default path
+            string assetsRoot = Path.Combine(Constants.AssetsDirectoryName, Constants.RootDirectoryName);
+            string settingsRoot = Path.Combine(assetsRoot, Constants.SettingsDirectoryName);
+            string defaultAssetPath = Path.Combine(settingsRoot, string.Format("{0}.asset", assetName));
+            string prefsAssetPath = EditorPrefs.HasKey(SettingsPrefsKey) ?
+                EditorPrefs.GetString(SettingsPrefsKey, defaultAssetPath) :
+                defaultAssetPath;
+            string assetPath = File.Exists(prefsAssetPath) ? prefsAssetPath : defaultAssetPath;
 
-            if (!Directory.Exists(settingsRoot))
-                AssetDatabase.CreateFolder("Assets", SettingsFolderName);
+            T instance = AssetDatabase.LoadAssetAtPath<T>(assetPath) as T;
 
-            AssetDatabase.CreateAsset(instance, defaultAssetPath);
+            if (instance == null)
+            {
+                Debug.Log("SuperUnityBuild: Creating settings file - " + defaultAssetPath);
+                instance = CreateInstance<T>();
+                instance.name = assetName;
+
+                AssetDatabaseUtil.EnsureDirectoriesExist();
+
+                AssetDatabase.CreateAsset(instance, defaultAssetPath);
+            }
+
+            return instance;
         }
-
-        return instance;
     }
-}
-
 }

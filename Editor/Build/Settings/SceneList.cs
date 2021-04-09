@@ -2,50 +2,48 @@
 using System.IO;
 using UnityEditor;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
-
-[System.Serializable]
-public class SceneList
-{
-    public List<Scene> enabledScenes = new List<Scene>();
-
-    public SceneList()
+    [System.Serializable]
+    public class SceneList
     {
-    }
+        public List<Scene> enabledScenes = new List<Scene>();
 
-    public void Refresh()
-    {
-        // Verify that all scenes in list still exist.
-        for (int i = 0; i < enabledScenes.Count; i++)
+        public SceneList()
         {
-            string sceneGUID = enabledScenes[i].fileGUID;
-            string sceneFilepath = AssetDatabase.GUIDToAssetPath(sceneGUID);
-            
-            if (string.IsNullOrEmpty(sceneFilepath) || !File.Exists(sceneFilepath))
+        }
+
+        public void Refresh()
+        {
+            // Verify that all scenes in list still exist.
+            for (int i = 0; i < enabledScenes.Count; i++)
             {
-                enabledScenes.RemoveAt(i);
-                --i;
+                string sceneGUID = enabledScenes[i].fileGUID;
+                string sceneFilepath = AssetDatabase.GUIDToAssetPath(sceneGUID);
+
+                if (string.IsNullOrEmpty(sceneFilepath) || !File.Exists(sceneFilepath))
+                {
+                    enabledScenes.RemoveAt(i);
+                    --i;
+                }
             }
         }
-    }
 
-    public string[] GetSceneFileList()
-    {
-        List<string> scenes = new List<string>();
-        for (int i = 0; i < enabledScenes.Count; i++)
+        public string[] GetSceneFileList()
         {
-            scenes.Add(AssetDatabase.GUIDToAssetPath(enabledScenes[i].fileGUID));
+            List<string> scenes = new List<string>();
+            for (int i = 0; i < enabledScenes.Count; i++)
+            {
+                scenes.Add(AssetDatabase.GUIDToAssetPath(enabledScenes[i].fileGUID));
+            }
+
+            return scenes.ToArray();
         }
 
-        return scenes.ToArray();
+        [System.Serializable]
+        public class Scene
+        {
+            public string fileGUID = string.Empty;
+        }
     }
-
-    [System.Serializable]
-    public class Scene
-    {
-        public string fileGUID = string.Empty;
-    }
-}
-
 }

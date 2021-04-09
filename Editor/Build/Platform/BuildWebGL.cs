@@ -1,39 +1,37 @@
 using UnityEditor;
 
-namespace SuperSystems.UnityBuild
+namespace SuperUnityBuild.BuildTool
 {
-
-[System.Serializable]
-public class BuildWebGL : BuildPlatform
-{
-    #region Constants
-
-    private const string _name = "WebGL";
-    private const string _binaryNameFormat = "{0}";
-    private const string _dataDirNameFormat = "{0}_Data";
-    private const BuildTargetGroup _targetGroup = BuildTargetGroup.WebGL;
-
-    #endregion
-
-    public BuildWebGL()
+    [System.Serializable]
+    public class BuildWebGL : BuildPlatform
     {
-        enabled = false;
-        Init();
-    }
+        #region Constants
 
-    public override void Init()
-    {
-        platformName = _name;
-        dataDirNameFormat = _dataDirNameFormat;
-        targetGroup = _targetGroup;
+        private const string _name = "WebGL";
+        private const string _binaryNameFormat = "{0}";
+        private const string _dataDirNameFormat = "{0}_Data";
+        private const BuildTargetGroup _targetGroup = BuildTargetGroup.WebGL;
 
-        if (architectures == null || architectures.Length == 0)
+        #endregion
+
+        public BuildWebGL()
         {
-            architectures = new BuildArchitecture[] { 
+            enabled = false;
+            Init();
+        }
+
+        public override void Init()
+        {
+            platformName = _name;
+            dataDirNameFormat = _dataDirNameFormat;
+            targetGroup = _targetGroup;
+
+            if (architectures == null || architectures.Length == 0)
+            {
+                architectures = new BuildArchitecture[] {
                 new BuildArchitecture(BuildTarget.WebGL, "WebGL", true, _binaryNameFormat),
             };
+            }
         }
     }
-}
-
 }
