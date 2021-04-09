@@ -46,8 +46,7 @@ namespace SuperUnityBuild.BuildTool
 
                 if (list.arraySize > 0)
                 {
-                    EditorGUILayout.Space();
-                    EditorGUILayout.Space();
+                    GUILayout.Space(10);
                 }
 
                 DrawActionList(property, actionTypes);

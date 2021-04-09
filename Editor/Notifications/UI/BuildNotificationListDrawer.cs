@@ -77,7 +77,7 @@ namespace SuperUnityBuild.BuildTool
                 EditorGUILayout.EndVertical();
             }
 
-            EditorGUILayout.Space(15);
+            GUILayout.Space(15);
         }
 
         private void DrawWarnings()
@@ -132,7 +132,7 @@ namespace SuperUnityBuild.BuildTool
                 EditorGUILayout.EndVertical();
             }
 
-            EditorGUILayout.Space(15);
+            GUILayout.Space(15);
         }
 
         private void DrawNotifications()
