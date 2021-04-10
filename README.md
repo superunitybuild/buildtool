@@ -1,8 +1,10 @@
 # SuperUnityBuild
 
+[![openupm](https://img.shields.io/npm/v/com.github.superunitybuild.buildtool?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.github.superunitybuild.buildtool/)
+
 > A powerful automation tool for quickly and easily generating builds of a game with Unity.
 
-![Screenshot](https://github.com/superunitybuild/buildtool/blob/gh-pages/Screenshot_v1.0.0.png)
+![Screenshot](https://raw.githubusercontent.com/superunitybuild/buildtool/gh-pages/Screenshot_v1.0.0.png)
 
 [Unity Forums Thread][unity-thread] | [Documentation Wiki][unitybuild-wiki]
 
