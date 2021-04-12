@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -181,13 +183,18 @@ namespace SuperUnityBuild.BuildTool
 
                             if (GUILayout.Button("Refresh BuildConstants and Apply Defines", GUILayout.ExpandWidth(true)))
                             {
+                                // Switch to target build platform
                                 EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, arch.target);
 
-
+                                // Apply defines
                                 string currentDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
                                 string appliedDefines = BuildProject.MergeDefines(currentDefines, defines);
                                 PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, appliedDefines);
 
+                                // Apply scene list
+                                SetEditorBuildSettingsScenes(releaseType);
+
+                                // Refresh constants
                                 BuildConstantsGenerator.Generate(DateTime.Now, BuildSettings.productParameters.lastGeneratedVersion, releaseType, platform, arch, dist);
                             }
                         }
@@ -213,7 +220,7 @@ namespace SuperUnityBuild.BuildTool
             EditorGUILayout.BeginHorizontal();
             EditorGUI.BeginDisabledGroup(!enabled);
 
-            bool displayButton = (depth >= 2 && (config.childKeys == null || config.childKeys.Length == 0));
+            bool displayButton = depth >= 2 && (config.childKeys == null || config.childKeys.Length == 0);
 
             if (treeView.boolValue)
             {
@@ -263,6 +270,17 @@ namespace SuperUnityBuild.BuildTool
                     DisplayConfigTree(childKey, childConfig, depth + 1, config.enabled && enabled);
                 }
             }
+        }
+
+        private void SetEditorBuildSettingsScenes(BuildReleaseType releaseType)
+        {
+            // Create EditorBuildSettingsScene instances from release type scene list
+            List<EditorBuildSettingsScene> editorBuildSettingsScenes = releaseType.sceneList.GetSceneFileList()
+                .Select(path => new EditorBuildSettingsScene(path, true))
+                .ToList();
+
+            // Set the Build Settings scene list
+            EditorBuildSettings.scenes = editorBuildSettingsScenes.ToArray();
         }
     }
 }
