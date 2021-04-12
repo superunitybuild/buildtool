@@ -68,8 +68,15 @@ namespace SuperUnityBuild.BuildTool
             {
                 actionType = (ActionType)EditorGUILayout.EnumPopup("Action Type", actionType);
             }
+
             EditorGUILayout.PropertyField(obj.FindProperty("note"));
-            EditorGUILayout.PropertyField(obj.FindProperty("filter"), GUILayout.Height(0));
+
+            // Only Per-Platform actions can be filtered
+            if (actionType == ActionType.PerPlatform)
+            {
+                EditorGUILayout.PropertyField(obj.FindProperty("filter"), GUILayout.Height(0));
+            }
+
             obj.ApplyModifiedProperties();
         }
 
