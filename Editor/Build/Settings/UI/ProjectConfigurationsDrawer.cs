@@ -86,7 +86,6 @@ namespace SuperUnityBuild.BuildTool
                         EditorGUILayout.HelpBox("No Configuration info. Please add a Release Type.", MessageType.Error);
                     }
 
-
                     EditorGUILayout.EndVertical();
                 }
 
@@ -240,7 +239,7 @@ namespace SuperUnityBuild.BuildTool
                 }
                 else
                 {
-                    displayText = key;
+                    displayText = key.Replace(",", ", ");
                     config.enabled = EditorGUILayout.Toggle(config.enabled, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(10));
                 }
 

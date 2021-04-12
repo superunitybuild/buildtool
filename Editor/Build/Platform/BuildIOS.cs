@@ -41,9 +41,9 @@ namespace SuperUnityBuild.BuildTool
             if (variants == null || variants.Length == 0)
             {
                 variants = new BuildVariant[] {
-                    new BuildVariant(_deviceTypeVariantId, Enum.GetNames(typeof(iOSTargetDevice)), 0),
-                    new BuildVariant(_sdkVersionVariantId, Enum.GetNames(typeof(iOSSdkVersion)), 0),
-                    new BuildVariant(_buildConfigTypeVariantId, Enum.GetNames(typeof(iOSBuildType)), 0),
+                    new BuildVariant(_deviceTypeVariantId, EnumNamesToArray<iOSTargetDevice>(), 0),
+                    new BuildVariant(_sdkVersionVariantId, EnumNamesToArray<iOSSdkVersion>(true), 0),
+                    new BuildVariant(_buildConfigTypeVariantId, EnumNamesToArray<iOSBuildType>(), 0),
                 };
             }
         }
@@ -71,17 +71,17 @@ namespace SuperUnityBuild.BuildTool
 
         private void SetBuildConfigType(string key)
         {
-            EditorUserBuildSettings.iOSBuildConfigType = (iOSBuildType)Enum.Parse(typeof(iOSBuildType), key);
+            EditorUserBuildSettings.iOSBuildConfigType = EnumValueFromKey<iOSBuildType>(key);
         }
 
         private void SetDeviceType(string key)
         {
-            PlayerSettings.iOS.targetDevice = (iOSTargetDevice)Enum.Parse(typeof(iOSTargetDevice), key);
+            PlayerSettings.iOS.targetDevice = EnumValueFromKey<iOSTargetDevice>(key);
         }
 
         private void SetSdkVersion(string key)
         {
-            PlayerSettings.iOS.sdkVersion = (iOSSdkVersion)Enum.Parse(typeof(iOSSdkVersion), key);
+            PlayerSettings.iOS.sdkVersion = EnumValueFromKey<iOSSdkVersion>(key);
         }
     }
 }

@@ -46,8 +46,11 @@ namespace SuperUnityBuild.BuildTool
             if (variants == null || variants.Length == 0)
             {
                 variants = new BuildVariant[] {
-                    new BuildVariant(_deviceTypeVariantId, Enum.GetNames(typeof(AndroidArchitecture)).Skip(1).ToArray(), 0),
-                    new BuildVariant(_textureCompressionVariantId, Enum.GetNames(typeof(MobileTextureSubtarget)), 0),
+                    new BuildVariant(_deviceTypeVariantId, EnumNamesToArray<AndroidArchitecture>()
+                        .Skip(1)
+                        .ToArray(),
+                    0),
+                    new BuildVariant(_textureCompressionVariantId, EnumNamesToArray<MobileTextureSubtarget>(), 0),
 #if UNITY_2019_1_OR_NEWER
                     new BuildVariant(_buildSystemVariantId, new string[] { "Gradle" }, 0),
 #else
@@ -56,7 +59,10 @@ namespace SuperUnityBuild.BuildTool
 #if UNITY_2018_2_OR_NEWER
                     new BuildVariant(_splitApksVariantId, new string[] { "Disabled", "Enabled" }, 0),
 #endif
-                    new BuildVariant(_minSdkVersionVariantId, Enum.GetNames(typeof(AndroidSdkVersions)).Select(i => i.Replace(_androidApiLevelEnumPrefix, "")).ToArray(), 0)
+                    new BuildVariant(_minSdkVersionVariantId, EnumNamesToArray<AndroidSdkVersions>()
+                        .Select(i => i.Replace(_androidApiLevelEnumPrefix, ""))
+                        .ToArray(),
+                    0)
                 };
             }
         }
@@ -92,19 +98,19 @@ namespace SuperUnityBuild.BuildTool
 
         private void SetDeviceType(string key)
         {
-            PlayerSettings.Android.targetArchitectures = (AndroidArchitecture)Enum.Parse(typeof(AndroidArchitecture), key);
+            PlayerSettings.Android.targetArchitectures = EnumValueFromKey<AndroidArchitecture>(key);
         }
 
         private void SetTextureCompression(string key)
         {
             EditorUserBuildSettings.androidBuildSubtarget
-                = (MobileTextureSubtarget)Enum.Parse(typeof(MobileTextureSubtarget), key);
+                = EnumValueFromKey<MobileTextureSubtarget>(key);
         }
 
         private void SetBuildSystem(string key)
         {
             EditorUserBuildSettings.androidBuildSystem
-                = (AndroidBuildSystem)Enum.Parse(typeof(AndroidBuildSystem), key);
+                = EnumValueFromKey<AndroidBuildSystem>(key);
         }
 
 #if UNITY_2018_2_OR_NEWER
@@ -117,7 +123,7 @@ namespace SuperUnityBuild.BuildTool
         private void SetMinSdkVersion(string key)
         {
             PlayerSettings.Android.minSdkVersion
-                = (AndroidSdkVersions)Enum.Parse(typeof(AndroidSdkVersions), _androidApiLevelEnumPrefix + key);
+                = EnumValueFromKey<AndroidSdkVersions>(_androidApiLevelEnumPrefix + key);
         }
     }
 }

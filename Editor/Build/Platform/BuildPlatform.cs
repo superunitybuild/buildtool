@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -175,6 +177,18 @@ namespace SuperUnityBuild.BuildTool
             EditorGUILayout.EndVertical();
 
             obj.ApplyModifiedProperties();
+        }
+
+        protected static T EnumValueFromKey<T>(string label)
+        {
+            return (T)Enum.Parse(typeof(T), label.Replace(" ", ""));
+        }
+
+        protected static string[] EnumNamesToArray<T>(bool toWords = false)
+        {
+            return Enum.GetNames(typeof(T))
+                .Select(item => toWords ? UnityBuildGUIUtility.ToWords(item) : item)
+                .ToArray();
         }
     }
 }

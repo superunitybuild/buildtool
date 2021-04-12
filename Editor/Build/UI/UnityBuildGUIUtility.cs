@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.Text.RegularExpressions;
+using UnityEditor;
 using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
@@ -90,7 +91,7 @@ namespace SuperUnityBuild.BuildTool
             if (!noColor)
                 GUI.backgroundColor = instance._mainHeaderColor;
 
-            if (GUILayout.Button(content, UnityBuildGUIUtility.dropdownHeaderStyle, options))
+            if (GUILayout.Button(content, dropdownHeaderStyle, options))
             {
                 showDropdown = !showDropdown;
                 GUIUtility.keyboardControl = 0;
@@ -102,8 +103,13 @@ namespace SuperUnityBuild.BuildTool
 
         public static void HelpButton(string anchor = "")
         {
-            if (GUILayout.Button(_instance.helpButtonContent, UnityBuildGUIUtility.helpButtonStyle))
+            if (GUILayout.Button(_instance.helpButtonContent, helpButtonStyle))
                 OpenHelp(anchor);
+        }
+
+        public static string ToWords(string input)
+        {
+            return Regex.Replace(input, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ");
         }
 
         public static GUIStyle helpButtonStyle
