@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
 {
-    public static class AssetDatabaseUtil
+    public static class AssetDatabaseUtility
     {
         public static void ImportAsset(string path, ImportAssetOptions options = ImportAssetOptions.Default)
         {

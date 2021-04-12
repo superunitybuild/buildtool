@@ -27,7 +27,7 @@ namespace SuperUnityBuild.BuildTool
                 instance = CreateInstance<T>();
                 instance.name = assetName;
 
-                AssetDatabaseUtil.EnsureDirectoriesExist();
+                AssetDatabaseUtility.EnsureDirectoriesExist();
 
                 AssetDatabase.CreateAsset(instance, defaultAssetPath);
             }

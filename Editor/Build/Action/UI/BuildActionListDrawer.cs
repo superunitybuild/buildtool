@@ -114,7 +114,7 @@ namespace SuperUnityBuild.BuildTool
 
                     // Destroy underlying object.
                     ScriptableObject.DestroyImmediate(buildActions[i], true);
-                    AssetDatabaseUtil.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
+                    AssetDatabaseUtility.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
 
                     // Remove object reference from list.
                     // TODO: Why do I need to call this twice? First call nulls reference, second one then deletes null entry.
@@ -171,7 +171,7 @@ namespace SuperUnityBuild.BuildTool
                     buildActions[addedIndex].filter = new BuildFilter();
 
                     AssetDatabase.AddObjectToAsset(buildActions[addedIndex], BuildSettings.instance);
-                    AssetDatabaseUtil.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
+                    AssetDatabaseUtility.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
 
                     index = 0;
                 }

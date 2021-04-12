@@ -54,7 +54,7 @@ namespace SuperUnityBuild.BuildTool
                     platformList.platforms.Add(addedBuildPlatform);
 
                     AssetDatabase.AddObjectToAsset(addedBuildPlatform, BuildSettings.instance);
-                    AssetDatabaseUtil.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
+                    AssetDatabaseUtility.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
 
                     platformList.platforms[platformList.platforms.Count - 1].enabled = true;
 
@@ -102,7 +102,7 @@ namespace SuperUnityBuild.BuildTool
 
                     // Destroy underlying object.
                     ScriptableObject.DestroyImmediate(buildPlatforms[i], true);
-                    AssetDatabaseUtil.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
+                    AssetDatabaseUtility.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
 
                     // Remove object reference from list.
                     // TODO: Why do I need to call this twice? First call nulls reference, second one then deletes null entry.

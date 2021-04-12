@@ -58,7 +58,7 @@ namespace SuperUnityBuild.BuildTool
             // Create a buffer that we'll use to check for any duplicated names.
             List<string> enumBuffer = new List<string>();
 
-            AssetDatabaseUtil.EnsureDirectoriesExist();
+            AssetDatabaseUtility.EnsureDirectoriesExist();
 
             using (StreamWriter writer = new StreamWriter(filePath))
             {
