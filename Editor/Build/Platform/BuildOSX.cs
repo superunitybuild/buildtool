@@ -28,15 +28,9 @@ namespace SuperUnityBuild.BuildTool
 
             if (architectures == null || architectures.Length == 0)
             {
-                architectures = new BuildArchitecture[] { 
-#if UNITY_2017_3_OR_NEWER
-                new BuildArchitecture(BuildTarget.StandaloneOSX, "OSX", true, _binaryNameFormat),
-#else
-                new BuildArchitecture(BuildTarget.StandaloneOSXUniversal, "OSX Universal", true, _binaryNameFormat),
-                new BuildArchitecture(BuildTarget.StandaloneOSXIntel, "OSX Intel", false, _binaryNameFormat),
-                new BuildArchitecture(BuildTarget.StandaloneOSXIntel64, "OSX Intel64", false, _binaryNameFormat)
-#endif
-            };
+                architectures = new BuildArchitecture[] {
+                    new BuildArchitecture(BuildTarget.StandaloneOSX, "OSX", true, _binaryNameFormat),
+                };
             }
         }
     }

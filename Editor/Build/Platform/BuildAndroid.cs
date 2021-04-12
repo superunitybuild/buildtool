@@ -45,11 +45,7 @@ namespace SuperUnityBuild.BuildTool
             if (variants == null || variants.Length == 0)
             {
                 variants = new BuildVariant[] {
-#if UNITY_2018_1_OR_NEWER
                 new BuildVariant(_deviceTypeVariantId, Enum.GetNames(typeof(AndroidArchitecture)).Skip(1).ToArray(), 0),
-#else
-                new BuildVariant(_deviceTypeVariantId, Enum.GetNames(typeof(AndroidTargetDevice)), 0),
-#endif
                 new BuildVariant(_textureCompressionVariantId, Enum.GetNames(typeof(MobileTextureSubtarget)), 0),
 #if UNITY_2019_1_OR_NEWER
                 new BuildVariant(_buildSystemVariantId, new string[] { "Gradle" }, 0),
@@ -91,11 +87,7 @@ namespace SuperUnityBuild.BuildTool
 
         private void SetDeviceType(string key)
         {
-#if UNITY_2018_1_OR_NEWER
             PlayerSettings.Android.targetArchitectures = (AndroidArchitecture)Enum.Parse(typeof(AndroidArchitecture), key);
-#else
-        PlayerSettings.Android.targetDevice = (AndroidTargetDevice)Enum.Parse(typeof(AndroidTargetDevice), key);
-#endif
         }
 
         private void SetTextureCompression(string key)
