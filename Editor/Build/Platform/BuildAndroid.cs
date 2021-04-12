@@ -52,7 +52,9 @@ namespace SuperUnityBuild.BuildTool
 #else
                 new BuildVariant(_buildSystemVariantId, new string[] { "Internal", "Gradle" }, 0),
 #endif
+#if UNITY_2018_2_OR_NEWER
                 new BuildVariant(_splitApksVariantId, new string[] { "Disabled", "Enabled" }, 0),
+#endif
                 new BuildVariant(_minSdkVersionVariantId, Enum.GetNames(typeof(AndroidSdkVersions)).Select(i => i.Replace(_androidApiLevelEnumPrefix, "")).ToArray(), 0)
             };
             }
@@ -75,9 +77,11 @@ namespace SuperUnityBuild.BuildTool
                     case _buildSystemVariantId:
                         SetBuildSystem(key);
                         break;
+#if UNITY_2018_2_OR_NEWER
                     case _splitApksVariantId:
                         SetSplitApks(key);
                         break;
+#endif
                     case _minSdkVersionVariantId:
                         SetMinSdkVersion(key);
                         break;
@@ -102,10 +106,12 @@ namespace SuperUnityBuild.BuildTool
                 = (AndroidBuildSystem)Enum.Parse(typeof(AndroidBuildSystem), key);
         }
 
+#if UNITY_2018_2_OR_NEWER
         private void SetSplitApks(string key)
         {
             PlayerSettings.Android.buildApkPerCpuArchitecture = key == "Enabled";
         }
+#endif
 
         private void SetMinSdkVersion(string key)
         {
