@@ -39,24 +39,25 @@ namespace SuperUnityBuild.BuildTool
             if (architectures == null || architectures.Length == 0)
             {
                 architectures = new BuildArchitecture[] {
-                new BuildArchitecture(BuildTarget.Android, "Android", true, _binaryNameFormat)
-            };
+                    new BuildArchitecture(BuildTarget.Android, "Android", true, _binaryNameFormat)
+                };
             }
+
             if (variants == null || variants.Length == 0)
             {
                 variants = new BuildVariant[] {
-                new BuildVariant(_deviceTypeVariantId, Enum.GetNames(typeof(AndroidArchitecture)).Skip(1).ToArray(), 0),
-                new BuildVariant(_textureCompressionVariantId, Enum.GetNames(typeof(MobileTextureSubtarget)), 0),
+                    new BuildVariant(_deviceTypeVariantId, Enum.GetNames(typeof(AndroidArchitecture)).Skip(1).ToArray(), 0),
+                    new BuildVariant(_textureCompressionVariantId, Enum.GetNames(typeof(MobileTextureSubtarget)), 0),
 #if UNITY_2019_1_OR_NEWER
-                new BuildVariant(_buildSystemVariantId, new string[] { "Gradle" }, 0),
+                    new BuildVariant(_buildSystemVariantId, new string[] { "Gradle" }, 0),
 #else
-                new BuildVariant(_buildSystemVariantId, new string[] { "Internal", "Gradle" }, 0),
+                    new BuildVariant(_buildSystemVariantId, new string[] { "Internal", "Gradle" }, 0),
 #endif
 #if UNITY_2018_2_OR_NEWER
-                new BuildVariant(_splitApksVariantId, new string[] { "Disabled", "Enabled" }, 0),
+                    new BuildVariant(_splitApksVariantId, new string[] { "Disabled", "Enabled" }, 0),
 #endif
-                new BuildVariant(_minSdkVersionVariantId, Enum.GetNames(typeof(AndroidSdkVersions)).Select(i => i.Replace(_androidApiLevelEnumPrefix, "")).ToArray(), 0)
-            };
+                    new BuildVariant(_minSdkVersionVariantId, Enum.GetNames(typeof(AndroidSdkVersions)).Select(i => i.Replace(_androidApiLevelEnumPrefix, "")).ToArray(), 0)
+                };
             }
         }
 

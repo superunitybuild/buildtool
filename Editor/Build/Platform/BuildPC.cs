@@ -29,9 +29,9 @@ namespace SuperUnityBuild.BuildTool
             if (architectures == null || architectures.Length == 0)
             {
                 architectures = new BuildArchitecture[] {
-                new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true, _binaryNameFormat),
-                new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false, _binaryNameFormat)
-            };
+                    new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true, _binaryNameFormat),
+                    new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false, _binaryNameFormat)
+                };
             }
         }
     }

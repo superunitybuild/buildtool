@@ -29,8 +29,8 @@ namespace SuperUnityBuild.BuildTool
             if (architectures == null || architectures.Length == 0)
             {
                 architectures = new BuildArchitecture[] {
-                new BuildArchitecture(BuildTarget.WebGL, "WebGL", true, _binaryNameFormat),
-            };
+                    new BuildArchitecture(BuildTarget.WebGL, "WebGL", true, _binaryNameFormat),
+                };
             }
         }
     }

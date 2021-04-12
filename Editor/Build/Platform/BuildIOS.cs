@@ -37,6 +37,7 @@ namespace SuperUnityBuild.BuildTool
                     new BuildArchitecture(BuildTarget.iOS, "iOS", true, _binaryNameFormat)
                 };
             }
+
             if (variants == null || variants.Length == 0)
             {
                 variants = new BuildVariant[] {
