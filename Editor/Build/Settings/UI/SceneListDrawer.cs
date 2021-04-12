@@ -18,12 +18,12 @@ namespace SuperUnityBuild.BuildTool
             EditorGUILayout.BeginHorizontal();
 
             bool show = property.isExpanded;
-            UnityBuildGUIUtility.DropdownHeader("SceneList", ref show, false, GUILayout.ExpandWidth(true));
+            UnityBuildGUIUtility.DropdownHeader("Scene List", ref show, false, GUILayout.ExpandWidth(true));
             property.isExpanded = show;
 
             EditorGUILayout.EndHorizontal();
 
-            //Refresh all scene lists.
+            // Refresh all scene lists.
             for (int i = 0; i < BuildSettings.releaseTypeList.releaseTypes.Length; i++)
             {
                 BuildReleaseType rt = BuildSettings.releaseTypeList.releaseTypes[i];
@@ -58,7 +58,6 @@ namespace SuperUnityBuild.BuildTool
 
                 if (show)
                 {
-
                     for (int i = 0; i < list.arraySize; i++)
                     {
                         platformProperty = list.GetArrayElementAtIndex(i);
@@ -117,7 +116,7 @@ namespace SuperUnityBuild.BuildTool
 
                                 foreach (Object obj in DragAndDrop.objectReferences)
                                 {
-                                    if (obj.GetType() == typeof(UnityEditor.SceneAsset))
+                                    if (obj.GetType() == typeof(SceneAsset))
                                     {
                                         string objFilepath = AssetDatabase.GetAssetPath(obj);
                                         string objGUID = AssetDatabase.AssetPathToGUID(objFilepath);
@@ -135,6 +134,11 @@ namespace SuperUnityBuild.BuildTool
                 if (GUILayout.Button("Clear Scene List", GUILayout.ExpandWidth(true)))
                 {
                     list.ClearArray();
+                }
+
+                if (GUILayout.Button("Add Scene Files from Build Settings", GUILayout.ExpandWidth(true)))
+                {
+                    GetSceneFilesFromBuildSettings();
                 }
 
                 if (GUILayout.Button("Add Scene File Directory", GUILayout.ExpandWidth(true)))
@@ -170,7 +174,6 @@ namespace SuperUnityBuild.BuildTool
                     duplicateFound = true;
                     break;
                 }
-
             }
 
             return duplicateFound;
@@ -197,6 +200,16 @@ namespace SuperUnityBuild.BuildTool
                 list.isExpanded = false;
         }
 
+        private void GetSceneFilesFromBuildSettings()
+        {
+            EditorBuildSettingsScene[] scenes = EditorBuildSettings.scenes;
+
+            for (int i = 0; i < scenes.Length; i++)
+            {
+                AddScene(AssetDatabase.AssetPathToGUID(scenes[i].path));
+            }
+        }
+
         private void SetFirstSceneByFile()
         {
             string filepath = EditorUtility.OpenFilePanel("Select Scene File", Application.dataPath, "unity");
@@ -219,7 +232,6 @@ namespace SuperUnityBuild.BuildTool
                     list.DeleteArrayElementAtIndex(i);
                     break;
                 }
-
             }
 
             list.InsertArrayElementAtIndex(0);
@@ -228,7 +240,7 @@ namespace SuperUnityBuild.BuildTool
 
         private void AddScene(string objGUID)
         {
-            if (!CheckForDuplicate(objGUID))
+            if (!string.IsNullOrEmpty(objGUID) && !CheckForDuplicate(objGUID))
             {
                 int addedIndex = list.arraySize;
                 list.InsertArrayElementAtIndex(addedIndex);
