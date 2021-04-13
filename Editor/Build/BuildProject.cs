@@ -200,7 +200,7 @@ namespace SuperUnityBuild.BuildTool
 
             string archName = arch.name;
             if (buildPlatform.variants != null && buildPlatform.variants.Length > 0)
-                archName += "(" + buildPlatform.variantKey + ")";
+                archName += " (" + buildPlatform.variantKey.Replace(",", ", ") + ")";
 
             sb.Replace("$RELEASE_TYPE", SanitizeFolderName(releaseType.typeName));
             sb.Replace("$PLATFORM", SanitizeFolderName(buildPlatform.platformName));
