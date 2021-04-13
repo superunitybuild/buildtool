@@ -23,11 +23,13 @@ Features:
 
 Requires Unity 2018.1 or higher. Supports building for Windows, OSX, Linux, iOS, Android and WebGL.
 
-### Install
+### Installation
 
-You can [add the link from our git repository](https://github.com/superunitybuild/buildtool.git) and load this package using [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-manager-ui@2.0/manual/index.html), you can also [download the latest released Unity Package][release] and import it into your project OR [download the zip][download] of this repository and extract its contents into your Unity project's Assets directory.
+Official releases of SuperUnityBuild can be installed via [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-manager-ui@latest/index.html) from the [OpenUPM](https://openupm.com) package registry. See [https://openupm.com/packages/com.github.superunitybuild.buildtool/](https://openupm.com/packages/com.github.superunitybuild.buildtool/) for installation options.
 
-You may also want to download some of the available BuildAction modules in the [Unity-Build-Actions][unitybuild-actions] repository to expand SuperUnityBuild's capabilities.
+You can also [download the source zip](https://github.com/superunitybuild/buildactions) of this repository and extract its contents into your Unity project's `Packages` directory to install SuperUnityBuild as an embedded package.
+
+You may also want to download some of the available BuildAction modules in the [BuildActions](https://github.com/superunitybuild/buildactions) repository to expand SuperUnityBuild's capabilities.
 
 ### Basic Setup
 
@@ -53,11 +55,21 @@ Bug reports, feature requests, and pull requests are welcome and appreciated.
 
 ## Credits
 
--   **Chase Pettit** - [github](https://github.com/Chaser324), [twitter](http://twitter.com/chasepettit)
+### Creator
+
+-   **Chase Pettit** - [GitHub](https://github.com/Chaser324), [Twitter](http://twitter.com/chasepettit)
+
+### Maintainer
+
+-   **Robin North** - [GitHub](https://github.com/robinnorth)
+
+### Contributors
+
+You can see a complete list of contributors at [https://github.com/superunitybuild/buildtool/graphs/contributors](https://github.com/superunitybuild/buildtool/graphs/contributors)
 
 ## License
 
-All code in this repository ([unity-build](https://github.com/superunitybuild/buildtool)) is made freely available under the MIT license. This essentially means you're free to use it however you like as long as you provide attribution.
+All code in this repository ([buildtool](https://github.com/superunitybuild/buildtool)) is made freely available under the MIT license. This essentially means you're free to use it however you like as long as you provide attribution.
 
 [download]: https://github.com/superunitybuild/buildtool/archive/master.zip
 [release]: https://github.com/superunitybuild/buildtool/releases
