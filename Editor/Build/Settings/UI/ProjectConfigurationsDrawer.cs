@@ -184,6 +184,9 @@ namespace SuperUnityBuild.BuildTool
                             {
                                 // Update Editor environment settings to match selected build configuration
                                 BuildProject.ConfigureEnvironment(releaseType, platform, arch, dist, DateTime.Now);
+
+                                // Apply scene list
+                                BuildProject.SetEditorBuildSettingsScenes(releaseType);
                             }
                         }
                         else

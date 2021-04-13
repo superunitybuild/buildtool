@@ -62,9 +62,6 @@ namespace SuperUnityBuild.BuildTool
 
             // Refresh scene list to make sure nothing has been deleted or moved
             releaseType.sceneList.Refresh();
-
-            // Apply scene list
-            SetEditorBuildSettingsScenes(releaseType);
         }
 
         public static string GenerateDefaultDefines(BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist)
@@ -240,11 +237,7 @@ namespace SuperUnityBuild.BuildTool
             return Regex.Replace(fileName, invalidRegStr, "_");
         }
 
-        #endregion
-
-        #region Private Methods
-
-        private static void SetEditorBuildSettingsScenes(BuildReleaseType releaseType)
+        public static void SetEditorBuildSettingsScenes(BuildReleaseType releaseType)
         {
             // Create EditorBuildSettingsScene instances from release type scene list
             List<EditorBuildSettingsScene> editorBuildSettingsScenes = releaseType.sceneList.GetSceneFileList()
@@ -254,6 +247,10 @@ namespace SuperUnityBuild.BuildTool
             // Set the Build Settings scene list
             EditorBuildSettings.scenes = editorBuildSettingsScenes.ToArray();
         }
+
+        #endregion
+
+        #region Private Methods
 
         private static void ReplaceFromFile(StringBuilder sb, string keyString, string filename)
         {
