@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -32,6 +33,38 @@ namespace SuperUnityBuild.BuildTool
         {
             string[] buildConfigs = new string[] { keyChain };
             PerformBuild(buildConfigs, options);
+        }
+
+        public static void ConfigureEnvironment(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, DateTime buildTime)
+        {
+            // Switch to target build platform
+            EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, architecture.target);
+
+            // Apply defines
+            string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
+            string buildDefines = GenerateDefaultDefines(releaseType, platform, architecture, distribution);
+            buildDefines = MergeDefines(preBuildDefines, buildDefines);
+
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, buildDefines);
+
+            // Set target settings
+            PlayerSettings.companyName = releaseType.companyName;
+            PlayerSettings.productName = releaseType.productName;
+
+            // Set bundle info
+            PlayerSettings.SetApplicationIdentifier(platform.targetGroup, releaseType.bundleIdentifier);
+
+            // Apply build variant
+            platform.ApplyVariant();
+
+            // Generate BuildConstants
+            BuildConstantsGenerator.Generate(buildTime, BuildSettings.productParameters.lastGeneratedVersion, releaseType, platform, architecture, distribution);
+
+            // Refresh scene list to make sure nothing has been deleted or moved
+            releaseType.sceneList.Refresh();
+
+            // Apply scene list
+            SetEditorBuildSettingsScenes(releaseType);
         }
 
         public static string GenerateDefaultDefines(BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist)
@@ -118,9 +151,8 @@ namespace SuperUnityBuild.BuildTool
             Match match = Regex.Match(prototypeString, "(?:\\$DAYSSINCE\\(\")([^\"]*)(?:\"\\))");
             while (match.Success)
             {
-                DateTime parsedTime;
                 int daysSince = 0;
-                if (DateTime.TryParse(match.Groups[1].Value, out parsedTime))
+                if (DateTime.TryParse(match.Groups[1].Value, out DateTime parsedTime))
                 {
                     daysSince = buildTime.Subtract(parsedTime).Days;
                 }
@@ -153,7 +185,6 @@ namespace SuperUnityBuild.BuildTool
             string resolvedProto = ResolvePath(prototype, releaseType, buildPlatform, arch, dist, buildTime);
             string buildPath = Path.Combine(BuildSettings.basicSettings.baseBuildFolder, resolvedProto);
             buildPath = Path.GetFullPath(buildPath).TrimEnd('\\').TrimEnd('/');
-
 
             return buildPath;
         }
@@ -213,6 +244,17 @@ namespace SuperUnityBuild.BuildTool
 
         #region Private Methods
 
+        private static void SetEditorBuildSettingsScenes(BuildReleaseType releaseType)
+        {
+            // Create EditorBuildSettingsScene instances from release type scene list
+            List<EditorBuildSettingsScene> editorBuildSettingsScenes = releaseType.sceneList.GetSceneFileList()
+                .Select(path => new EditorBuildSettingsScene(path, true))
+                .ToList();
+
+            // Set the Build Settings scene list
+            EditorBuildSettings.scenes = editorBuildSettingsScenes.ToArray();
+        }
+
         private static void ReplaceFromFile(StringBuilder sb, string keyString, string filename)
         {
             if (sb.ToString().IndexOf(keyString) > -1)
@@ -258,20 +300,15 @@ namespace SuperUnityBuild.BuildTool
                 File.Copy(buildConstantsPath, currentBuildConstantsFile);
             }
 
-            DateTime buildTime;
-            PerformPreBuild(out buildTime);
+            PerformPreBuild(out DateTime buildTime);
 
             for (int i = 0; i < buildConfigs.Length; i++)
             {
-                BuildReleaseType releaseType;
-                BuildPlatform platform;
-                BuildArchitecture arch;
-                BuildDistribution dist;
                 string configKey = buildConfigs[i];
 
                 // Parse build config and perform build.
                 string notification = string.Format("Building ({0}/{1}): ", i + 1, buildConfigs.Length);
-                BuildSettings.projectConfigurations.ParseKeychain(configKey, out releaseType, out platform, out arch, out dist);
+                BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture arch, out BuildDistribution dist);
                 bool success = BuildPlayer(notification, releaseType, platform, arch, dist, buildTime, options, configKey);
 
                 if (success)
@@ -291,6 +328,7 @@ namespace SuperUnityBuild.BuildTool
 
             // Report success/failure.
             StringBuilder sb = new StringBuilder();
+
             if (failCount == 0)
             {
                 sb.AppendFormat("{0} successful build{1}. No failures. ✔️",
@@ -307,6 +345,7 @@ namespace SuperUnityBuild.BuildTool
                     successCount, successCount > 1 ? "s" : "",
                     failCount, failCount > 1 ? "s" : "");
             }
+
             BuildNotificationList.instance.AddNotification(new BuildNotification(
                     BuildNotification.Category.Notification,
                     "Build Complete.", sb.ToString(),
@@ -326,48 +365,29 @@ namespace SuperUnityBuild.BuildTool
             if (options == BuildOptions.None)
                 options = releaseType.buildOptions;
 
-            // Generate build path.
+            // Generate build path
             string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
             string binName = string.Format(architecture.binaryNameFormat, SanitizeFileName(releaseType.productName));
 
-            // Save current user defines, and then set target defines.
+            // Save current environment settings
             string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
-            string buildDefines = GenerateDefaultDefines(releaseType, platform, architecture, distribution);
-            buildDefines = MergeDefines(preBuildDefines, buildDefines);
-
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, buildDefines);
-            //Debug.Log("Build Defines: " + buildDefines);
-
-            // Save current player settings, and then set target settings.
             string preBuildCompanyName = PlayerSettings.companyName;
             string preBuildProductName = PlayerSettings.productName;
-
-            PlayerSettings.companyName = releaseType.companyName;
-            PlayerSettings.productName = releaseType.productName;
-
-            // Set bundle info.
             string preBuildBundleIdentifier = PlayerSettings.GetApplicationIdentifier(platform.targetGroup);
-            PlayerSettings.SetApplicationIdentifier(platform.targetGroup, releaseType.bundleIdentifier);
 
-            // Apply build variant.
-            platform.ApplyVariant();
+            // Configure environment settings to match the build configuration
+            ConfigureEnvironment(releaseType, platform, architecture, distribution, buildTime);
 
-            // Pre-build actions.
+            // Pre-build actions
             PerformPreBuild(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
 
-            // Generate BuildConstants.
-            BuildConstantsGenerator.Generate(buildTime, BuildSettings.productParameters.lastGeneratedVersion, releaseType, platform, architecture, distribution);
-
-            // Refresh scene list to make sure nothing has been deleted or moved.
-            releaseType.sceneList.Refresh();
-
-            // Report build starting.
+            // Report build starting
             BuildNotificationList.instance.AddNotification(new BuildNotification(
                 BuildNotification.Category.Notification,
                 notification, configKey,
                 true, null));
 
-            // Build player.
+            // Build player
             FileUtil.DeleteFileOrDirectory(buildPath);
 
             string error = "";
@@ -386,14 +406,13 @@ namespace SuperUnityBuild.BuildTool
                     true, null));
             }
 
-            // Post-build actions.
+            // Post-build actions
             PerformPostBuild(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
 
-            // Restore pre-build settings.
+            // Restore pre-build environment settings
             PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, preBuildDefines);
             PlayerSettings.companyName = preBuildCompanyName;
             PlayerSettings.productName = preBuildProductName;
-
             PlayerSettings.SetApplicationIdentifier(platform.targetGroup, preBuildBundleIdentifier);
 
             return success;
@@ -414,6 +433,7 @@ namespace SuperUnityBuild.BuildTool
 
             // Run pre-build actions.
             BuildAction[] buildActions = BuildSettings.preBuildActions.buildActions;
+
             if (buildActions != null)
             {
                 for (int i = 0; i < buildActions.Length; i++)
@@ -461,6 +481,7 @@ namespace SuperUnityBuild.BuildTool
 
                     // Check if execute method has been overriden.
                     MethodInfo m = action.GetType().GetMethod("PerBuildExecute");
+
                     if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.PerPlatform)
                     {
                         // Check build filter and execute if true.
@@ -489,6 +510,7 @@ namespace SuperUnityBuild.BuildTool
         {
             // Run post-build actions.
             BuildAction[] buildActions = BuildSettings.postBuildActions.buildActions;
+
             if (buildActions != null)
             {
                 for (int i = 0; i < buildActions.Length; i++)
@@ -497,6 +519,7 @@ namespace SuperUnityBuild.BuildTool
 
                     // Check if execute method has been overriden.
                     MethodInfo m = action.GetType().GetMethod("Execute");
+
                     if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.SingleRun)
                     {
                         if (action.actionEnabled)
@@ -528,6 +551,7 @@ namespace SuperUnityBuild.BuildTool
             DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
         {
             BuildAction[] buildActions = BuildSettings.postBuildActions.buildActions;
+
             if (buildActions != null)
             {
                 for (int i = 0; i < buildActions.Length; i++)
@@ -536,6 +560,7 @@ namespace SuperUnityBuild.BuildTool
 
                     // Check if execute method has been overriden.
                     MethodInfo m = action.GetType().GetMethod("PerBuildExecute");
+
                     if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.PerPlatform)
                     {
                         // Check build filter and execute if true.

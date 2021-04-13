@@ -169,7 +169,7 @@ namespace SuperUnityBuild.BuildTool
                             }
 
                             EditorGUI.BeginDisabledGroup((buildOptions & BuildOptions.Development) != BuildOptions.Development);
-                            if (GUILayout.Button("Build and Run w/ Profiler", GUILayout.ExpandWidth(true)))
+                            if (GUILayout.Button("Build and Run with Profiler", GUILayout.ExpandWidth(true)))
                             {
                                 buildOptions |= BuildOptions.AutoRunPlayer;
                                 buildOptions |= BuildOptions.ConnectWithProfiler;
@@ -180,21 +180,10 @@ namespace SuperUnityBuild.BuildTool
                             EditorGUI.EndDisabledGroup();
                             GUI.backgroundColor = defaultBackgroundColor;
 
-                            if (GUILayout.Button("Refresh BuildConstants and Apply Defines", GUILayout.ExpandWidth(true)))
+                            if (GUILayout.Button(new GUIContent("Configure Editor Environment", "Switches platform, refreshes BuildConstants, applies scripting defines and variant settings and sets Build Settings scene list to match the selected build configuration"), GUILayout.ExpandWidth(true)))
                             {
-                                // Switch to target build platform
-                                EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, arch.target);
-
-                                // Apply defines
-                                string currentDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
-                                string appliedDefines = BuildProject.MergeDefines(currentDefines, defines);
-                                PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, appliedDefines);
-
-                                // Apply scene list
-                                SetEditorBuildSettingsScenes(releaseType);
-
-                                // Refresh constants
-                                BuildConstantsGenerator.Generate(DateTime.Now, BuildSettings.productParameters.lastGeneratedVersion, releaseType, platform, arch, dist);
+                                // Update Editor environment settings to match selected build configuration
+                                BuildProject.ConfigureEnvironment(releaseType, platform, arch, dist, DateTime.Now);
                             }
                         }
                         else
@@ -269,17 +258,6 @@ namespace SuperUnityBuild.BuildTool
                     DisplayConfigTree(childKey, childConfig, depth + 1, config.enabled && enabled);
                 }
             }
-        }
-
-        private void SetEditorBuildSettingsScenes(BuildReleaseType releaseType)
-        {
-            // Create EditorBuildSettingsScene instances from release type scene list
-            List<EditorBuildSettingsScene> editorBuildSettingsScenes = releaseType.sceneList.GetSceneFileList()
-                .Select(path => new EditorBuildSettingsScene(path, true))
-                .ToList();
-
-            // Set the Build Settings scene list
-            EditorBuildSettings.scenes = editorBuildSettingsScenes.ToArray();
         }
     }
 }
