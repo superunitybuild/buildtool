@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-pre.2] - 2021-04-13
+
+### Added
+
+-   Added 'macOS Architecture' variant on Unity 2020.2+ to support building for Apple Silicon. [Issue #70](https://github.com/superunitybuild/buildtool/issues/70)
+-   Added ability to set release type scene list from Build Settings. [Issue #27](https://github.com/superunitybuild/buildtool/issues/27)
+-   Set Build Settings scene list from release type when 'Refresh BuildConstants and Apply Defines' is clicked. [Issue #16](https://github.com/superunitybuild/buildtool/issues/16)
+
+### Changed
+
+-   Made $ARCHITECTURE build path token more human-readable.
+-   'Refresh BuildConstants...' button now configures Editor environment settings in an identical way to performing a build, so you can match your Editor settings to a given build configuration.
+-   **Breaking change:** Improved generation of build variant values from enum names.
+-   **Breaking change:** Renamed 'OSX' build platform to 'macOS'.
+-   Removed pre-Unity 2018.1 code.
+
+### Fixed
+
+-   Only enable Android split APK variant on supported Unity versions.
+-   Fixed Build Action filter UI shown for 'Single Run' actions. [Issue #69](https://github.com/superunitybuild/buildtool/issues/69)
+
 ## [1.0.0-pre.1] - 2021-04-09
 
 ### Added
@@ -32,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+-   Removed support for Unity versions older than 2018.1.
 -   Removed obsolete code in `BuildProject` and `BuildReleaseTypeDrawer`.
 -   Removed obsolete Linux build architectures on Unity 2019.2+. [PR #50](https://github.com/superunitybuild/buildtool/pull/50)
 
@@ -48,5 +70,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Fixed issue in Linux build name moving `binaryName` to `BuildArchitecture`. [PR #41](https://github.com/superunitybuild/buildtool/pull/41)
 -   Fixed an issue where custom defines were overwrite when build was finished. [Issue #36](https://github.com/superunitybuild/buildtool/issues/36)
 
-[unreleased]: https://github.com/superunitybuild/buildtool/compare/v1.0.0-pre.1...HEAD
-[1.0.0-pre.1]: https://github.com/superunitybuild/buildtool/compare/v0.9.8...v1.0.0-pre.1)
+[unreleased]: https://github.com/superunitybuild/buildtool/compare/v1.0.0-pre.2...HEAD
+[1.0.0-pre.2]: https://github.com/superunitybuild/buildtool/compare/v1.0.0-pre.1...v1.0.0-pre.2
+[1.0.0-pre.1]: https://github.com/superunitybuild/buildtool/compare/v0.9.8...v1.0.0-pre.1
