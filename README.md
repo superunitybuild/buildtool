@@ -1,14 +1,15 @@
 # SuperUnityBuild
 
-[![openupm](https://img.shields.io/npm/v/com.github.superunitybuild.buildtool?label=openupm&registry_uri=https://package.openupm.com)](https://openupm.com/packages/com.github.superunitybuild.buildtool/)
+[![openupm](https://img.shields.io/npm/v/com.github.superunitybuild.buildtool?label=openupm&registry_uri=https://package.openupm.com)][openupm-package]
 
-> A powerful automation tool for quickly and easily generating builds of a game with Unity.
+> A powerful automation tool for quickly and easily generating builds with Unity.
 
+![Logo](https://raw.githubusercontent.com/superunitybuild/buildtool/gh-pages/Cover.png)
 ![Screenshot](https://raw.githubusercontent.com/superunitybuild/buildtool/gh-pages/Screenshot_v1.0.0.png)
 
-[Unity Forums Thread][unity-thread] | [Documentation Wiki][unitybuild-wiki]
+[Unity Forums Thread][unity-forums-thread] | [Documentation Wiki][wiki] | [OpenUPM package][openupm-package]
 
-SuperUnityBuild is a Unity utility that automates the process of generating builds of your game. It's easy and quick enough to use on small games, but it's also powerful and extensible enough to be extremely useful on larger projects. The key to this flexibility lies in SuperUnityBuild's configurable degrees of granularity and its "BuildActions" framework which allows additional operations to be added into the build process.
+SuperUnityBuild is a Unity utility that automates the process of generating builds. It's easy and quick enough to use on small apps, but it's also powerful and extensible enough to be extremely useful on larger projects. The key to this flexibility lies in SuperUnityBuild's configurable degrees of granularity and its [BuildActions][buildactions] framework which allows additional operations to be added into the build process.
 
 Features:
 
@@ -21,25 +22,21 @@ Features:
 
 ## Basic Usage
 
-Requires Unity 2018.1 or higher. Supports building for Windows, OSX, Linux, iOS, Android and WebGL.
+Requires Unity 2018.1 or higher. Supports building for Windows, macOS, Linux, iOS, Android and WebGL.
 
 ### Installation
 
-Official releases of SuperUnityBuild can be installed via [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-manager-ui@latest/index.html) from the [OpenUPM](https://openupm.com) package registry. See [https://openupm.com/packages/com.github.superunitybuild.buildtool/](https://openupm.com/packages/com.github.superunitybuild.buildtool/) for installation options.
+Official releases of SuperUnityBuild can be installed via [Unity Package Manager](https://docs.unity3d.com/Packages/com.unity.package-manager-ui@latest/index.html) from the [OpenUPM](https://openupm.com) package registry. See [https://openupm.com/packages/com.github.superunitybuild.buildtool/][openupm-package] for installation options.
 
-You can also [download the source zip](https://github.com/superunitybuild/buildactions) of this repository and extract its contents into your Unity project's `Packages` directory to install SuperUnityBuild as an embedded package.
+You can also [download the source zip][download] of this repository and extract its contents into your Unity project's `Packages` directory to install SuperUnityBuild as an embedded package.
 
-You may also want to download some of the available BuildAction modules in the [BuildActions](https://github.com/superunitybuild/buildactions) repository to expand SuperUnityBuild's capabilities.
+You may also want to [install](https://github.com/superunitybuild/buildtool#installation) the optional [BuildActions][buildactions] package to expand SuperUnityBuild's capabilities.
 
-### Basic Setup
+### Setup
 
 See [Standard Usage](https://github.com/superunitybuild/buildtool/wiki/Standard-Usage) in the wiki.
 
 ## Customizing and Expanding
-
-### Creating BuildPlatforms
-
-_TODO_
 
 ### Creating BuildActions
 
@@ -65,15 +62,17 @@ Bug reports, feature requests, and pull requests are welcome and appreciated.
 
 ### Contributors
 
-You can see a complete list of contributors at [https://github.com/superunitybuild/buildtool/graphs/contributors](https://github.com/superunitybuild/buildtool/graphs/contributors)
+You can see a complete list of contributors at [https://github.com/superunitybuild/buildtool/graphs/contributors][contributors]
 
 ## License
 
-All code in this repository ([buildtool](https://github.com/superunitybuild/buildtool)) is made freely available under the MIT license. This essentially means you're free to use it however you like as long as you provide attribution.
+All code in this repository ([buildtool][buildtool]) is made freely available under the MIT license. This essentially means you're free to use it however you like as long as you provide attribution.
 
 [download]: https://github.com/superunitybuild/buildtool/archive/master.zip
+[contributors]: https://github.com/superunitybuild/buildtool/graphs/contributors
 [release]: https://github.com/superunitybuild/buildtool/releases
-[unitybuild]: https://github.com/superunitybuild/buildtool
-[unitybuild-actions]: https://github.com/superunitybuild/buildactions
-[unitybuild-wiki]: https://github.com/superunitybuild/buildtool/wiki/
-[unity-thread]: https://forum.unity3d.com/threads/super-unity-build-automated-build-tool-and-framework.471114/
+[buildtool]: https://github.com/superunitybuild/buildtool
+[buildactions]: https://github.com/superunitybuild/buildactions
+[wiki]: https://github.com/superunitybuild/buildtool/wiki/
+[openupm-package]: https://openupm.com/packages/com.github.superunitybuild.buildtool/
+[unity-forums-thread]: https://forum.unity3d.com/threads/super-unity-build-automated-build-tool-and-framework.471114/
