@@ -103,10 +103,15 @@ namespace SuperUnityBuild.BuildTool
                 }
                 else
                 {
-                    EditorGUILayout.PropertyField(prop);
+                    DrawProperty(prop);
                     done = !prop.NextVisible(true);
                 }
             }
+        }
+
+        protected virtual void DrawProperty(SerializedProperty prop)
+        {
+            EditorGUILayout.PropertyField(prop);
         }
     }
 }
