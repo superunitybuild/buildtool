@@ -174,6 +174,11 @@ namespace SuperUnityBuild.BuildTool
             productParameters.lastGeneratedVersion = retVal;
             PlayerSettings.bundleVersion = retVal;
 
+            // Increment build numbers for supported platforms
+            PlayerSettings.Android.bundleVersionCode = PlayerSettings.Android.bundleVersionCode + 1;
+            PlayerSettings.iOS.buildNumber = $"{int.Parse(PlayerSettings.iOS.buildNumber) + 1}";
+            PlayerSettings.macOS.buildNumber = $"{int.Parse(PlayerSettings.macOS.buildNumber) + 1}";
+
             return retVal;
         }
 

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+-   Increment build numbers for supported platforms when generating version string. [Issue #71](https://github.com/superunitybuild/buildtool/issues/71)
 -   Allow BuildActions to draw custom serialized property fields
 
 ### Changed
