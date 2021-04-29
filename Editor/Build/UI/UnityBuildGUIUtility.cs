@@ -91,10 +91,9 @@ namespace SuperUnityBuild.BuildTool
             if (!noColor)
                 GUI.backgroundColor = instance._mainHeaderColor;
 
-            if (GUILayout.Button(content, dropdownHeaderStyle, options))
+            if (EditorGUILayout.DropdownButton(new GUIContent(content), FocusType.Keyboard, dropdownHeaderStyle, options))
             {
                 showDropdown = !showDropdown;
-                GUIUtility.keyboardControl = 0;
             }
 
             if (!noColor)

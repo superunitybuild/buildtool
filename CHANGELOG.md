@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Allow BuildActions to draw custom serialized property fields
 
+### Changed
+
+-   Use `EditorGUILayout.DropdownButton` for UI dropdown buttons
+
 ## [1.0.0] - 2021-04-15
 
 This release includes all changes from 1.0.0 pre-releases ([1.0.0-pre.1](#100-pre1---2021-04-09), [1.0.0-pre.2](#100-pre2---2021-04-13)), plus:
