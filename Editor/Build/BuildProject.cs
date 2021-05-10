@@ -58,7 +58,7 @@ namespace SuperUnityBuild.BuildTool
             platform.ApplyVariant();
 
             // Generate BuildConstants
-            BuildConstantsGenerator.Generate(buildTime, BuildSettings.productParameters.lastGeneratedVersion, releaseType, platform, architecture, distribution);
+            BuildConstantsGenerator.Generate(buildTime, BuildSettings.productParameters.buildVersion, releaseType, platform, architecture, distribution);
 
             // Refresh scene list to make sure nothing has been deleted or moved
             releaseType.sceneList.Refresh();
@@ -141,7 +141,7 @@ namespace SuperUnityBuild.BuildTool
 
         public static string GenerateVersionString(ProductParameters productParameters, DateTime buildTime)
         {
-            string prototypeString = productParameters.version;
+            string prototypeString = productParameters.versionTemplate;
             StringBuilder sb = new StringBuilder(prototypeString);
 
             // Regex = (?:\$DAYSSINCE\(")([^"]*)(?:"\))
@@ -171,7 +171,7 @@ namespace SuperUnityBuild.BuildTool
             sb.Replace("$BUILD", (++productParameters.buildCounter).ToString());
 
             string retVal = sb.ToString();
-            productParameters.lastGeneratedVersion = retVal;
+            productParameters.buildVersion = retVal;
             PlayerSettings.bundleVersion = retVal;
 
             // Increment build numbers for supported platforms
@@ -208,7 +208,7 @@ namespace SuperUnityBuild.BuildTool
             sb.Replace("$PLATFORM", SanitizeFolderName(buildPlatform.platformName));
             sb.Replace("$ARCHITECTURE", SanitizeFolderName(archName));
             sb.Replace("$DISTRIBUTION", SanitizeFolderName(dist != null ? dist.distributionName : BuildConstantsGenerator.NONE));
-            sb.Replace("$VERSION", SanitizeFolderName(BuildSettings.productParameters.lastGeneratedVersion));
+            sb.Replace("$VERSION", SanitizeFolderName(BuildSettings.productParameters.buildVersion));
             sb.Replace("$BUILD", BuildSettings.productParameters.buildCounter.ToString());
             sb.Replace("$PRODUCT_NAME", SanitizeFolderName(releaseType.productName));
 

@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-<!-- ## [Unreleased] -->
+## [Unreleased]
+
+### Changed
+
+-   Revised Product Parameters UI to better denote how the various options for setting a build version work and interact with each other.
+-   Deprecated `BuildSettings.productParameters.lastGeneratedVersion` property. BuildActions that previously referenced this should now use `BuildSettings.productParameters.buildVersion` instead.
+-   Deprecated `BuildSettings.productParameters.version` property. This has been replaced by `BuildSettings.productParameters.versionTemplate`.
+
+### Fixed
+
+-   Fixed correct build version string not being available for BuildActions to use when 'Sync Version with Player Settings' option was enabled. [Issue #73](https://github.com/superunitybuild/buildtool/issues/73)
 
 ## [1.1.0] - 2021-04-29
 

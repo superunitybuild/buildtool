@@ -24,36 +24,43 @@ namespace SuperUnityBuild.BuildTool
             {
                 EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
+                // Temporarily override GUI label width size
+                float currentLabelWidth = EditorGUIUtility.labelWidth;
+                EditorGUIUtility.labelWidth = 200;
+
                 SerializedProperty autoGenerate = property.FindPropertyRelative("autoGenerate");
                 SerializedProperty syncWithPlayerSettings = property.FindPropertyRelative("syncWithPlayerSettings");
 
                 EditorGUI.BeginDisabledGroup(syncWithPlayerSettings.boolValue);
-                EditorGUILayout.PropertyField(property.FindPropertyRelative("version"));
-
                 EditorGUI.BeginDisabledGroup(true);
-                EditorGUILayout.PropertyField(property.FindPropertyRelative("lastGeneratedVersion"));
+                EditorGUILayout.PropertyField(property.FindPropertyRelative("buildVersion"));
                 EditorGUI.EndDisabledGroup();
 
-                autoGenerate.boolValue = EditorGUILayout.ToggleLeft("Auto-Generate Version", autoGenerate.boolValue);
+                EditorGUILayout.PropertyField(property.FindPropertyRelative("versionTemplate"));
+
+                EditorGUILayout.PropertyField(property.FindPropertyRelative("autoGenerate"), new GUIContent("Auto-Generate Version"));
                 EditorGUI.EndDisabledGroup();
 
                 EditorGUI.BeginDisabledGroup(autoGenerate.boolValue);
-                syncWithPlayerSettings.boolValue = EditorGUILayout.ToggleLeft("Sync Version with Player Settings", syncWithPlayerSettings.boolValue);
+                EditorGUILayout.PropertyField(property.FindPropertyRelative("syncWithPlayerSettings"), new GUIContent("Sync Version with Player Settings"));
                 EditorGUI.EndDisabledGroup();
 
                 if (syncWithPlayerSettings.boolValue)
                 {
-                    property.FindPropertyRelative("version").stringValue = PlayerSettings.bundleVersion;
+                    property.FindPropertyRelative("versionTemplate").stringValue = PlayerSettings.bundleVersion;
+                    property.FindPropertyRelative("buildVersion").stringValue = PlayerSettings.bundleVersion;
                 }
-
-                EditorGUILayout.PropertyField(property.FindPropertyRelative("buildCounter"));
-
-                if (GUILayout.Button("Reset Build Counter", GUILayout.ExpandWidth(true)))
+                else
                 {
-                    property.FindPropertyRelative("buildCounter").intValue = 0;
+                    EditorGUILayout.PropertyField(property.FindPropertyRelative("buildCounter"));
+
+                    if (GUILayout.Button("Reset Build Counter", GUILayout.ExpandWidth(true)))
+                    {
+                        property.FindPropertyRelative("buildCounter").intValue = 0;
+                    }
                 }
 
-                if (!autoGenerate.boolValue && !syncWithPlayerSettings.boolValue && GUILayout.Button("Generate Version String Now", GUILayout.ExpandWidth(true)))
+                if (!autoGenerate.boolValue && !syncWithPlayerSettings.boolValue && GUILayout.Button("Generate Version Now", GUILayout.ExpandWidth(true)))
                 {
                     BuildProject.GenerateVersionString(BuildSettings.productParameters, DateTime.Now);
                 }
@@ -61,6 +68,9 @@ namespace SuperUnityBuild.BuildTool
                 property.serializedObject.ApplyModifiedProperties();
 
                 EditorGUILayout.EndVertical();
+
+                // Reset GUI label width size
+                EditorGUIUtility.labelWidth = currentLabelWidth;
             }
 
             EditorGUI.EndProperty();
