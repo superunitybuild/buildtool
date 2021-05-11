@@ -33,7 +33,6 @@ namespace SuperUnityBuild.BuildTool
         private GUIStyle _midHeaderStyle;
         private GUIStyle _popupStyle;
         private GUIStyle _mainTitleStyle;
-        private GUIStyle _subTitleStyle;
         private GUIStyle _dragDropArea;
 
         private Color32 _defaultBackgroundColor = GUI.backgroundColor;
@@ -156,14 +155,6 @@ namespace SuperUnityBuild.BuildTool
             get
             {
                 return instance._mainTitleStyle;
-            }
-        }
-
-        public static GUIStyle subTitleStyle
-        {
-            get
-            {
-                return instance._subTitleStyle;
             }
         }
 
