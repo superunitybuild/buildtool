@@ -22,7 +22,7 @@ Features:
 
 ## Basic Usage
 
-Requires Unity 2018.1 or higher. Supports building for Windows, macOS, Linux, iOS, Android and WebGL.
+Requires Unity 2019.1 or higher. Supports building for Windows, macOS, Linux, iOS, Android and WebGL.
 
 ### Installation
 

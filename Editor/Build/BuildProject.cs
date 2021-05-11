@@ -149,8 +149,7 @@ namespace SuperUnityBuild.BuildTool
             while (match.Success)
             {
                 int daysSince = 0;
-                DateTime parsedTime;
-                if (DateTime.TryParse(match.Groups[1].Value, out parsedTime))
+                if (DateTime.TryParse(match.Groups[1].Value, out DateTime parsedTime))
                 {
                     daysSince = buildTime.Subtract(parsedTime).Days;
                 }
@@ -303,8 +302,7 @@ namespace SuperUnityBuild.BuildTool
                 File.Copy(buildConstantsPath, currentBuildConstantsFile);
             }
 
-            DateTime buildTime;
-            PerformPreBuild(out buildTime);
+            PerformPreBuild(out DateTime buildTime);
 
             for (int i = 0; i < buildConfigs.Length; i++)
             {
@@ -312,11 +310,7 @@ namespace SuperUnityBuild.BuildTool
 
                 // Parse build config and perform build.
                 string notification = string.Format("Building ({0}/{1}): ", i + 1, buildConfigs.Length);
-                BuildReleaseType releaseType;
-                BuildPlatform platform;
-                BuildArchitecture arch;
-                BuildDistribution dist;
-                BuildSettings.projectConfigurations.ParseKeychain(configKey, out releaseType, out platform, out arch, out dist);
+                BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture arch, out BuildDistribution dist);
                 bool success = BuildPlayer(notification, releaseType, platform, arch, dist, buildTime, options, configKey);
 
                 if (success)
