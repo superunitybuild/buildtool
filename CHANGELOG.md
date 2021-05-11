@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-<!-- ## [Unreleased] -->
+## [Unreleased]
+
+### Fixed
+
+-   Fixed compilation errors on Unity 2018.1 - 2018.3. [Issue #74](https://github.com/superunitybuild/buildtool/issues/74)
 
 ## [1.2.0] - 2021-05-10
 
