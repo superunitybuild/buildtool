@@ -51,14 +51,8 @@ namespace SuperUnityBuild.BuildTool
                         .ToArray(),
                     0),
                     new BuildVariant(_textureCompressionVariantId, EnumNamesToArray<MobileTextureSubtarget>(), 0),
-#if UNITY_2019_1_OR_NEWER
                     new BuildVariant(_buildSystemVariantId, new string[] { "Gradle" }, 0),
-#else
-                    new BuildVariant(_buildSystemVariantId, new string[] { "Internal", "Gradle" }, 0),
-#endif
-#if UNITY_2018_2_OR_NEWER
                     new BuildVariant(_splitApksVariantId, new string[] { "Disabled", "Enabled" }, 0),
-#endif
                     new BuildVariant(_minSdkVersionVariantId, EnumNamesToArray<AndroidSdkVersions>()
                         .Select(i => i.Replace(_androidApiLevelEnumPrefix, ""))
                         .ToArray(),
@@ -84,11 +78,9 @@ namespace SuperUnityBuild.BuildTool
                     case _buildSystemVariantId:
                         SetBuildSystem(key);
                         break;
-#if UNITY_2018_2_OR_NEWER
                     case _splitApksVariantId:
                         SetSplitApks(key);
                         break;
-#endif
                     case _minSdkVersionVariantId:
                         SetMinSdkVersion(key);
                         break;
@@ -113,12 +105,10 @@ namespace SuperUnityBuild.BuildTool
                 = EnumValueFromKey<AndroidBuildSystem>(key);
         }
 
-#if UNITY_2018_2_OR_NEWER
         private void SetSplitApks(string key)
         {
             PlayerSettings.Android.buildApkPerCpuArchitecture = key == "Enabled";
         }
-#endif
 
         private void SetMinSdkVersion(string key)
         {
