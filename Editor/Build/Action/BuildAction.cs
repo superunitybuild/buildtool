@@ -16,6 +16,7 @@ namespace SuperUnityBuild.BuildTool
         public string actionName = string.Empty;
         public string note = string.Empty;
         public bool actionEnabled = true;
+        [Tooltip("BuildAction should run when 'Configure Editor Environment' button is clicked")] public bool configureEditor = false;
         public BuildFilter filter = new BuildFilter();
 
         /// <summary>
@@ -41,25 +42,23 @@ namespace SuperUnityBuild.BuildTool
         {
             DrawProperties(obj);
 
-            System.Type myType = this.GetType();
+            System.Type myType = GetType();
+            bool isPreBuildAction = typeof(IPreBuildAction).IsAssignableFrom(myType);
+            bool isPostBuildAction = typeof(IPostBuildAction).IsAssignableFrom(myType);
+            bool isPreBuildPerPlatformAction = typeof(IPreBuildPerPlatformAction).IsAssignableFrom(myType);
+            bool isPostBuildPerPlatformAction = typeof(IPostBuildPerPlatformAction).IsAssignableFrom(myType);
+            bool isPreBuildActionCanConfigureEditor = typeof(IPreBuildPerPlatformActionCanConfigureEditor).IsAssignableFrom(myType);
             bool actionTypeSelectable = false;
-            if (typeof(IPreBuildAction).IsAssignableFrom(myType) &&
-                typeof(IPreBuildPerPlatformAction).IsAssignableFrom(myType))
+
+            if ((isPreBuildAction && isPreBuildPerPlatformAction) || (isPostBuildAction && isPostBuildPerPlatformAction))
             {
                 actionTypeSelectable = true;
             }
-            else if (typeof(IPostBuildAction).IsAssignableFrom(myType) &&
-                typeof(IPostBuildPerPlatformAction).IsAssignableFrom(myType))
-            {
-                actionTypeSelectable = true;
-            }
-            else if (typeof(IPreBuildAction).IsAssignableFrom(myType) ||
-                typeof(IPostBuildAction).IsAssignableFrom(myType))
+            else if (isPreBuildAction || isPostBuildAction)
             {
                 actionType = ActionType.SingleRun;
             }
-            else if (typeof(IPreBuildPerPlatformAction).IsAssignableFrom(myType) ||
-                typeof(IPostBuildPerPlatformAction).IsAssignableFrom(myType))
+            else if (isPreBuildPerPlatformAction || isPostBuildPerPlatformAction)
             {
                 actionType = ActionType.PerPlatform;
             }
@@ -67,6 +66,11 @@ namespace SuperUnityBuild.BuildTool
             if (actionTypeSelectable)
             {
                 actionType = (ActionType)EditorGUILayout.EnumPopup("Action Type", actionType);
+            }
+
+            if (isPreBuildActionCanConfigureEditor)
+            {
+                EditorGUILayout.PropertyField(obj.FindProperty("configureEditor"));
             }
 
             EditorGUILayout.PropertyField(obj.FindProperty("note"));
@@ -91,7 +95,8 @@ namespace SuperUnityBuild.BuildTool
                     prop.name == "actionType" ||
                     prop.name == "note" ||
                     prop.name == "actionEnabled" ||
-                    prop.name == "filter")
+                    prop.name == "filter" ||
+                    prop.name == "configureEditor")
                 {
                     // Already drawn these. Go to next, don't enter into object.
                     done = !prop.NextVisible(false);

@@ -156,9 +156,8 @@ namespace SuperUnityBuild.BuildTool
                             GUI.backgroundColor = Color.green;
                             if (GUILayout.Button("Build", GUILayout.ExpandWidth(true)))
                             {
-                                BuildOptions finalBuildOptions = buildOptions;
                                 EditorApplication.delayCall += () =>
-                                    BuildProject.BuildSingle(selectedKeyChain.stringValue, finalBuildOptions);
+                                    BuildProject.BuildSingle(selectedKeyChain.stringValue, buildOptions);
                             }
                             if (GUILayout.Button("Build and Run", GUILayout.ExpandWidth(true)))
                             {
@@ -183,7 +182,7 @@ namespace SuperUnityBuild.BuildTool
                             if (GUILayout.Button(new GUIContent("Configure Editor Environment", "Switches platform, refreshes BuildConstants, applies scripting defines and variant settings and sets Build Settings scene list to match the selected build configuration"), GUILayout.ExpandWidth(true)))
                             {
                                 // Update Editor environment settings to match selected build configuration
-                                BuildProject.ConfigureEnvironment(releaseType, platform, arch, dist, DateTime.Now);
+                                BuildProject.ConfigureEditor(selectedKeyChain.stringValue, buildOptions);
 
                                 // Apply scene list
                                 BuildProject.SetEditorBuildSettingsScenes(releaseType);

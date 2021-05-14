@@ -35,33 +35,35 @@ namespace SuperUnityBuild.BuildTool
             PerformBuild(buildConfigs, options);
         }
 
-        public static void ConfigureEnvironment(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, DateTime buildTime)
+        public static void ConfigureEditor(string configKey, BuildOptions options = BuildOptions.None)
         {
-            // Switch to target build platform
-            EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, architecture.target);
+            DateTime configureTime = DateTime.Now;
 
-            // Apply defines
-            string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
-            string buildDefines = GenerateDefaultDefines(releaseType, platform, architecture, distribution);
-            buildDefines = MergeDefines(preBuildDefines, buildDefines);
+            // Clear any old notifications
+            BuildNotificationList.instance.RefreshAll();
 
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, buildDefines);
+            // Report Editor environment configuration
+            BuildNotificationList.instance.AddNotification(new BuildNotification(
+                BuildNotification.Category.Notification,
+                "Configuring Editor environment for: ", configKey,
+                true, null));
 
-            // Set target settings
-            PlayerSettings.companyName = releaseType.companyName;
-            PlayerSettings.productName = releaseType.productName;
+            // Parse build config
+            BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture architecture, out BuildDistribution distribution);
 
-            // Set bundle info
-            PlayerSettings.SetApplicationIdentifier(platform.targetGroup, releaseType.bundleIdentifier);
+            // Configure environment
+            ConfigureEnvironment(releaseType, platform, architecture, distribution, configureTime);
 
-            // Apply build variant
-            platform.ApplyVariant();
+            // Run pre-build actions that have opted in to configuring the Editor
+            BuildAction[] buildActions = BuildSettings.preBuildActions.buildActions.Where(item => item.configureEditor).ToArray();
 
-            // Generate BuildConstants
-            BuildConstantsGenerator.Generate(buildTime, BuildSettings.productParameters.buildVersion, releaseType, platform, architecture, distribution);
-
-            // Refresh scene list to make sure nothing has been deleted or moved
-            releaseType.sceneList.Refresh();
+            PerformBuildActions(
+                releaseType,
+                platform,
+                architecture,
+                distribution,
+                configureTime, ref options, configKey, null, buildActions, "'Configure Editor' Pre-"
+            );
         }
 
         public static string GenerateDefaultDefines(BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist)
@@ -257,6 +259,35 @@ namespace SuperUnityBuild.BuildTool
 
         #region Private Methods
 
+        private static void ConfigureEnvironment(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, DateTime buildTime)
+        {
+            // Switch to target build platform
+            EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, architecture.target);
+
+            // Apply defines
+            string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
+            string buildDefines = GenerateDefaultDefines(releaseType, platform, architecture, distribution);
+            buildDefines = MergeDefines(preBuildDefines, buildDefines);
+
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, buildDefines);
+
+            // Set target settings
+            PlayerSettings.companyName = releaseType.companyName;
+            PlayerSettings.productName = releaseType.productName;
+
+            // Set bundle info
+            PlayerSettings.SetApplicationIdentifier(platform.targetGroup, releaseType.bundleIdentifier);
+
+            // Apply build variant
+            platform.ApplyVariant();
+
+            // Generate BuildConstants
+            BuildConstantsGenerator.Generate(buildTime, BuildSettings.productParameters.buildVersion, releaseType, platform, architecture, distribution);
+
+            // Refresh scene list to make sure nothing has been deleted or moved
+            releaseType.sceneList.Refresh();
+        }
+
         private static void ReplaceFromFile(StringBuilder sb, string keyString, string filename)
         {
             if (sb.ToString().IndexOf(keyString) > -1)
@@ -434,37 +465,7 @@ namespace SuperUnityBuild.BuildTool
             }
 
             // Run pre-build actions.
-            BuildAction[] buildActions = BuildSettings.preBuildActions.buildActions;
-
-            if (buildActions != null)
-            {
-                for (int i = 0; i < buildActions.Length; i++)
-                {
-                    BuildAction action = buildActions[i];
-
-                    // Check if execute method has been overriden.
-                    MethodInfo m = action.GetType().GetMethod("Execute");
-                    if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.SingleRun)
-                    {
-                        if (action.actionEnabled)
-                        {
-                            BuildNotificationList.instance.AddNotification(new BuildNotification(
-                                BuildNotification.Category.Notification,
-                                string.Format("Performing Pre-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
-                                true, null));
-
-                            action.Execute();
-                        }
-                        else
-                        {
-                            BuildNotificationList.instance.AddNotification(new BuildNotification(
-                                BuildNotification.Category.Notification,
-                                string.Format("Skipping Pre-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
-                                true, null));
-                        }
-                    }
-                }
-            }
+            PerformBuildActions(BuildSettings.preBuildActions.buildActions, "Pre-");
         }
 
         private static void PerformPreBuild(
@@ -474,45 +475,38 @@ namespace SuperUnityBuild.BuildTool
             BuildDistribution distribution,
             DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
         {
-            BuildAction[] buildActions = BuildSettings.preBuildActions.buildActions;
-            if (buildActions != null)
-            {
-                for (int i = 0; i < buildActions.Length; i++)
-                {
-                    BuildAction action = buildActions[i];
-
-                    // Check if execute method has been overriden.
-                    MethodInfo m = action.GetType().GetMethod("PerBuildExecute");
-
-                    if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.PerPlatform)
-                    {
-                        // Check build filter and execute if true.
-                        if (action.filter == null || action.filter.Evaluate(releaseType, platform, architecture, distribution, configKey) && action.actionEnabled)
-                        {
-                            BuildNotificationList.instance.AddNotification(new BuildNotification(
-                                BuildNotification.Category.Notification,
-                                string.Format("Performing Pre-Build Action ({0}/{1}).", i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
-                                true, null));
-
-                            action.PerBuildExecute(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
-                        }
-                        else
-                        {
-                            BuildNotificationList.instance.AddNotification(new BuildNotification(
-                                BuildNotification.Category.Notification,
-                                string.Format("Skipping Pre-Build Action ({0}/{1}).", i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
-                                true, null));
-                        }
-                    }
-                }
-            }
+            PerformBuildActions(
+                releaseType,
+                platform,
+                architecture,
+                distribution,
+                buildTime, ref options, configKey, buildPath, BuildSettings.preBuildActions.buildActions, "Pre-"
+            );
         }
 
         private static void PerformPostBuild()
         {
-            // Run post-build actions.
-            BuildAction[] buildActions = BuildSettings.postBuildActions.buildActions;
+            PerformBuildActions(BuildSettings.postBuildActions.buildActions, "Post-");
+        }
 
+        private static void PerformPostBuild(
+            BuildReleaseType releaseType,
+            BuildPlatform platform,
+            BuildArchitecture architecture,
+            BuildDistribution distribution,
+            DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
+        {
+            PerformBuildActions(
+                releaseType,
+                platform,
+                architecture,
+                distribution,
+                buildTime, ref options, configKey, buildPath, BuildSettings.postBuildActions.buildActions, "Post-"
+            );
+        }
+
+        private static void PerformBuildActions(BuildAction[] buildActions, string notificationLabel)
+        {
             if (buildActions != null)
             {
                 for (int i = 0; i < buildActions.Length; i++)
@@ -528,7 +522,7 @@ namespace SuperUnityBuild.BuildTool
                         {
                             BuildNotificationList.instance.AddNotification(new BuildNotification(
                                 BuildNotification.Category.Notification,
-                                string.Format("Performing Post-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
+                                string.Format("Performing {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), action.actionName,
                                 true, null));
 
                             action.Execute();
@@ -537,7 +531,7 @@ namespace SuperUnityBuild.BuildTool
                         {
                             BuildNotificationList.instance.AddNotification(new BuildNotification(
                                 BuildNotification.Category.Notification,
-                                string.Format("Skipping Post-Build Action ({0}/{1}).", i + 1, buildActions.Length), action.actionName,
+                                string.Format("Skipping {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), action.actionName,
                                 true, null));
                         }
                     }
@@ -545,15 +539,13 @@ namespace SuperUnityBuild.BuildTool
             }
         }
 
-        private static void PerformPostBuild(
+        private static void PerformBuildActions(
             BuildReleaseType releaseType,
             BuildPlatform platform,
             BuildArchitecture architecture,
             BuildDistribution distribution,
-            DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
+            DateTime buildTime, ref BuildOptions options, string configKey, string buildPath, BuildAction[] buildActions, string notificationLabel)
         {
-            BuildAction[] buildActions = BuildSettings.postBuildActions.buildActions;
-
             if (buildActions != null)
             {
                 for (int i = 0; i < buildActions.Length; i++)
@@ -570,7 +562,7 @@ namespace SuperUnityBuild.BuildTool
                         {
                             BuildNotificationList.instance.AddNotification(new BuildNotification(
                                 BuildNotification.Category.Notification,
-                                string.Format("Performing Post-Build Action ({0}/{1}).", i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
+                                string.Format("Performing {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
                                 true, null));
 
                             action.PerBuildExecute(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
@@ -579,7 +571,7 @@ namespace SuperUnityBuild.BuildTool
                         {
                             BuildNotificationList.instance.AddNotification(new BuildNotification(
                                 BuildNotification.Category.Notification,
-                                string.Format("Skipping Post-Build Action ({0}/{1}).", i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
+                                string.Format("Skipping {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
                                 true, null));
                         }
                     }
