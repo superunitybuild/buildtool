@@ -9,7 +9,7 @@ namespace SuperUnityBuild.BuildTool
         #region Constants
 
         private const string _name = "iOS";
-        private const string _binaryNameFormat = "{0}";
+        private const string _binaryNameFormat = "";
         private const string _dataDirNameFormat = "{0}_Data";
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.iOS;
 
