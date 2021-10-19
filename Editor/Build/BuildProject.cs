@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEditor.Build.Reporting;
 using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
@@ -425,8 +426,15 @@ namespace SuperUnityBuild.BuildTool
 
             string error = "";
 
-            UnityEditor.Build.Reporting.BuildReport buildReport = BuildPipeline.BuildPlayer(releaseType.sceneList.GetSceneFileList(), Path.Combine(buildPath, binName), architecture.target, options);
-            if (buildReport.summary.result == UnityEditor.Build.Reporting.BuildResult.Failed)
+            BuildReport buildReport = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+            {
+                locationPathName = Path.Combine(buildPath, binName),
+                options = options,
+                scenes = releaseType.sceneList.GetSceneFileList(),
+                target = architecture.target
+            });
+
+            if (buildReport.summary.result == BuildResult.Failed)
                 error = buildReport.summary.totalErrors + " occurred.";
 
             if (!string.IsNullOrEmpty(error))
