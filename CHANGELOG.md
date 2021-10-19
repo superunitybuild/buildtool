@@ -7,8 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   Added ability to choose between APK, split APK or Android App Bundle output for Android builds.
+
 ### Changed
 
+-   **Breaking change:** Removed standalone 'split APKs' variant for Android in favour of new build output type variant.
+-   **Breaking change:** Removed 'build system' variant for Android now that Gradle is the only supported build system.
+-   Set Android architecture binary name according to build output type variant being built.
 -   Stop using deprecated `BuildPipeline.BuildPlayer` overload.
 
 ## [2.2.0] - 2021-10-07

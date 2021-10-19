@@ -399,10 +399,6 @@ namespace SuperUnityBuild.BuildTool
             if (options == BuildOptions.None)
                 options = releaseType.buildOptions;
 
-            // Generate build path
-            string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
-            string binName = string.Format(architecture.binaryNameFormat, SanitizeFileName(releaseType.productName));
-
             // Save current environment settings
             string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
             string preBuildCompanyName = PlayerSettings.companyName;
@@ -411,6 +407,10 @@ namespace SuperUnityBuild.BuildTool
 
             // Configure environment settings to match the build configuration
             ConfigureEnvironment(releaseType, platform, architecture, distribution, buildTime);
+
+            // Generate build path
+            string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
+            string binName = string.Format(architecture.binaryNameFormat, SanitizeFileName(releaseType.productName));
 
             // Pre-build actions
             PerformPreBuild(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
