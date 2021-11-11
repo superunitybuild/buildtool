@@ -179,6 +179,27 @@ namespace SuperUnityBuild.BuildTool
             obj.ApplyModifiedProperties();
         }
 
+        public override string ToString()
+        {
+            string name = platformName;
+
+            IEnumerable<BuildArchitecture> enabledArchitectures = architectures.Where(item => item.enabled);
+
+            List<string> architecturesAndVariants = new List<string>();
+
+            if (architectures.Length > 1 && enabledArchitectures.Count() > 0)
+                architecturesAndVariants.AddRange(enabledArchitectures.Select(item => item.ToString()));
+
+            if (variants.Length > 0)
+                architecturesAndVariants.AddRange(variants.Select(item => item.ToString()));
+
+            name += architecturesAndVariants.Count > 0 ?
+                " (" + string.Join(", ", architecturesAndVariants).Truncate(50, "...") + ")" :
+                "";
+
+            return name;
+        }
+
         protected static T EnumValueFromKey<T>(string label)
         {
             return (T)Enum.Parse(typeof(T), label.Replace(" ", ""));

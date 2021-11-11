@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   More sensible default build path
 -   Show notes in Build Actions list view
+-   Show selected architectures and varients in Build Platforms list view
 
 ## [3.0.0] - 2021-10-19
 

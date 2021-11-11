@@ -92,7 +92,7 @@ namespace SuperUnityBuild.BuildTool
                 EditorGUILayout.BeginHorizontal();
                 bool show = listEntry.isExpanded;
 
-                UnityBuildGUIUtility.DropdownHeader(buildPlatform.platformName, ref show, false, GUILayout.ExpandWidth(true));
+                UnityBuildGUIUtility.DropdownHeader(buildPlatform.ToString(), ref show, false, GUILayout.ExpandWidth(true));
 
                 listEntry.isExpanded = show;
 
