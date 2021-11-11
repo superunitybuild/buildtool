@@ -84,6 +84,16 @@ namespace SuperUnityBuild.BuildTool
             obj.ApplyModifiedProperties();
         }
 
+        public override string ToString()
+        {
+            string name = actionName;
+            name += !string.IsNullOrEmpty(note) ?
+                " (" + note.Truncate(30, "...") + ")" :
+                "";
+
+            return name;
+        }
+
         protected virtual void DrawProperties(SerializedObject obj)
         {
             SerializedProperty prop = obj.GetIterator();

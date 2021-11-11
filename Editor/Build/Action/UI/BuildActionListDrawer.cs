@@ -78,7 +78,7 @@ namespace SuperUnityBuild.BuildTool
 
                 buildAction.actionEnabled = EditorGUILayout.Toggle(buildAction.actionEnabled, GUILayout.Width(15));
                 EditorGUI.BeginDisabledGroup(!buildAction.actionEnabled);
-                UnityBuildGUIUtility.DropdownHeader(buildAction.actionName, ref show, false, GUILayout.ExpandWidth(true));
+                UnityBuildGUIUtility.DropdownHeader(buildAction.ToString(), ref show, false, GUILayout.ExpandWidth(true));
                 EditorGUI.EndDisabledGroup();
                 listEntry.isExpanded = show;
 
