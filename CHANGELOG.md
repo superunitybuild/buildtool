@@ -9,19 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--   Added support for Split App Binary (generates APK + OBB/AAB + asset packs when enabled) for Android
--   Added support for building Xcode projects for macOS
--   Added support for building Visual Studio Solutions for PC
--   Added new $VARIANTS build path token to give greater control over build path generation
+-   Added support for Split App Binary (generates APK + OBB/AAB + asset packs when enabled) for Android.
+-   Added support for building Xcode projects for macOS.
+-   Added support for building Visual Studio Solutions for PC.
+-   Added new $VARIANTS build path token to give greater control over build path generation.
 -   Added support for setting Android target SDK version.
 
 ### Changed
 
--   More sensible default build path
--   Show notes in Build Actions list view
--   Show selected architectures and varients in Build Platforms list view
--   Simplified $ARCHITECTURE build path token by removing variants list
--   Remove empty build tokens from build path, rather than substituting 'None'
+-   More sensible default build path.
+-   Show notes in Build Actions list view.
+-   Show selected architectures and varients in Build Platforms list view.
+-   Simplified $ARCHITECTURE build path token by removing variants list.
+-   Remove empty build tokens from build path, rather than substituting 'None'.
 
 ## [3.0.0] - 2021-10-19
 
@@ -40,11 +40,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--   Added UWP platform
+-   Added UWP platform.
 
 ### Changed
 
--   Don't create extra output directory for iOS builds
+-   Don't create extra output directory for iOS builds.
 
 ## [2.1.0] - 2021-08-24
 

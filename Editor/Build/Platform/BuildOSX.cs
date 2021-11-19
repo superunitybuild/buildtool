@@ -7,15 +7,6 @@ namespace SuperUnityBuild.BuildTool
     [Serializable]
     public class BuildOSX : BuildPlatform
     {
-        // We need to define our own enum, as UnityEditor.OSXStandalone.MacOSArchitecture
-        // is only available when the Mac Build module is installed
-        private enum MacOSArchitecture
-        {
-            Intelx64,
-            AppleSilicon,
-            Universal
-        }
-
         #region Constants
 
         private const string _name = "macOS";
@@ -26,13 +17,22 @@ namespace SuperUnityBuild.BuildTool
         private const string _dataDirNameFormat = "{0}.app/Contents";
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.Standalone;
 
-        private const string _buildOutputTypeVariantId = "Build output type";
+        private const string _buildOutputTypeVariantId = "Build Output";
         private const string _macOSArchitectureVariantId = "macOS Architecture";
 
         private enum BuildOutputType
         {
             App,
             XcodeProject
+        }
+
+        // We need to define our own enum, as UnityEditor.OSXStandalone.MacOSArchitecture
+        // is only available when the Mac Build module is installed
+        private enum MacOSArchitecture
+        {
+            Intelx64,
+            AppleSilicon,
+            Universal
         }
 
         #endregion

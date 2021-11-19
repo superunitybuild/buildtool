@@ -16,7 +16,7 @@ namespace SuperUnityBuild.BuildTool
         private const string _dataDirNameFormat = "{0}_Data";
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.Standalone;
 
-        private const string _buildOutputTypeVariantId = "Build output type";
+        private const string _buildOutputTypeVariantId = "Build Output";
 
         private enum BuildOutputType
         {
