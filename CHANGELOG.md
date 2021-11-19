@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Show notes in Build Actions list view
 -   Show selected architectures and varients in Build Platforms list view
 -   Simplified $ARCHITECTURE build path token by removing variants list
+-   Remove empty build tokens from build path, rather than substituting 'None'
 
 ## [3.0.0] - 2021-10-19
 

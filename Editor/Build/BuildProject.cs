@@ -203,7 +203,7 @@ namespace SuperUnityBuild.BuildTool
             sb.Replace("$DAY", buildTime.ToString("dd"));
             sb.Replace("$TIME", buildTime.ToString("hhmmss"));
 
-            string variants = BuildConstantsGenerator.NONE;
+            string variants = "";
             if (buildPlatform.variants != null && buildPlatform.variants.Length > 0)
                 variants = buildPlatform.variantKey.Replace(",", ", ");
 
@@ -211,7 +211,7 @@ namespace SuperUnityBuild.BuildTool
             sb.Replace("$PLATFORM", SanitizeFolderName(buildPlatform.platformName));
             sb.Replace("$ARCHITECTURE", SanitizeFolderName(arch.name));
             sb.Replace("$VARIANTS", SanitizeFolderName(variants));
-            sb.Replace("$DISTRIBUTION", SanitizeFolderName(dist != null ? dist.distributionName : BuildConstantsGenerator.NONE));
+            sb.Replace("$DISTRIBUTION", SanitizeFolderName(dist != null ? dist.distributionName : ""));
             sb.Replace("$VERSION", SanitizeFolderName(BuildSettings.productParameters.buildVersion));
             sb.Replace("$BUILD", BuildSettings.productParameters.buildCounter.ToString());
             sb.Replace("$PRODUCT_NAME", SanitizeFolderName(releaseType.productName));
