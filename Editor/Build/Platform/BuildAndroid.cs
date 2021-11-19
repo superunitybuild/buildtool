@@ -23,6 +23,7 @@ namespace SuperUnityBuild.BuildTool
         private const string _deviceTypeVariantId = "Device Type";
         private const string _textureCompressionVariantId = "Texture Compression";
         private const string _minSdkVersionVariantId = "Min SDK Version";
+        private const string _targetSdkVersionVariantId = "Target SDK Version";
         private const string _splitAppBinaryVariantId = "Binary Type";
 
         private const string _androidApiLevelEnumPrefix = "AndroidApiLevel";
@@ -33,6 +34,7 @@ namespace SuperUnityBuild.BuildTool
             SplitAPK,
             AAB
         }
+
         #endregion
 
         public BuildAndroid()
@@ -68,6 +70,10 @@ namespace SuperUnityBuild.BuildTool
                         .Select(i => i.Replace(_androidApiLevelEnumPrefix, ""))
                         .ToArray(),
                     0),
+                    new BuildVariant(_targetSdkVersionVariantId, EnumNamesToArray<AndroidSdkVersions>()
+                        .Select(i => i.Replace(_androidApiLevelEnumPrefix, ""))
+                        .ToArray(),
+                    0),
                 };
             }
         }
@@ -99,6 +105,11 @@ namespace SuperUnityBuild.BuildTool
             }
         }
 
+        private AndroidSdkVersions GetAndroidSdkVersionFromKey(string key)
+        {
+            return EnumValueFromKey<AndroidSdkVersions>(_androidApiLevelEnumPrefix + key);
+        }
+
         private void SetBuildOutputType(string key)
         {
             BuildOutputType outputType = EnumValueFromKey<BuildOutputType>(key);
@@ -125,8 +136,12 @@ namespace SuperUnityBuild.BuildTool
 
         private void SetMinSdkVersion(string key)
         {
-            PlayerSettings.Android.minSdkVersion
-                = EnumValueFromKey<AndroidSdkVersions>(_androidApiLevelEnumPrefix + key);
+            PlayerSettings.Android.minSdkVersion = GetAndroidSdkVersionFromKey(key);
+        }
+
+        private void SetTargetSdkVersion(string key)
+        {
+            PlayerSettings.Android.targetSdkVersion = GetAndroidSdkVersionFromKey(key);
         }
 
         private void SetSplitAppBinary(string key)

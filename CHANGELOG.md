@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Added support for building Xcode projects for macOS
 -   Added support for building Visual Studio Solutions for PC
 -   Added new $VARIANTS build path token to give greater control over build path generation
+-   Added support for setting Android target SDK version.
 
 ### Changed
 
