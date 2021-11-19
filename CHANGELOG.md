@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+-   Added support for building Xcode projects for macOS
 -   Added support for Split App Binary (generates APK + OBB/AAB + asset packs when enabled) for Android
 
 ### Changed
