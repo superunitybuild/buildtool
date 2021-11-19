@@ -9,15 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--   Added support for building Visual Studio Solutions for PC
--   Added support for building Xcode projects for macOS
 -   Added support for Split App Binary (generates APK + OBB/AAB + asset packs when enabled) for Android
+-   Added support for building Xcode projects for macOS
+-   Added support for building Visual Studio Solutions for PC
+-   Added new $VARIANTS build path token to give greater control over build path generation
 
 ### Changed
 
 -   More sensible default build path
 -   Show notes in Build Actions list view
 -   Show selected architectures and varients in Build Platforms list view
+-   Simplified $ARCHITECTURE build path token by removing variants list
 
 ## [3.0.0] - 2021-10-19
 
