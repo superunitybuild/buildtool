@@ -49,16 +49,19 @@ namespace SuperUnityBuild.BuildTool
             string archString = currentBuildArchitecture == null ? NONE : SanitizeString(currentBuildArchitecture.name);
             string distributionString = currentBuildDistribution == null ? NONE : SanitizeString(currentBuildDistribution.distributionName);
 
-            // Delete any existing version.
             if (File.Exists(filePath))
             {
+                // Delete existing version.
                 File.Delete(filePath);
+            }
+            else
+            {
+                // Ensure default path exists if generating for the first time.
+                AssetDatabaseUtility.EnsureDirectoriesExist();
             }
 
             // Create a buffer that we'll use to check for any duplicated names.
             List<string> enumBuffer = new List<string>();
-
-            AssetDatabaseUtility.EnsureDirectoriesExist();
 
             using (StreamWriter writer = new StreamWriter(filePath))
             {
