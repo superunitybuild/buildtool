@@ -23,5 +23,10 @@ namespace SuperUnityBuild.BuildTool
                 return values[selectedIndex];
             }
         }
+
+        public override string ToString()
+        {
+            return values[selectedIndex];
+        }
     }
 }

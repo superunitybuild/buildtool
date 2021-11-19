@@ -17,5 +17,10 @@ namespace SuperUnityBuild.BuildTool
             this.enabled = enabled;
             this.binaryNameFormat = binaryNameFormat;
         }
+
+        public override string ToString()
+        {
+            return name;
+        }
     }
 }

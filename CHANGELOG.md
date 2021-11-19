@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- ## [Unreleased] -->
 
+## [4.0.0] - 2021-11-19
+
+### Added
+
+-   Added support for Split App Binary (generates APK + OBB/AAB + asset packs when enabled) for Android.
+-   Added support for building Xcode projects for macOS.
+-   Added support for building Visual Studio Solutions for PC.
+-   Added new $VARIANTS build path token to give greater control over build path generation.
+-   Added support for setting Android target SDK version.
+
+### Changed
+
+-   More sensible default build path.
+-   Show notes in Build Actions list view.
+-   Show selected architectures and varients in Build Platforms list view.
+-   **Breaking change:** Simplified $ARCHITECTURE build path token by removing variants list.
+-   Remove empty build tokens from build path, rather than substituting 'None'.
+-   Allow BuildConstants.cs to be moved from default location.
+
 ## [3.0.0] - 2021-10-19
 
 ### Added
@@ -24,11 +43,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--   Added UWP platform
+-   Added UWP platform.
 
 ### Changed
 
--   Don't create extra output directory for iOS builds
+-   Don't create extra output directory for iOS builds.
 
 ## [2.1.0] - 2021-08-24
 
@@ -148,7 +167,8 @@ This release includes all changes from 1.0.0 pre-releases ([1.0.0-pre.1](#100-pr
 -   Fixed issue in Linux build name moving `binaryName` to `BuildArchitecture`. [PR #41](https://github.com/superunitybuild/buildtool/pull/41)
 -   Fixed an issue where custom defines were overwrite when build was finished. [Issue #36](https://github.com/superunitybuild/buildtool/issues/36)
 
-[unreleased]: https://github.com/superunitybuild/buildtool/compare/v3.0.0...HEAD
+[unreleased]: https://github.com/superunitybuild/buildtool/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/superunitybuild/buildtool/compare/v3.0.0...v4.0.0
 [3.0.0]: https://github.com/superunitybuild/buildtool/compare/v2.2.0...v3.0.0
 [2.2.0]: https://github.com/superunitybuild/buildtool/compare/v2.1.0...v2.2.0
 [2.1.0]: https://github.com/superunitybuild/buildtool/compare/v2.0.0...v2.1.0

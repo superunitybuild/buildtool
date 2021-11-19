@@ -1,7 +1,7 @@
 {
   "name": "com.github.superunitybuild.buildtool",
   "displayName": "SuperUnityBuild",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "unity": "2019.1",
   "description": "SuperUnityBuild is a Unity utility that automates the process of generating builds. It's easy and quick enough to use on small apps, but it's also powerful and extensible enough to be extremely useful on larger projects. The key to this flexibility lies in SuperUnityBuild's configurable degrees of granularity and its BuildActions framework which allows additional operations to be added into the build process.",
   "documentationUrl": "https://github.com/superunitybuild/buildtool/wiki",

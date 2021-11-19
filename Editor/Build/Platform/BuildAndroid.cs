@@ -23,6 +23,8 @@ namespace SuperUnityBuild.BuildTool
         private const string _deviceTypeVariantId = "Device Type";
         private const string _textureCompressionVariantId = "Texture Compression";
         private const string _minSdkVersionVariantId = "Min SDK Version";
+        private const string _targetSdkVersionVariantId = "Target SDK Version";
+        private const string _splitAppBinaryVariantId = "Binary Type";
 
         private const string _androidApiLevelEnumPrefix = "AndroidApiLevel";
 
@@ -32,6 +34,7 @@ namespace SuperUnityBuild.BuildTool
             SplitAPK,
             AAB
         }
+
         #endregion
 
         public BuildAndroid()
@@ -62,10 +65,15 @@ namespace SuperUnityBuild.BuildTool
                     0),
                     new BuildVariant(_textureCompressionVariantId, EnumNamesToArray<MobileTextureSubtarget>(), 0),
                     new BuildVariant(_buildOutputTypeVariantId, EnumNamesToArray<BuildOutputType>(true), 0),
+                    new BuildVariant(_splitAppBinaryVariantId, new string[] { "Single Binary", "Split App Binary"}, 0),
                     new BuildVariant(_minSdkVersionVariantId, EnumNamesToArray<AndroidSdkVersions>()
                         .Select(i => i.Replace(_androidApiLevelEnumPrefix, ""))
                         .ToArray(),
-                    0)
+                    0),
+                    new BuildVariant(_targetSdkVersionVariantId, EnumNamesToArray<AndroidSdkVersions>()
+                        .Select(i => i.Replace(_androidApiLevelEnumPrefix, ""))
+                        .ToArray(),
+                    0),
                 };
             }
         }
@@ -90,8 +98,16 @@ namespace SuperUnityBuild.BuildTool
                     case _minSdkVersionVariantId:
                         SetMinSdkVersion(key);
                         break;
+                    case _splitAppBinaryVariantId:
+                        SetSplitAppBinary(key);
+                        break;
                 }
             }
+        }
+
+        private AndroidSdkVersions GetAndroidSdkVersionFromKey(string key)
+        {
+            return EnumValueFromKey<AndroidSdkVersions>(_androidApiLevelEnumPrefix + key);
         }
 
         private void SetBuildOutputType(string key)
@@ -120,8 +136,17 @@ namespace SuperUnityBuild.BuildTool
 
         private void SetMinSdkVersion(string key)
         {
-            PlayerSettings.Android.minSdkVersion
-                = EnumValueFromKey<AndroidSdkVersions>(_androidApiLevelEnumPrefix + key);
+            PlayerSettings.Android.minSdkVersion = GetAndroidSdkVersionFromKey(key);
+        }
+
+        private void SetTargetSdkVersion(string key)
+        {
+            PlayerSettings.Android.targetSdkVersion = GetAndroidSdkVersionFromKey(key);
+        }
+
+        private void SetSplitAppBinary(string key)
+        {
+            PlayerSettings.Android.useAPKExpansionFiles = key == "Split App Binary";
         }
     }
 }
