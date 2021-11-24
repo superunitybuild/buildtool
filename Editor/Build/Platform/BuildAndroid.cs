@@ -100,6 +100,8 @@ namespace SuperUnityBuild.BuildTool
                         break;
                     case _splitAppBinaryVariantId:
                         SetSplitAppBinary(key);
+                    case _targetSdkVersionVariantId:
+                        SetTargetSdkVersion(key);
                         break;
                 }
             }
