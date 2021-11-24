@@ -11,24 +11,37 @@ namespace SuperUnityBuild.BuildTool
         #region Constants
 
         private const string _name = "Android";
-        private Dictionary<BuildOutputType, string> _binaryNameFormats = new Dictionary<BuildOutputType, string>{
-            {BuildOutputType.APK, "{0}.apk"},
-            {BuildOutputType.SplitAPK, "{0}"},
-            {BuildOutputType.AAB, "{0}.aab"},
+        private Dictionary<BinaryType, string> _binaryNameFormats = new Dictionary<BinaryType, string>{
+            {BinaryType.APK, "{0}.apk"},
+            {BinaryType.SplitAPK, "{0}"},
+            {BinaryType.AAB, "{0}.aab"},
         };
         private const string _dataDirNameFormat = "{0}_Data";
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.Android;
 
+        private const string _apkExpansionFilesTypeVariantId = "APK Expansion Type";
         private const string _buildOutputTypeVariantId = "Build Output";
+        private const string _binaryTypeVariantId = "Binary Type";
         private const string _deviceTypeVariantId = "Device Type";
         private const string _textureCompressionVariantId = "Texture Compression";
         private const string _minSdkVersionVariantId = "Min SDK Version";
         private const string _targetSdkVersionVariantId = "Target SDK Version";
-        private const string _splitAppBinaryVariantId = "Binary Type";
 
         private const string _androidApiLevelEnumPrefix = "AndroidApiLevel";
 
+        private enum ApkExpansionFilesType
+        {
+            SingleBinary,
+            SplitAppBinary,
+        }
+
         private enum BuildOutputType
+        {
+            App,
+            GradleProject
+        }
+
+        private enum BinaryType
         {
             APK,
             SplitAPK,
@@ -58,6 +71,10 @@ namespace SuperUnityBuild.BuildTool
 
             if (variants == null || variants.Length == 0)
             {
+                string[] androidSdkVersionStrings = EnumNamesToArray<AndroidSdkVersions>()
+                    .Select(i => i.Replace(_androidApiLevelEnumPrefix, ""))
+                    .ToArray();
+
                 variants = new BuildVariant[] {
                     new BuildVariant(_deviceTypeVariantId, EnumNamesToArray<AndroidArchitecture>()
                         .Skip(1)
@@ -65,15 +82,10 @@ namespace SuperUnityBuild.BuildTool
                     0),
                     new BuildVariant(_textureCompressionVariantId, EnumNamesToArray<MobileTextureSubtarget>(), 0),
                     new BuildVariant(_buildOutputTypeVariantId, EnumNamesToArray<BuildOutputType>(true), 0),
-                    new BuildVariant(_splitAppBinaryVariantId, new string[] { "Single Binary", "Split App Binary"}, 0),
-                    new BuildVariant(_minSdkVersionVariantId, EnumNamesToArray<AndroidSdkVersions>()
-                        .Select(i => i.Replace(_androidApiLevelEnumPrefix, ""))
-                        .ToArray(),
-                    0),
-                    new BuildVariant(_targetSdkVersionVariantId, EnumNamesToArray<AndroidSdkVersions>()
-                        .Select(i => i.Replace(_androidApiLevelEnumPrefix, ""))
-                        .ToArray(),
-                    0),
+                    new BuildVariant(_binaryTypeVariantId, EnumNamesToArray<BinaryType>(true), 0),
+                    new BuildVariant(_apkExpansionFilesTypeVariantId, EnumNamesToArray<ApkExpansionFilesType>(true), 0),
+                    new BuildVariant(_minSdkVersionVariantId, androidSdkVersionStrings, 0),
+                    new BuildVariant(_targetSdkVersionVariantId, androidSdkVersionStrings, 0),
                 };
             }
         }
@@ -86,6 +98,12 @@ namespace SuperUnityBuild.BuildTool
 
                 switch (variantOption.variantName)
                 {
+                    case _apkExpansionFilesTypeVariantId:
+                        SetApkExpansionFilesType(key);
+                        break;
+                    case _binaryTypeVariantId:
+                        SetBinaryType(key);
+                        break;
                     case _buildOutputTypeVariantId:
                         SetBuildOutputType(key);
                         break;
@@ -98,8 +116,6 @@ namespace SuperUnityBuild.BuildTool
                     case _minSdkVersionVariantId:
                         SetMinSdkVersion(key);
                         break;
-                    case _splitAppBinaryVariantId:
-                        SetSplitAppBinary(key);
                     case _targetSdkVersionVariantId:
                         SetTargetSdkVersion(key);
                         break;
@@ -112,17 +128,30 @@ namespace SuperUnityBuild.BuildTool
             return EnumValueFromKey<AndroidSdkVersions>(_androidApiLevelEnumPrefix + key);
         }
 
-        private void SetBuildOutputType(string key)
+        private void SetBinaryType(string key)
         {
-            BuildOutputType outputType = EnumValueFromKey<BuildOutputType>(key);
+            BinaryType binaryType = EnumValueFromKey<BinaryType>(key);
 
-            bool buildAppBundle = outputType == BuildOutputType.AAB;
-            bool splitAPK = outputType == BuildOutputType.SplitAPK;
+            bool buildAppBundle = binaryType == BinaryType.AAB;
+            bool splitAPK = binaryType == BinaryType.SplitAPK;
 
             EditorUserBuildSettings.buildAppBundle = buildAppBundle;
             PlayerSettings.Android.buildApkPerCpuArchitecture = splitAPK && !buildAppBundle;
 
-            architectures[0].binaryNameFormat = _binaryNameFormats[outputType];
+            architectures[0].binaryNameFormat = _binaryNameFormats[binaryType];
+        }
+
+        private void SetBuildOutputType(string key)
+        {
+            BuildOutputType outputType = EnumValueFromKey<BuildOutputType>(key);
+
+            bool exportProject = outputType == BuildOutputType.GradleProject;
+
+            EditorUserBuildSettings.exportAsGoogleAndroidProject = exportProject;
+
+            // Override binary name format set by Binary Type variant if exporting Gradle project
+            if (exportProject)
+                architectures[0].binaryNameFormat = "{0}";
         }
 
         private void SetDeviceType(string key)
@@ -146,9 +175,11 @@ namespace SuperUnityBuild.BuildTool
             PlayerSettings.Android.targetSdkVersion = GetAndroidSdkVersionFromKey(key);
         }
 
-        private void SetSplitAppBinary(string key)
+        private void SetApkExpansionFilesType(string key)
         {
-            PlayerSettings.Android.useAPKExpansionFiles = key == "Split App Binary";
+            ApkExpansionFilesType expansionFilesType = EnumValueFromKey<ApkExpansionFilesType>(key);
+
+            PlayerSettings.Android.useAPKExpansionFiles = expansionFilesType == ApkExpansionFilesType.SplitAppBinary;
         }
     }
 }
