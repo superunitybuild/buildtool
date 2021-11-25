@@ -5,13 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+<!-- ## [Unreleased] -->
+
+## [5.0.1] - 2021-11-25
 
 ### Changed
 
 -   Improved appearance of long UI button labels
 
-## [5.0.0] - 2021-11-19
+## [5.0.0] - 2021-11-24
 
 ### Added
 
@@ -183,8 +185,9 @@ This release includes all changes from 1.0.0 pre-releases ([1.0.0-pre.1](#100-pr
 -   Fixed issue in Linux build name moving `binaryName` to `BuildArchitecture`. [PR #41](https://github.com/superunitybuild/buildtool/pull/41)
 -   Fixed an issue where custom defines were overwrite when build was finished. [Issue #36](https://github.com/superunitybuild/buildtool/issues/36)
 
-[unreleased]: https://github.com/superunitybuild/buildtool/compare/v5.0.0...HEAD
-[5.0.0]: https://github.com/superunitybuild/buildtool/compare/v4.0.1...v4.0.0
+[unreleased]: https://github.com/superunitybuild/buildtool/compare/v5.0.1...HEAD
+[5.0.1]: https://github.com/superunitybuild/buildtool/compare/v5.0.0...v5.0.1
+[5.0.0]: https://github.com/superunitybuild/buildtool/compare/v4.0.1...v5.0.0
 [4.0.1]: https://github.com/superunitybuild/buildtool/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/superunitybuild/buildtool/compare/v3.0.0...v4.0.0
 [3.0.0]: https://github.com/superunitybuild/buildtool/compare/v2.2.0...v3.0.0
