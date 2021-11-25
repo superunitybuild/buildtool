@@ -125,7 +125,7 @@ namespace SuperUnityBuild.BuildTool
 
                 if (!string.IsNullOrEmpty(match.Groups["secondary"].Value))
                 {
-                    output = primary + "(" + secondary.Truncate(maxLength - primary.Length + 2, suffix, trimChars) + ")";
+                    output = primary + "(" + secondary.Truncate(maxLength - primary.Length - 2, suffix, trimChars) + ")";
                 }
                 else
                 {
