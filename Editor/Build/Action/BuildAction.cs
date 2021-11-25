@@ -88,7 +88,7 @@ namespace SuperUnityBuild.BuildTool
         {
             string name = actionName;
             name += !string.IsNullOrEmpty(note) ?
-                " (" + note.Truncate(30, "...") + ")" :
+                " (" + note + ")" :
                 "";
 
             return name;

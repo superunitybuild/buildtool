@@ -87,6 +87,11 @@ namespace SuperUnityBuild.BuildTool
 
         public static void DropdownHeader(string content, ref bool showDropdown, bool noColor, params GUILayoutOption[] options)
         {
+            DropdownHeader(new GUIContent { text = content }, ref showDropdown, noColor, options);
+        }
+
+        public static void DropdownHeader(GUIContent content, ref bool showDropdown, bool noColor, params GUILayoutOption[] options)
+        {
             if (!noColor)
                 GUI.backgroundColor = instance._mainHeaderColor;
 
@@ -103,6 +108,32 @@ namespace SuperUnityBuild.BuildTool
         {
             if (GUILayout.Button(_instance.helpButtonContent, helpButtonStyle))
                 OpenHelp(anchor);
+        }
+
+        public static string ToLabel(string input, int maxLength = 60)
+        {
+            string output = input;
+            string suffix = "...";
+            char[] trimChars = new char[] { ' ', ',', '.', '/' };
+
+            Match match = Regex.Match(input, @"(?<primary>.*)\((?<secondary>.*)\)");
+
+            if (match.Success)
+            {
+                string primary = match.Groups["primary"].Value;
+                string secondary = match.Groups["secondary"].Value;
+
+                if (!string.IsNullOrEmpty(match.Groups["secondary"].Value))
+                {
+                    output = primary + "(" + secondary.Truncate(maxLength - primary.Length + 2, suffix, trimChars) + ")";
+                }
+                else
+                {
+                    output = primary.Truncate(maxLength, suffix, trimChars);
+                }
+            }
+
+            return output;
         }
 
         public static string ToWords(string input)

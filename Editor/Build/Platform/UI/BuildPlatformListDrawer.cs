@@ -91,8 +91,10 @@ namespace SuperUnityBuild.BuildTool
 
                 EditorGUILayout.BeginHorizontal();
                 bool show = listEntry.isExpanded;
+                string tooltip = buildPlatform.ToString();
+                string text = UnityBuildGUIUtility.ToLabel(tooltip);
 
-                UnityBuildGUIUtility.DropdownHeader(buildPlatform.ToString(), ref show, false, GUILayout.ExpandWidth(true));
+                UnityBuildGUIUtility.DropdownHeader(new GUIContent(text, tooltip), ref show, false, GUILayout.ExpandWidth(true));
 
                 listEntry.isExpanded = show;
 

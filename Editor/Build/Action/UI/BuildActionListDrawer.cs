@@ -75,10 +75,12 @@ namespace SuperUnityBuild.BuildTool
 
                 EditorGUILayout.BeginHorizontal();
                 bool show = listEntry.isExpanded;
+                string tooltip = buildAction.ToString();
+                string text = UnityBuildGUIUtility.ToLabel(tooltip, 50);
 
                 buildAction.actionEnabled = EditorGUILayout.Toggle(buildAction.actionEnabled, GUILayout.Width(15));
                 EditorGUI.BeginDisabledGroup(!buildAction.actionEnabled);
-                UnityBuildGUIUtility.DropdownHeader(buildAction.ToString(), ref show, false, GUILayout.ExpandWidth(true));
+                UnityBuildGUIUtility.DropdownHeader(new GUIContent(text, tooltip), ref show, false, GUILayout.ExpandWidth(true));
                 EditorGUI.EndDisabledGroup();
                 listEntry.isExpanded = show;
 

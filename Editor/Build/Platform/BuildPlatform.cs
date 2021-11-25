@@ -194,7 +194,7 @@ namespace SuperUnityBuild.BuildTool
                 architecturesAndVariants.AddRange(variants.Select(item => item.ToString()));
 
             name += architecturesAndVariants.Count > 0 ?
-                " (" + string.Join(", ", architecturesAndVariants).Truncate(50, "...") + ")" :
+                " (" + string.Join(", ", architecturesAndVariants) + ")" :
                 "";
 
             return name;

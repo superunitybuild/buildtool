@@ -221,20 +221,21 @@ namespace SuperUnityBuild.BuildTool
 
             if (displayButton)
             {
-                string displayText;
+                string tooltip = key.Replace(",", ", ");
+                string text;
 
                 if (treeView.boolValue)
                 {
                     string[] split = key.Split('/');
-                    displayText = split[split.Length - 1];
+                    text = split[split.Length - 1];
                 }
                 else
                 {
-                    displayText = key.Replace(",", ", ");
+                    text = UnityBuildGUIUtility.ToLabel(tooltip);
                     config.enabled = EditorGUILayout.Toggle(config.enabled, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(10));
                 }
 
-                if (GUILayout.Button(displayText, UnityBuildGUIUtility.dropdownHeaderStyle))
+                if (GUILayout.Button(new GUIContent(text, tooltip), UnityBuildGUIUtility.dropdownHeaderStyle))
                 {
                     selectedKeyChain.stringValue = key;
                 }
