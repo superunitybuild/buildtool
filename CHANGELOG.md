@@ -5,25 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-<!-- ## [Unreleased] -->
+## [Unreleased]
+
+### Fixed
+
+-   Fixed incorrect label length calculation.
 
 ## [5.0.1] - 2021-11-25
 
 ### Changed
 
--   Improved appearance of long UI button labels
+-   Improved appearance of long UI button labels.
 
 ## [5.0.0] - 2021-11-24
 
 ### Added
 
--   **Breaking change:** Added support for building Gradle projects for Android
+-   **Breaking change:** Added support for building Gradle projects for Android.
 
 ## [4.0.1] - 2021-11-24
 
 ### Fixed
 
--   Fixed Android target SDK version not being set
+-   Fixed Android target SDK version not being set.
 
 ## [4.0.0] - 2021-11-19
 
