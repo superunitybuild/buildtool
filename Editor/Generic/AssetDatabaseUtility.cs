@@ -21,11 +21,13 @@ namespace SuperUnityBuild.BuildTool
         public static void EnsureDirectoriesExist()
         {
             string assetsRoot = Path.Combine(Constants.AssetsDirectoryName, Constants.RootDirectoryName);
-            string buildActionsRoot = Path.Combine(assetsRoot, Constants.BuildActionsDirectoryName);
+            string editorRoot = Path.Combine(assetsRoot, Constants.EditorDirectoryName);
+            string buildActionsRoot = Path.Combine(editorRoot, Constants.BuildActionsDirectoryName);
             string settingsRoot = Path.Combine(assetsRoot, Constants.SettingsDirectoryName);
 
             CreateFolder(assetsRoot, Constants.AssetsDirectoryName, Constants.RootDirectoryName);
-            CreateFolder(buildActionsRoot, assetsRoot, Constants.BuildActionsDirectoryName);
+            CreateFolder(editorRoot, assetsRoot, Constants.EditorDirectoryName);
+            CreateFolder(buildActionsRoot, editorRoot, Constants.BuildActionsDirectoryName);
             CreateFolder(settingsRoot, assetsRoot, Constants.SettingsDirectoryName);
         }
 

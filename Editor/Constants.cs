@@ -5,6 +5,7 @@ namespace SuperUnityBuild.BuildTool
         public const string AssetsDirectoryName = "Assets";
         public const string BuildActionsDirectoryName = "BuildActions";
         public const string DefaultSettingsFileName = "SuperUnityBuildSettings";
+        public const string EditorDirectoryName = "Editor";
         public const string RootDirectoryName = "SuperUnityBuild";
         public const string SettingsDirectoryName = "Settings";
     }
