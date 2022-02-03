@@ -391,8 +391,14 @@ namespace SuperUnityBuild.BuildTool
             {
                 string outputFolder = BuildSettings.basicSettings.baseBuildFolder;
 
-                if (AssetDatabase.IsValidFolder(outputFolder))
+                try
+                {
                     System.Diagnostics.Process.Start(outputFolder);
+                }
+                catch
+                {
+                    Debug.LogWarning("Couldn't open output folder '" + outputFolder + "'");
+                }
             }
         }
 
