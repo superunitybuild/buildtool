@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+-   Fixed distribution names not displaying in build configuration list.
 -   Check output folder is valid before trying to open it after a build.
 
 ## [5.0.2] - 2022-01-04

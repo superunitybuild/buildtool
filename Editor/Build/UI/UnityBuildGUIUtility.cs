@@ -116,16 +116,18 @@ namespace SuperUnityBuild.BuildTool
             string suffix = "...";
             char[] trimChars = new char[] { ' ', ',', '.', '/' };
 
-            Match match = Regex.Match(input, @"(?<primary>.*)\((?<secondary>.*)\)");
+            Match match = Regex.Match(input, @"(?<primary>.*)\((?<secondary>.*)\)(?<tertiary>.*)");
 
             if (match.Success)
             {
                 string primary = match.Groups["primary"].Value;
                 string secondary = match.Groups["secondary"].Value;
+                string tertiary = match.Groups["tertiary"].Value;
 
-                if (!string.IsNullOrEmpty(match.Groups["secondary"].Value))
+                if (!string.IsNullOrEmpty(secondary))
                 {
-                    output = primary + "(" + secondary.Truncate(maxLength - primary.Length - 2, suffix, trimChars) + ")";
+                    int truncateLength = primary.Length + tertiary.Length;
+                    output = primary + "(" + secondary.Truncate(maxLength - truncateLength - 2, suffix, trimChars) + ")" + tertiary;
                 }
                 else
                 {
