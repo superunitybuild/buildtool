@@ -389,7 +389,10 @@ namespace SuperUnityBuild.BuildTool
             // Open output folder if option is enabled.
             if (BuildSettings.basicSettings.openFolderPostBuild)
             {
-                System.Diagnostics.Process.Start(BuildSettings.basicSettings.baseBuildFolder);
+                string outputFolder = BuildSettings.basicSettings.baseBuildFolder;
+
+                if (AssetDatabase.IsValidFolder(outputFolder))
+                    System.Diagnostics.Process.Start(outputFolder);
             }
         }
 
