@@ -74,9 +74,7 @@ namespace SuperUnityBuild.BuildTool
                 }
 
                 if (GUILayout.Button("Add Condition", GUILayout.ExpandWidth(true)))
-                {
                     AddClause();
-                }
 
                 EditorGUILayout.EndVertical();
             }

@@ -153,10 +153,10 @@ namespace SuperUnityBuild.BuildTool
             EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
             EditorGUI.BeginDisabledGroup(totalBuildCount < 1);
             GUI.backgroundColor = Color.green;
-            if (GUILayout.Button("Perform All Enabled Builds (" + totalBuildCount + " Builds)", GUILayout.ExpandWidth(true), GUILayout.MinHeight(30)))
-            {
+
+            if (GUILayout.Button($"Perform All Enabled Builds ({totalBuildCount} Builds)", GUILayout.ExpandWidth(true), GUILayout.MinHeight(30)))
                 EditorApplication.delayCall += BuildProject.BuildAll;
-            }
+
             GUI.backgroundColor = UnityBuildGUIUtility.defaultBackgroundColor;
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndVertical();

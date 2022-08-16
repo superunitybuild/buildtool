@@ -17,9 +17,7 @@ namespace SuperUnityBuild.BuildTool
             get
             {
                 if (_instance == null)
-                {
                     _instance = new UnityBuildGUIUtility();
-                }
 
                 return _instance;
             }
@@ -101,9 +99,7 @@ namespace SuperUnityBuild.BuildTool
                 GUI.backgroundColor = instance._mainHeaderColor;
 
             if (EditorGUILayout.DropdownButton(new GUIContent(content), FocusType.Keyboard, dropdownHeaderStyle, options))
-            {
                 showDropdown = !showDropdown;
-            }
 
             if (!noColor)
                 GUI.backgroundColor = instance._defaultBackgroundColor;
@@ -186,76 +182,15 @@ namespace SuperUnityBuild.BuildTool
             return Regex.Replace(input, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ");
         }
 
-        public static GUIStyle helpButtonStyle
-        {
-            get
-            {
-                return instance._helpButtonStyle;
-            }
-        }
 
-        public static GUIStyle midHeaderStyle
-        {
-            get
-            {
-                return instance._midHeaderStyle;
-            }
-        }
-
-        public static GUIStyle dropdownHeaderStyle
-        {
-            get
-            {
-                return instance._dropdownHeaderStyle;
-            }
-        }
-
-        public static GUIStyle dropdownContentStyle
-        {
-            get
-            {
-                return instance._dropdownContentStyle;
-            }
-        }
-
-        public static GUIStyle popupStyle
-        {
-            get
-            {
-                return instance._popupStyle;
-            }
-        }
-
-        public static GUIStyle mainTitleStyle
-        {
-            get
-            {
-                return instance._mainTitleStyle;
-            }
-        }
-
-        public static Color defaultBackgroundColor
-        {
-            get
-            {
-                return instance._defaultBackgroundColor;
-            }
-        }
-
-        public static Color mainHeaderColor
-        {
-            get
-            {
-                return instance._mainHeaderColor;
-            }
-        }
-
-        public static GUIStyle dragDropStyle
-        {
-            get
-            {
-                return instance._dragDropArea;
-            }
-        }
+        public static GUIStyle helpButtonStyle { get => instance._helpButtonStyle; }
+        public static GUIStyle midHeaderStyle { get => instance._midHeaderStyle; }
+        public static GUIStyle dropdownHeaderStyle { get => instance._dropdownHeaderStyle; }
+        public static GUIStyle dropdownContentStyle { get => instance._dropdownContentStyle; }
+        public static GUIStyle popupStyle { get => instance._popupStyle; }
+        public static GUIStyle mainTitleStyle { get => instance._mainTitleStyle; }
+        public static Color defaultBackgroundColor { get => instance._defaultBackgroundColor; }
+        public static Color mainHeaderColor { get => instance._mainHeaderColor; }
+        public static GUIStyle dragDropStyle { get => instance._dragDropArea; }
     }
 }

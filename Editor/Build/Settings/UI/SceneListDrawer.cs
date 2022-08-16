@@ -114,24 +114,16 @@ namespace SuperUnityBuild.BuildTool
                 }
 
                 if (GUILayout.Button("Clear Scene List", GUILayout.ExpandWidth(true)))
-                {
                     list.ClearArray();
-                }
 
                 if (GUILayout.Button("Add Scene Files from Build Settings", GUILayout.ExpandWidth(true)))
-                {
                     GetSceneFilesFromBuildSettings();
-                }
 
                 if (GUILayout.Button("Add Scene File Directory", GUILayout.ExpandWidth(true)))
-                {
                     GetSceneFileDirectory("Add Scene Files");
-                }
 
                 if (GUILayout.Button("Set First Scene by File", GUILayout.ExpandWidth(true)))
-                {
                     SetFirstSceneByFile();
-                }
 
                 list.serializedObject.ApplyModifiedProperties();
                 property.serializedObject.ApplyModifiedProperties();

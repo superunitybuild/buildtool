@@ -108,10 +108,10 @@ namespace SuperUnityBuild.BuildTool
                     property.serializedObject.ApplyModifiedProperties();
                     GUIUtility.keyboardControl = 0;
                 }
+
                 if (GUILayout.Button("Delete Platform", GUILayout.MaxWidth(150)))
-                {
                     property.FindPropertyRelative("enabled").boolValue = false;
-                }
+
                 GUILayout.EndVertical();
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
