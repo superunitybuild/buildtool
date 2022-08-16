@@ -82,7 +82,7 @@ namespace SuperUnityBuild.BuildTool
                 BuildPlatform buildPlatform = listEntry.objectReferenceValue as BuildPlatform;
                 if (buildPlatform == null)
                 {
-                    list.DeleteArrayElementAtIndex(i);
+                    list.SafeDeleteArrayElementAtIndex(i);
                     --i;
                     continue;
                 }
@@ -98,18 +98,16 @@ namespace SuperUnityBuild.BuildTool
 
                 listEntry.isExpanded = show;
 
-                if (GUILayout.Button("X", UnityBuildGUIUtility.helpButtonStyle))
+                if (UnityBuildGUIUtility.DeleteButton())
                 {
                     List<BuildPlatform> buildPlatforms = BuildSettings.platformList.platforms;
 
-                    // Destroy underlying object.
+                    // Destroy underlying object
                     ScriptableObject.DestroyImmediate(buildPlatforms[i], true);
                     AssetDatabaseUtility.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
 
-                    // Remove object reference from list.
-                    // TODO: Why do I need to call this twice? First call nulls reference, second one then deletes null entry.
-                    list.DeleteArrayElementAtIndex(i);
-                    list.DeleteArrayElementAtIndex(i);
+                    // Remove object reference from list
+                    list.SafeDeleteArrayElementAtIndex(i);
                     show = false;
                 }
 

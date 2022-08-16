@@ -81,10 +81,8 @@ namespace SuperUnityBuild.BuildTool
                         distEnabled.boolValue = GUILayout.Toggle(distEnabled.boolValue, GUIContent.none, GUILayout.ExpandWidth(false));
                         distName.stringValue = BuildProject.SanitizeFolderName(GUILayout.TextField(distName.stringValue));
 
-                        if (GUILayout.Button("X", UnityBuildGUIUtility.helpButtonStyle))
-                        {
-                            distList.DeleteArrayElementAtIndex(i);
-                        }
+                        if (UnityBuildGUIUtility.DeleteButton())
+                            distList.SafeDeleteArrayElementAtIndex(i);
 
                         dist.serializedObject.ApplyModifiedProperties();
 

@@ -85,6 +85,11 @@ namespace SuperUnityBuild.BuildTool
             Application.OpenURL(string.Format(HELP_URL, anchor));
         }
 
+        public static bool DeleteButton()
+        {
+            return GUILayout.Button("X", instance._helpButtonStyle);
+        }
+
         public static void DropdownHeader(string content, ref bool showDropdown, bool noColor, params GUILayoutOption[] options)
         {
             DropdownHeader(new GUIContent { text = content }, ref showDropdown, noColor, options);
@@ -108,6 +113,44 @@ namespace SuperUnityBuild.BuildTool
         {
             if (GUILayout.Button(_instance.helpButtonContent, helpButtonStyle))
                 OpenHelp(anchor);
+        }
+
+        public static bool MoveUpButton()
+        {
+            return GUILayout.Button("↑", instance._helpButtonStyle);
+        }
+
+        public static bool MoveDownButton()
+        {
+            return GUILayout.Button("↓", instance._helpButtonStyle);
+        }
+
+        public static bool MoveToFrontButton()
+        {
+            return GUILayout.Button("↑↑", instance._helpButtonStyle);
+        }
+
+        public static void ReorderArrayControls(SerializedProperty array, int i)
+        {
+            int moveIndex = -1;
+
+            EditorGUI.BeginDisabledGroup(i == 0);
+            if (MoveToFrontButton())
+                moveIndex = 0;
+
+            if (MoveUpButton())
+                moveIndex = i - 1;
+
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUI.BeginDisabledGroup(i == array.arraySize - 1);
+            if (MoveDownButton())
+                moveIndex = i + 1;
+
+            EditorGUI.EndDisabledGroup();
+
+            if (moveIndex != -1)
+                array.MoveArrayElement(i, moveIndex);
         }
 
         public static string ToLabel(string input, int maxLength = 60)

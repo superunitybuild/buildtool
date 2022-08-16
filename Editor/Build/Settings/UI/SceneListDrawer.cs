@@ -66,30 +66,12 @@ namespace SuperUnityBuild.BuildTool
                         sceneName = Path.GetFileNameWithoutExtension(filePath);
 
                         EditorGUILayout.BeginHorizontal();
-                        EditorGUILayout.TextArea(sceneName + " (" + filePath + ")");
+                        EditorGUILayout.TextArea($"{sceneName} ({filePath})");
 
-                        EditorGUI.BeginDisabledGroup(i == 0);
-                        if (GUILayout.Button("↑↑", UnityBuildGUIUtility.helpButtonStyle))
-                        {
-                            list.MoveArrayElement(i, 0);
-                        }
-                        if (GUILayout.Button("↑", UnityBuildGUIUtility.helpButtonStyle))
-                        {
-                            list.MoveArrayElement(i, i - 1);
-                        }
-                        EditorGUI.EndDisabledGroup();
+                        UnityBuildGUIUtility.ReorderArrayControls(list, i);
 
-                        EditorGUI.BeginDisabledGroup(i == list.arraySize - 1);
-                        if (GUILayout.Button("↓", UnityBuildGUIUtility.helpButtonStyle))
-                        {
-                            list.MoveArrayElement(i, i + 1);
-                        }
-                        EditorGUI.EndDisabledGroup();
-
-                        if (GUILayout.Button("X", UnityBuildGUIUtility.helpButtonStyle))
-                        {
-                            list.DeleteArrayElementAtIndex(i);
-                        }
+                        if (UnityBuildGUIUtility.DeleteButton())
+                            list.SafeDeleteArrayElementAtIndex(i);
 
                         property.serializedObject.ApplyModifiedProperties();
 
@@ -229,7 +211,7 @@ namespace SuperUnityBuild.BuildTool
 
                 if (fileGUID == objGUID)
                 {
-                    list.DeleteArrayElementAtIndex(i);
+                    list.SafeDeleteArrayElementAtIndex(i);
                     break;
                 }
             }

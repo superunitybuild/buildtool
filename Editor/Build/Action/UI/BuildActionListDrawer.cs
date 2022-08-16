@@ -66,7 +66,7 @@ namespace SuperUnityBuild.BuildTool
                 BuildAction buildAction = listEntry.objectReferenceValue as BuildAction;
                 if (buildAction == null)
                 {
-                    list.DeleteArrayElementAtIndex(i);
+                    list.SafeDeleteArrayElementAtIndex(i);
                     --i;
                     continue;
                 }
@@ -84,25 +84,9 @@ namespace SuperUnityBuild.BuildTool
                 EditorGUI.EndDisabledGroup();
                 listEntry.isExpanded = show;
 
-                EditorGUI.BeginDisabledGroup(i == 0);
-                if (GUILayout.Button("↑↑", UnityBuildGUIUtility.helpButtonStyle))
-                {
-                    list.MoveArrayElement(i, 0);
-                }
-                if (GUILayout.Button("↑", UnityBuildGUIUtility.helpButtonStyle))
-                {
-                    list.MoveArrayElement(i, i - 1);
-                }
-                EditorGUI.EndDisabledGroup();
+                UnityBuildGUIUtility.ReorderArrayControls(list, i);
 
-                EditorGUI.BeginDisabledGroup(i == list.arraySize - 1);
-                if (GUILayout.Button("↓", UnityBuildGUIUtility.helpButtonStyle))
-                {
-                    list.MoveArrayElement(i, i + 1);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                if (GUILayout.Button("X", UnityBuildGUIUtility.helpButtonStyle))
+                if (UnityBuildGUIUtility.DeleteButton())
                 {
                     BuildAction[] buildActions;
                     if (property.name.ToUpper().Contains("PRE"))
@@ -119,9 +103,7 @@ namespace SuperUnityBuild.BuildTool
                     AssetDatabaseUtility.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
 
                     // Remove object reference from list.
-                    // TODO: Why do I need to call this twice? First call nulls reference, second one then deletes null entry.
-                    list.DeleteArrayElementAtIndex(i);
-                    list.DeleteArrayElementAtIndex(i);
+                    list.SafeDeleteArrayElementAtIndex(i);
                     show = false;
                 }
 
