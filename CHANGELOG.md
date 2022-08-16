@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 -   Properly check output folder is valid before trying to open it after a build.
+-   Fixed Build Platform names not being set before serialization.
 
 ## [5.0.3] - 2022-02-03
 

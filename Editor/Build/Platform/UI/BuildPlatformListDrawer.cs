@@ -51,6 +51,7 @@ namespace SuperUnityBuild.BuildTool
                 if (GUILayout.Button("Add Platform", GUILayout.ExpandWidth(false), GUILayout.MaxWidth(150)))
                 {
                     BuildPlatform addedBuildPlatform = ScriptableObject.CreateInstance(availablePlatformTypeList[index]) as BuildPlatform;
+                    addedBuildPlatform.name = addedBuildPlatform.platformName;
                     platformList.platforms.Add(addedBuildPlatform);
 
                     AssetDatabase.AddObjectToAsset(addedBuildPlatform, BuildSettings.instance);
