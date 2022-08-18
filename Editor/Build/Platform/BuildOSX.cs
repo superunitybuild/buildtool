@@ -12,7 +12,7 @@ namespace SuperUnityBuild.BuildTool
         private const string _name = "macOS";
         private Dictionary<BuildOutputType, string> _binaryNameFormats = new Dictionary<BuildOutputType, string>{
             {BuildOutputType.App, "{0}.app"},
-            {BuildOutputType.XcodeProject, "{0}.xcodeproj"},
+            {BuildOutputType.XcodeProject, "{0}"},
         };
         private const string _dataDirNameFormat = "{0}.app/Contents";
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.Standalone;
