@@ -43,6 +43,25 @@ namespace SuperUnityBuild.BuildTool
             }
         }
 
+        public bool atLeastOneBackend
+        {
+            get
+            {
+                if(scriptBackends.Length <= 0)
+                {
+                    return true;
+                }
+
+                bool atLeastOneBackend = false;
+                for (int i = 0; i < scriptBackends.Length && !atLeastOneBackend; i++)
+                {
+                    atLeastOneBackend |= scriptBackends[i].enabled;
+                }
+
+                return atLeastOneBackend;
+            }
+        }
+
         public bool atLeastOneDistribution
         {
             get

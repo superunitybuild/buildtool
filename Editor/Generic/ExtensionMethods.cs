@@ -8,9 +8,16 @@ namespace SuperUnityBuild.BuildTool
         {
             trimChars = trimChars ?? new char[] { ' ' };
 
-            return (string.IsNullOrEmpty(value) || value.Length <= maxLength) ?
-                value :
-                value.Substring(0, maxLength).Trim(trimChars) + suffix;
+            if(string.IsNullOrEmpty(value) || value.Length <= maxLength)
+            {
+                return value;
+            }
+            if(maxLength <= 0)
+            {
+                return value;
+            }
+
+            return value.Substring(0, maxLength).Trim(trimChars) + suffix;
         }
 
         public static void SafeDeleteArrayElementAtIndex(this SerializedProperty value, int i)
