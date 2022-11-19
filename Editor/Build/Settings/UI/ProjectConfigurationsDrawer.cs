@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -110,9 +110,11 @@ namespace SuperUnityBuild.BuildTool
                         BuildPlatform platform;
                         BuildArchitecture arch;
                         BuildDistribution dist;
+                        BuildScriptBackend back;
                         BuildOptions buildOptions = BuildOptions.None;
 
-                        bool parseSuccess = BuildSettings.projectConfigurations.ParseKeychain(selectedKeyChain.stringValue, out releaseType, out platform, out arch, out dist);
+                        bool parseSuccess = BuildSettings.projectConfigurations.ParseKeychain(selectedKeyChain.stringValue, out releaseType, out platform,
+                            out arch, out back, out dist);
 
                         if (parseSuccess)
                         {
@@ -150,6 +152,12 @@ namespace SuperUnityBuild.BuildTool
                             {
                                 EditorGUILayout.LabelField("Distribution", UnityBuildGUIUtility.midHeaderStyle);
                                 EditorGUILayout.LabelField("Name:\t\t" + dist.distributionName);
+                            }
+
+                            if(back != null)
+                            {
+                                EditorGUILayout.LabelField("Scripting Backend", UnityBuildGUIUtility.midHeaderStyle);
+                                EditorGUILayout.LabelField("Name:\t\t" + back.name);
                             }
 
                             GUILayout.Space(20);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SuperUnityBuild.BuildTool
@@ -141,7 +141,7 @@ namespace SuperUnityBuild.BuildTool
                         for (int i = 0; i < platformCount; i++)
                         {
                             BuildPlatform platform = BuildSettings.platformList.platforms[i];
-                            if (platform.enabled && platform.atLeastOneArch)
+                            if (platform.enabled && platform.atLeastOneArch && platform.atLeastOneBackend)
                             {
                                 validError = false;
                                 break;

@@ -50,10 +50,11 @@ namespace SuperUnityBuild.BuildTool
                 true, null));
 
             // Parse build config
-            BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture architecture, out BuildDistribution distribution);
+            BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture architecture,
+                out BuildScriptBackend scriptBackend, out BuildDistribution distribution);
 
             // Configure environment
-            ConfigureEnvironment(releaseType, platform, architecture, distribution, configureTime);
+            ConfigureEnvironment(releaseType, platform, architecture, scriptBackend, distribution, configureTime);
 
             // Run pre-build actions that have opted in to configuring the Editor
             BuildAction[] buildActions = BuildSettings.preBuildActions.buildActions.Where(item => item.configureEditor).ToArray();
@@ -261,10 +262,14 @@ namespace SuperUnityBuild.BuildTool
 
         #region Private Methods
 
-        private static void ConfigureEnvironment(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, DateTime buildTime)
+        private static void ConfigureEnvironment(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture,
+            BuildScriptBackend scriptBackend, BuildDistribution distribution, DateTime buildTime)
         {
             // Switch to target build platform
             EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, architecture.target);
+
+            // Adjust scripting backend
+            PlayerSettings.SetScriptingBackend(platform.targetGroup, scriptBackend.scriptImplementation);
 
             // Apply defines
             string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
@@ -343,8 +348,9 @@ namespace SuperUnityBuild.BuildTool
 
                 // Parse build config and perform build.
                 string notification = string.Format("Building ({0}/{1}): ", i + 1, buildConfigs.Length);
-                BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture arch, out BuildDistribution dist);
-                bool success = BuildPlayer(notification, releaseType, platform, arch, dist, buildTime, options, configKey);
+                BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture arch,
+                    out BuildScriptBackend scriptBackend, out BuildDistribution dist);
+                bool success = BuildPlayer(notification, releaseType, platform, arch, scriptBackend, dist, buildTime, options, configKey);
 
                 if (success)
                     ++successCount;
@@ -402,7 +408,8 @@ namespace SuperUnityBuild.BuildTool
             }
         }
 
-        private static bool BuildPlayer(string notification, BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, DateTime buildTime, BuildOptions options, string configKey)
+        private static bool BuildPlayer(string notification, BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture,
+            BuildScriptBackend scriptBackend, BuildDistribution distribution, DateTime buildTime, BuildOptions options, string configKey)
         {
             bool success = true;
 
@@ -416,7 +423,7 @@ namespace SuperUnityBuild.BuildTool
             string preBuildBundleIdentifier = PlayerSettings.GetApplicationIdentifier(platform.targetGroup);
 
             // Configure environment settings to match the build configuration
-            ConfigureEnvironment(releaseType, platform, architecture, distribution, buildTime);
+            ConfigureEnvironment(releaseType, platform, architecture, scriptBackend, distribution, buildTime);
 
             // Generate build path
             string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
