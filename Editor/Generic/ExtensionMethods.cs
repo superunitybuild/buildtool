@@ -14,7 +14,7 @@ namespace SuperUnityBuild.BuildTool
             }
             if(maxLength <= 0)
             {
-                return value;
+                return suffix;
             }
 
             return value.Substring(0, maxLength).Trim(trimChars) + suffix;

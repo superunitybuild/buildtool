@@ -118,7 +118,7 @@ namespace SuperUnityBuild.BuildTool
 
                         if (parseSuccess)
                         {
-                            string defines = BuildProject.GenerateDefaultDefines(releaseType, platform, arch, dist);
+                            string defines = BuildProject.GenerateDefaultDefines(releaseType, platform, arch, back, dist);
 
                             EditorGUILayout.LabelField("Misc Info", UnityBuildGUIUtility.midHeaderStyle);
                             EditorGUILayout.LabelField("Defines:");
@@ -239,7 +239,7 @@ namespace SuperUnityBuild.BuildTool
                 }
                 else
                 {
-                    text = UnityBuildGUIUtility.ToLabel(tooltip);
+                    text = tooltip;
                     config.enabled = EditorGUILayout.Toggle(config.enabled, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(10));
                 }
 
