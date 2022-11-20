@@ -18,6 +18,7 @@ namespace SuperUnityBuild.BuildTool
         private const string BUILD_TYPE = "BUILD_TYPE_";
         private const string BUILD_PLATFORM = "BUILD_PLATFORM_";
         private const string BUILD_ARCH = "BUILD_ARCH_";
+        private const string BUILD_BACKEND = "BUILD_BACKEND_";
         private const string BUILD_DIST = "BUILD_DIST_";
 
         #endregion
@@ -68,7 +69,8 @@ namespace SuperUnityBuild.BuildTool
             );
         }
 
-        public static string GenerateDefaultDefines(BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist)
+        public static string GenerateDefaultDefines(BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch,
+            BuildScriptBackend scriptBackend, BuildDistribution dist)
         {
             List<string> defines = new List<string>();
 
@@ -80,6 +82,9 @@ namespace SuperUnityBuild.BuildTool
 
             if (arch != null)
                 defines.Add(BUILD_ARCH + SanitizeCodeString(arch.name.ToUpper().Replace(" ", "")));
+
+            if (scriptBackend != null)
+                defines.Add(BUILD_BACKEND + SanitizeCodeString(scriptBackend.name.ToUpper().Replace(" ", "")));
 
             if (dist != null)
                 defines.Add(BUILD_DIST + SanitizeCodeString(dist.distributionName.ToUpper().Replace(" ", "")));
@@ -121,6 +126,7 @@ namespace SuperUnityBuild.BuildTool
                 if (testString.StartsWith(BUILD_TYPE) ||
                     testString.StartsWith(BUILD_PLATFORM) ||
                     testString.StartsWith(BUILD_ARCH) ||
+                    testString.StartsWith(BUILD_BACKEND) ||
                     testString.StartsWith(BUILD_DIST))
                 {
                     defines.RemoveAt(i);
@@ -186,16 +192,18 @@ namespace SuperUnityBuild.BuildTool
             return retVal;
         }
 
-        public static string GenerateBuildPath(string prototype, BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist, DateTime buildTime)
+        public static string GenerateBuildPath(string prototype, BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch,
+            BuildScriptBackend scriptBackend, BuildDistribution dist, DateTime buildTime)
         {
-            string resolvedProto = ResolvePath(prototype, releaseType, buildPlatform, arch, dist, buildTime);
+            string resolvedProto = ResolvePath(prototype, releaseType, buildPlatform, arch, scriptBackend, dist, buildTime);
             string buildPath = Path.Combine(BuildSettings.basicSettings.baseBuildFolder, resolvedProto);
             buildPath = Path.GetFullPath(buildPath).TrimEnd('\\').TrimEnd('/');
 
             return buildPath;
         }
 
-        public static string ResolvePath(string prototype, BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist, DateTime buildTime)
+        public static string ResolvePath(string prototype, BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch,
+            BuildScriptBackend scriptBackend, BuildDistribution dist, DateTime buildTime)
         {
             StringBuilder sb = new StringBuilder(prototype);
 
@@ -216,6 +224,7 @@ namespace SuperUnityBuild.BuildTool
             sb.Replace("$VERSION", SanitizeFolderName(BuildSettings.productParameters.buildVersion));
             sb.Replace("$BUILD", BuildSettings.productParameters.buildCounter.ToString());
             sb.Replace("$PRODUCT_NAME", SanitizeFolderName(releaseType.productName));
+            sb.Replace("$BACKEND", SanitizeFolderName(scriptBackend.name));
 
             return sb.ToString();
         }
@@ -273,7 +282,7 @@ namespace SuperUnityBuild.BuildTool
 
             // Apply defines
             string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
-            string buildDefines = GenerateDefaultDefines(releaseType, platform, architecture, distribution);
+            string buildDefines = GenerateDefaultDefines(releaseType, platform, architecture, scriptBackend, distribution);
             buildDefines = MergeDefines(preBuildDefines, buildDefines);
 
             PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, buildDefines);
@@ -426,7 +435,7 @@ namespace SuperUnityBuild.BuildTool
             ConfigureEnvironment(releaseType, platform, architecture, scriptBackend, distribution, buildTime);
 
             // Generate build path
-            string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
+            string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, scriptBackend, distribution, buildTime);
             string binName = string.Format(architecture.binaryNameFormat, SanitizeFileName(releaseType.productName));
 
             // Pre-build actions
