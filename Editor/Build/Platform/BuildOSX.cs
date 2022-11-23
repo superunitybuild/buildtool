@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 
@@ -54,6 +54,18 @@ namespace SuperUnityBuild.BuildTool
                 architectures = new BuildArchitecture[] {
                     new BuildArchitecture(BuildTarget.StandaloneOSX, "macOS", true, _binaryNameFormats[0]),
                 };
+            }
+
+            if (BuildScriptBackend.IsIL2CPPInstalled(_targetGroup, BuildTarget.StandaloneOSX))
+            {
+                if (scriptBackends == null || scriptBackends.Length == 0)
+                {
+                    scriptBackends = new BuildScriptBackend[]
+                    {
+                    new BuildScriptBackend(ScriptingImplementation.Mono2x, "Mono 2x Runtime", true),
+                    new BuildScriptBackend(ScriptingImplementation.IL2CPP, "IL2CPP Runtime", false),
+                    };
+                }
             }
 
             if (variants == null || variants.Length == 0)
