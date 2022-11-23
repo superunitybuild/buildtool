@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
@@ -37,6 +37,18 @@ namespace SuperUnityBuild.BuildTool
                 architectures = new BuildArchitecture[] {
                     new BuildArchitecture(BuildTarget.WSAPlayer, "UWP", true, _binaryNameFormat),
                 };
+            }
+
+            if (BuildScriptBackend.IsIL2CPPInstalled(_targetGroup, BuildTarget.WSAPlayer))
+            {
+                if (scriptBackends == null || scriptBackends.Length == 0)
+                {
+                    scriptBackends = new BuildScriptBackend[]
+                    {
+                    new BuildScriptBackend(ScriptingImplementation.Mono2x, "Mono 2x Runtime", true),
+                    new BuildScriptBackend(ScriptingImplementation.IL2CPP, "IL2CPP Runtime", false),
+                    };
+                }
             }
 
             if (variants == null || variants.Length == 0)
