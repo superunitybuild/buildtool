@@ -98,8 +98,12 @@ namespace SuperUnityBuild.BuildTool
 
         private void SetMacOSArchitecture(string key)
         {
-#if UNITY_2020_2_OR_NEWER && UNITY_STANDALONE_OSX
+#if UNITY_STANDALONE_OSX
+#if UNITY_2022_1_OR_NEWER
+            UnityEditor.OSXStandalone.UserBuildSettings.architecture = (UnityEditor.Build.OSArchitecture)EnumValueFromKey<MacOSArchitecture>(key);
+#elif UNITY_2020_2_OR_NEWER
             UnityEditor.OSXStandalone.UserBuildSettings.architecture = (UnityEditor.OSXStandalone.MacOSArchitecture)EnumValueFromKey<MacOSArchitecture>(key);
+#endif
 #endif
         }
     }
