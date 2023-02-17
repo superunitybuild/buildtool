@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
@@ -35,6 +35,15 @@ namespace SuperUnityBuild.BuildTool
             {
                 architectures = new BuildArchitecture[] {
                     new BuildArchitecture(BuildTarget.iOS, "iOS", true, _binaryNameFormat)
+                };
+            }
+
+            if (scriptBackends == null || scriptBackends.Length == 0)
+            {
+                scriptBackends = new BuildScriptBackend[]
+                {
+                    new BuildScriptBackend(ScriptingImplementation.Mono2x, "Mono 2x Runtime", true),
+                    new BuildScriptBackend(ScriptingImplementation.IL2CPP, "IL2CPP Runtime", false),
                 };
             }
 
