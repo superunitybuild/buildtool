@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -66,6 +66,15 @@ namespace SuperUnityBuild.BuildTool
             {
                 architectures = new BuildArchitecture[] {
                     new BuildArchitecture(BuildTarget.Android, "Android", true, _binaryNameFormats[0])
+                };
+            }
+
+            if (scriptBackends == null || scriptBackends.Length == 0)
+            {
+                scriptBackends = new BuildScriptBackend[]
+                {
+                    new BuildScriptBackend(ScriptingImplementation.Mono2x, "Mono 2x Runtime", true),
+                    new BuildScriptBackend(ScriptingImplementation.IL2CPP, "IL2CPP Runtime", false),
                 };
             }
 
