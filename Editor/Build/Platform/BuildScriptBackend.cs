@@ -32,17 +32,23 @@ namespace SuperUnityBuild.BuildTool
 
         // Code based on https://forum.unity.com/threads/il2cpp-for-mac-only-available-in-mac-editor.529531/
 
-        /// <summary>Determines if the IL2CPP backend is installed.</summary>
+        /// <summary>Determines if the IL2CPP backend is installed.
+        /// Note: This isn't used anymore as rogue Unity logs get thrown in certain cases,
+        /// but in the future it could be useful for dynamically detecting IL2CPP status.
+        /// </summary>
         /// <param name="Target">The build target.</param>
-        /// <returns>If the IL2CPP backend is installed for this target.</returns>
+        /// <returns>True if the IL2CPP backend is installed for this target.</returns>
         public static bool IsIL2CPPInstalled(BuildTargetGroup TargetGroup, BuildTarget Target)
         {
             MethodInfo[] Methods = typeof(BuildPipeline).GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
-            MethodInfo GetPlaybackEngineDirectory = Methods.First((MethodInfo x) => x.Name == "GetPlaybackEngineDirectory" && x.ReturnType == typeof(string) && x.GetParameters().Length == 2);
+            MethodInfo GetPlaybackEngineDirectory = Methods.First((MethodInfo x) => x.Name == "GetPlaybackEngineDirectory"
+                && x.ReturnType == typeof(string) && x.GetParameters().Length == 2);
 
+            //Unfortunately, GetPlaybackEngineDirectory uses Debug.LogError internally
+            //if the TargetGroup is not installed and this log is unavoidable.
 
-            //Unfortunately, GetPlaybackEngineDirectory uses Debug.LogError internally which is unavoidable.
-            //So instead we have to check for the module installation before checking directories
+            //This commented code might be able to detect if the target group is installed first,
+            //but sadly it doesn't seem to work when called from ScriptableObject constructor.
             /*
             if (!BuildPipeline.IsBuildTargetSupported(TargetGroup, Target))
             {
