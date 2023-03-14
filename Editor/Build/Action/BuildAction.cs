@@ -33,6 +33,7 @@ namespace SuperUnityBuild.BuildTool
             BuildReleaseType releaseType,
             BuildPlatform platform,
             BuildArchitecture architecture,
+            BuildScriptBackend scriptBackend,
             BuildDistribution distribution,
             System.DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
         {
