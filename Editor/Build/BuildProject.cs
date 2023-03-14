@@ -64,6 +64,7 @@ namespace SuperUnityBuild.BuildTool
                 releaseType,
                 platform,
                 architecture,
+                scriptBackend,
                 distribution,
                 configureTime, ref options, configKey, null, buildActions, "'Configure Editor' Pre-"
             );
@@ -439,7 +440,7 @@ namespace SuperUnityBuild.BuildTool
             string binName = string.Format(architecture.binaryNameFormat, SanitizeFileName(releaseType.productName));
 
             // Pre-build actions
-            PerformPreBuild(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
+            PerformPreBuild(releaseType, platform, architecture, scriptBackend, distribution, buildTime, ref options, configKey, buildPath);
 
             // Report build starting
             BuildNotificationList.instance.AddNotification(new BuildNotification(
@@ -474,7 +475,7 @@ namespace SuperUnityBuild.BuildTool
             }
 
             // Post-build actions
-            PerformPostBuild(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
+            PerformPostBuild(releaseType, platform, architecture, scriptBackend, distribution, buildTime, ref options, configKey, buildPath);
 
             // Restore pre-build environment settings
             PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, preBuildDefines);
@@ -506,6 +507,7 @@ namespace SuperUnityBuild.BuildTool
             BuildReleaseType releaseType,
             BuildPlatform platform,
             BuildArchitecture architecture,
+            BuildScriptBackend scriptBackend,
             BuildDistribution distribution,
             DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
         {
@@ -513,6 +515,7 @@ namespace SuperUnityBuild.BuildTool
                 releaseType,
                 platform,
                 architecture,
+                scriptBackend,
                 distribution,
                 buildTime, ref options, configKey, buildPath, BuildSettings.preBuildActions.buildActions, "Pre-"
             );
@@ -527,6 +530,7 @@ namespace SuperUnityBuild.BuildTool
             BuildReleaseType releaseType,
             BuildPlatform platform,
             BuildArchitecture architecture,
+            BuildScriptBackend scriptBackend,
             BuildDistribution distribution,
             DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
         {
@@ -534,6 +538,7 @@ namespace SuperUnityBuild.BuildTool
                 releaseType,
                 platform,
                 architecture,
+                scriptBackend,
                 distribution,
                 buildTime, ref options, configKey, buildPath, BuildSettings.postBuildActions.buildActions, "Post-"
             );
@@ -556,7 +561,7 @@ namespace SuperUnityBuild.BuildTool
                         {
                             BuildNotificationList.instance.AddNotification(new BuildNotification(
                                 BuildNotification.Category.Notification,
-                                string.Format("Performing {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), action.actionName,
+                                string.Format("Performing {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), $"{action}",
                                 true, null));
 
                             action.Execute();
@@ -565,7 +570,7 @@ namespace SuperUnityBuild.BuildTool
                         {
                             BuildNotificationList.instance.AddNotification(new BuildNotification(
                                 BuildNotification.Category.Notification,
-                                string.Format("Skipping {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), action.actionName,
+                                string.Format("Skipping {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), $"{action}",
                                 true, null));
                         }
                     }
@@ -577,6 +582,7 @@ namespace SuperUnityBuild.BuildTool
             BuildReleaseType releaseType,
             BuildPlatform platform,
             BuildArchitecture architecture,
+            BuildScriptBackend scriptBackend,
             BuildDistribution distribution,
             DateTime buildTime, ref BuildOptions options, string configKey, string buildPath, BuildAction[] buildActions, string notificationLabel)
         {
@@ -596,16 +602,16 @@ namespace SuperUnityBuild.BuildTool
                         {
                             BuildNotificationList.instance.AddNotification(new BuildNotification(
                                 BuildNotification.Category.Notification,
-                                string.Format("Performing {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
+                                string.Format("Performing {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), string.Format("{0}: {1}", action, configKey),
                                 true, null));
 
-                            action.PerBuildExecute(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
+                            action.PerBuildExecute(releaseType, platform, architecture, scriptBackend, distribution, buildTime, ref options, configKey, buildPath);
                         }
                         else
                         {
                             BuildNotificationList.instance.AddNotification(new BuildNotification(
                                 BuildNotification.Category.Notification,
-                                string.Format("Skipping {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
+                                string.Format("Skipping {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), string.Format("{0}: {1}", action, configKey),
                                 true, null));
                         }
                     }
