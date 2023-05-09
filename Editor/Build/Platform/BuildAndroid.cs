@@ -79,7 +79,7 @@ namespace SuperUnityBuild.BuildTool
                     new BuildVariant(_deviceTypeVariantId, EnumNamesToArray<AndroidArchitecture>()
                         .Skip(1)
                         .ToArray(),
-                    0),
+                    0, true),
                     new BuildVariant(_textureCompressionVariantId, EnumNamesToArray<MobileTextureSubtarget>(), 0),
                     new BuildVariant(_buildOutputTypeVariantId, EnumNamesToArray<BuildOutputType>(true), 0),
                     new BuildVariant(_binaryTypeVariantId, EnumNamesToArray<BinaryType>(true), 0),
@@ -156,7 +156,7 @@ namespace SuperUnityBuild.BuildTool
 
         private void SetDeviceType(string key)
         {
-            PlayerSettings.Android.targetArchitectures = EnumValueFromKey<AndroidArchitecture>(key);
+            PlayerSettings.Android.targetArchitectures = EnumFlagValueFromKey<AndroidArchitecture>(key);
         }
 
         private void SetTextureCompression(string key)

@@ -111,6 +111,7 @@ namespace SuperUnityBuild.BuildTool
                     SerializedProperty variantName = variantProperty.FindPropertyRelative("variantName");
                     SerializedProperty variantValues = variantProperty.FindPropertyRelative("values");
                     SerializedProperty selectedVariantIndex = variantProperty.FindPropertyRelative("selectedIndex");
+                    SerializedProperty isFlag = variantProperty.FindPropertyRelative("isFlag");
 
                     List<string> valueNames = new List<string>(variantValues.arraySize);
                     for (int j = 0; j < variantValues.arraySize; j++)
@@ -121,8 +122,17 @@ namespace SuperUnityBuild.BuildTool
                     GUILayout.BeginHorizontal();
 
                     EditorGUILayout.LabelField(variantName.stringValue);
-                    selectedVariantIndex.intValue =
-                        EditorGUILayout.Popup(selectedVariantIndex.intValue, valueNames.ToArray(), UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));
+
+                    if (isFlag.boolValue)
+                    {
+                        selectedVariantIndex.intValue =
+                            EditorGUILayout.MaskField(selectedVariantIndex.intValue, valueNames.ToArray(), UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));
+                    }
+                    else
+                    {
+                        selectedVariantIndex.intValue =
+                            EditorGUILayout.Popup(selectedVariantIndex.intValue, valueNames.ToArray(), UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));   
+                    }
 
                     GUILayout.EndHorizontal();
                 }
@@ -198,6 +208,17 @@ namespace SuperUnityBuild.BuildTool
                 "";
 
             return name;
+        }
+
+        protected static T EnumFlagValueFromKey<T>(string label) where T : Enum
+        {
+            long result = 0;
+            label = label.Replace(" ", "");
+            foreach (string split in label.Split('+'))
+            {
+                result |= Convert.ToInt64((T)Enum.Parse(typeof(T), split));
+            }
+            return (T)Enum.ToObject(typeof(T), result);
         }
 
         protected static T EnumValueFromKey<T>(string label)
