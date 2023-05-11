@@ -43,7 +43,7 @@ namespace SuperUnityBuild.BuildTool
             {
                 scriptBackends = new BuildScriptBackend[]
                 {
-                    new BuildScriptBackend(ScriptingImplementation.IL2CPP, "IL2CPP Runtime", true),
+                    new BuildScriptBackend(ScriptingImplementation.IL2CPP, true),
                 };
             }
 

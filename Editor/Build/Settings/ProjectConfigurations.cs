@@ -208,11 +208,7 @@ namespace SuperUnityBuild.BuildTool
             {
                 //If no scripting backends are available,
                 //use Mono2x by default
-                scriptBackend = new BuildScriptBackend(
-                    UnityEditor.ScriptingImplementation.Mono2x,
-                    "Default",
-                    true
-                );
+                scriptBackend = new BuildScriptBackend(UnityEditor.ScriptingImplementation.Mono2x, true);
                 success = true;
             }
             else if (keyCount > ++targetKey)
