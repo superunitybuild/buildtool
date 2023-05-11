@@ -117,7 +117,7 @@ namespace SuperUnityBuild.BuildTool
         }
 
         public bool ParseKeychain(string keychain, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture architecture,
-            out BuildScriptBackend scriptBackend, out BuildDistribution distribution)
+            out BuildScriptingBackend scriptingBackend, out BuildDistribution distribution)
         {
             bool success = false;
             string[] keys = keychain.Split('/');
@@ -128,7 +128,7 @@ namespace SuperUnityBuild.BuildTool
             platform = null;
             architecture = null;
             distribution = null;
-            scriptBackend = null;
+            scriptingBackend = null;
 
             // Parse release type.
             if (keyCount > targetKey)
@@ -204,31 +204,31 @@ namespace SuperUnityBuild.BuildTool
                 return false;
 
             //Parse scripting backend
-            if(platform.scriptBackends.Length == 0)
+            if (platform.scriptingBackends.Length == 0)
             {
                 //If no scripting backends are available,
                 //use Mono2x by default
-                scriptBackend = new BuildScriptBackend(UnityEditor.ScriptingImplementation.Mono2x, true);
+                scriptingBackend = new BuildScriptingBackend(UnityEditor.ScriptingImplementation.Mono2x, true);
                 success = true;
             }
             else if (keyCount > ++targetKey)
             {
                 //Else search for existing backends
                 success = false;
-                for (int i = 0; i < platform.scriptBackends.Length; i++)
+                for (int i = 0; i < platform.scriptingBackends.Length; i++)
                 {
-                    BuildScriptBackend backend = platform.scriptBackends[i];
+                    BuildScriptingBackend backend = platform.scriptingBackends[i];
 
                     if (keys[targetKey] == backend.name)
                     {
-                        scriptBackend = backend;
+                        scriptingBackend = backend;
                         success = true;
                         break;
                     }
                 }
             }
 
-            if (scriptBackend == null)
+            if (scriptingBackend == null)
                 return false;
 
             // TODO: Parse variants.
@@ -280,10 +280,10 @@ namespace SuperUnityBuild.BuildTool
 
                 // Refresh architectures.
                 BuildArchitecture[] architectures = platforms[i].architectures;
-                BuildScriptBackend[] backends = platforms[i].scriptBackends;
+                BuildScriptingBackend[] scriptingBackends = platforms[i].scriptingBackends;
                 if (architectures.Length > 0)
                     relConfig.childKeys = RefreshArchitectures(key, refreshedConfigSet, platforms[i].variantKey, architectures,
-                        backends, platforms[i].distributionList.distributions, prevConfigSet);
+                        scriptingBackends, platforms[i].distributionList.distributions, prevConfigSet);
 
                 // Scan ahead for other versions of this platform with different variants.
                 for (int j = i; j < platforms.Count; j++)
@@ -294,7 +294,7 @@ namespace SuperUnityBuild.BuildTool
                     {
                         List<string> currentKeys = new List<string>(relConfig.childKeys);
                         string[] additionalKeys = RefreshArchitectures(key, refreshedConfigSet, otherPlatform.variantKey, otherPlatform.architectures,
-                            otherPlatform.scriptBackends, otherPlatform.distributionList.distributions, prevConfigSet);
+                            otherPlatform.scriptingBackends, otherPlatform.distributionList.distributions, prevConfigSet);
 
                         for (int k = 0; k < additionalKeys.Length; k++)
                         {
@@ -317,7 +317,7 @@ namespace SuperUnityBuild.BuildTool
         }
 
         private string[] RefreshArchitectures(string keyChain, ConfigDictionary refreshedConfigSet, string variantKey, BuildArchitecture[] architectures,
-            BuildScriptBackend[] backends, BuildDistribution[] distributions, ConfigDictionary prevConfigSet)
+            BuildScriptingBackend[] scriptingBackends, BuildDistribution[] distributions, ConfigDictionary prevConfigSet)
         {
             List<string> childKeys = new List<string>();
 
@@ -344,9 +344,9 @@ namespace SuperUnityBuild.BuildTool
                 }
 
                 //Refresh scripting backends
-                if(backends.Length > 0)
+                if (scriptingBackends.Length > 0)
                 {
-                    relConfig.childKeys = RefreshBackends(key, refreshedConfigSet, backends, distributions, prevConfigSet);
+                    relConfig.childKeys = RefreshBackends(key, refreshedConfigSet, scriptingBackends, distributions, prevConfigSet);
                 }
                 else
                 {
@@ -364,18 +364,18 @@ namespace SuperUnityBuild.BuildTool
             return childKeys.ToArray();
         }
 
-        private string[] RefreshBackends(string keyChain, ConfigDictionary refreshedConfigSet, BuildScriptBackend[] backends,
+        private string[] RefreshBackends(string keyChain, ConfigDictionary refreshedConfigSet, BuildScriptingBackend[] scriptingBackends,
             BuildDistribution[] distributions, ConfigDictionary prevConfigSet)
         {
             List<string> childKeys = new List<string>();
 
-            for (int i = 0; i < backends.Length; i++)
+            for (int i = 0; i < scriptingBackends.Length; i++)
             {
                 // Skip if architecture is disabled.
-                if (!backends[i].enabled)
+                if (!scriptingBackends[i].enabled)
                     continue;
 
-                string key = keyChain + "/" + backends[i].name;
+                string key = keyChain + "/" + scriptingBackends[i].name;
 
                 Configuration relConfig = new Configuration();
 

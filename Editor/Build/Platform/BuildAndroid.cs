@@ -70,12 +70,12 @@ namespace SuperUnityBuild.BuildTool
                 };
             }
 
-            if (scriptBackends == null || scriptBackends.Length == 0)
+            if (scriptingBackends == null || scriptingBackends.Length == 0)
             {
-                scriptBackends = new BuildScriptBackend[]
+                scriptingBackends = new BuildScriptingBackend[]
                 {
-                    new BuildScriptBackend(ScriptingImplementation.Mono2x, false),
-                    new BuildScriptBackend(ScriptingImplementation.IL2CPP, true),
+                    new BuildScriptingBackend(ScriptingImplementation.Mono2x, false),
+                    new BuildScriptingBackend(ScriptingImplementation.IL2CPP, true),
                 };
             }
 

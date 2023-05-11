@@ -108,17 +108,17 @@ namespace SuperUnityBuild.BuildTool
                     {
                         BuildReleaseType releaseType;
                         BuildPlatform platform;
-                        BuildArchitecture arch;
-                        BuildDistribution dist;
-                        BuildScriptBackend back;
+                        BuildArchitecture architecture;
+                        BuildDistribution distribution;
+                        BuildScriptingBackend scriptingBackend;
                         BuildOptions buildOptions = BuildOptions.None;
 
                         bool parseSuccess = BuildSettings.projectConfigurations.ParseKeychain(selectedKeyChain.stringValue, out releaseType, out platform,
-                            out arch, out back, out dist);
+                            out architecture, out scriptingBackend, out distribution);
 
                         if (parseSuccess)
                         {
-                            string defines = BuildProject.GenerateDefaultDefines(releaseType, platform, arch, back, dist);
+                            string defines = BuildProject.GenerateDefaultDefines(releaseType, platform, architecture, scriptingBackend, distribution);
 
                             EditorGUILayout.LabelField("Misc Info", UnityBuildGUIUtility.midHeaderStyle);
                             EditorGUILayout.LabelField("Defines:");
@@ -142,22 +142,22 @@ namespace SuperUnityBuild.BuildTool
                                 EditorGUILayout.LabelField("Name:\t\t" + platform.platformName);
                             }
 
-                            if (arch != null)
+                            if (architecture != null)
                             {
                                 EditorGUILayout.LabelField("Architecture", UnityBuildGUIUtility.midHeaderStyle);
-                                EditorGUILayout.LabelField("Name:\t\t" + arch.name);
+                                EditorGUILayout.LabelField("Name:\t\t" + architecture.name);
                             }
 
-                            if (dist != null)
+                            if (distribution != null)
                             {
                                 EditorGUILayout.LabelField("Distribution", UnityBuildGUIUtility.midHeaderStyle);
-                                EditorGUILayout.LabelField("Name:\t\t" + dist.distributionName);
+                                EditorGUILayout.LabelField("Name:\t\t" + distribution.distributionName);
                             }
 
-                            if(back != null)
+                            if (scriptingBackend != null)
                             {
                                 EditorGUILayout.LabelField("Scripting Backend", UnityBuildGUIUtility.midHeaderStyle);
-                                EditorGUILayout.LabelField("Name:\t\t" + back.name);
+                                EditorGUILayout.LabelField("Name:\t\t" + scriptingBackend.name);
                             }
 
                             GUILayout.Space(20);

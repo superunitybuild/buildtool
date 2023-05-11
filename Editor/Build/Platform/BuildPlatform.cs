@@ -13,7 +13,7 @@ namespace SuperUnityBuild.BuildTool
         public BuildDistributionList distributionList = new BuildDistributionList();
         public BuildArchitecture[] architectures = new BuildArchitecture[0];
         public BuildVariant[] variants = new BuildVariant[0];
-        public BuildScriptBackend[] scriptBackends = new BuildScriptBackend[0];
+        public BuildScriptingBackend[] scriptingBackends = new BuildScriptingBackend[0];
 
         public string platformName;
         public string dataDirNameFormat;
@@ -47,15 +47,15 @@ namespace SuperUnityBuild.BuildTool
         {
             get
             {
-                if(scriptBackends.Length <= 0)
+                if (scriptingBackends.Length <= 0)
                 {
                     return true;
                 }
 
                 bool atLeastOneBackend = false;
-                for (int i = 0; i < scriptBackends.Length && !atLeastOneBackend; i++)
+                for (int i = 0; i < scriptingBackends.Length && !atLeastOneBackend; i++)
                 {
-                    atLeastOneBackend |= scriptBackends[i].enabled;
+                    atLeastOneBackend |= scriptingBackends[i].enabled;
                 }
 
                 return atLeastOneBackend;
@@ -119,14 +119,14 @@ namespace SuperUnityBuild.BuildTool
                 }
             }
 
-            SerializedProperty scriptBackendList = obj.FindProperty("scriptBackends");
+            SerializedProperty scriptingBackendList = obj.FindProperty("scriptingBackends");
 
-            if(scriptBackendList.arraySize > 0)
+            if (scriptingBackendList.arraySize > 0)
             {
                 GUILayout.Label("Scripting Backends", UnityBuildGUIUtility.midHeaderStyle);
-                for (int i = 0; i < scriptBackendList.arraySize; i++)
+                for (int i = 0; i < scriptingBackendList.arraySize; i++)
                 {
-                    SerializedProperty scriptProperty = scriptBackendList.GetArrayElementAtIndex(i);
+                    SerializedProperty scriptProperty = scriptingBackendList.GetArrayElementAtIndex(i);
                     SerializedProperty scriptName = scriptProperty.FindPropertyRelative("name");
                     SerializedProperty scriptEnabled = scriptProperty.FindPropertyRelative("enabled");
 
@@ -218,15 +218,15 @@ namespace SuperUnityBuild.BuildTool
             string name = platformName;
 
             IEnumerable<BuildArchitecture> enabledArchitectures = architectures.Where(item => item.enabled);
-            IEnumerable<BuildScriptBackend> enabledScriptBackends = scriptBackends.Where(item => item.enabled);
+            IEnumerable<BuildScriptingBackend> enabledscriptingBackends = scriptingBackends.Where(item => item.enabled);
 
             List<string> architecturesAndVariants = new List<string>();
 
             if (architectures.Length > 1 && enabledArchitectures.Count() > 0)
                 architecturesAndVariants.AddRange(enabledArchitectures.Select(item => item.ToString()));
 
-            if (scriptBackends.Length > 1 && enabledScriptBackends.Count() > 0)
-                architecturesAndVariants.AddRange(enabledScriptBackends.Select(item => item.ToString()));
+            if (scriptingBackends.Length > 1 && enabledscriptingBackends.Count() > 0)
+                architecturesAndVariants.AddRange(enabledscriptingBackends.Select(item => item.ToString()));
 
             if (variants.Length > 0)
                 architecturesAndVariants.AddRange(variants.Select(item => item.ToString()));
