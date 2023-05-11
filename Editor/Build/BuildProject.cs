@@ -225,7 +225,7 @@ namespace SuperUnityBuild.BuildTool
             sb.Replace("$VERSION", SanitizeFolderName(BuildSettings.productParameters.buildVersion));
             sb.Replace("$BUILD", BuildSettings.productParameters.buildCounter.ToString());
             sb.Replace("$PRODUCT_NAME", SanitizeFolderName(releaseType.productName));
-            sb.Replace("$BACKEND", SanitizeFolderName(scriptingBackend.name));
+            sb.Replace("$SCRIPTING_BACKEND", SanitizeFolderName(scriptingBackend.name));
 
             return sb.ToString();
         }
