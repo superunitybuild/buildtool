@@ -121,7 +121,7 @@ namespace SuperUnityBuild.BuildTool
 
             SerializedProperty scriptingBackendList = obj.FindProperty("scriptingBackends");
 
-            if (scriptingBackendList.arraySize > 0)
+            if (scriptingBackendList.arraySize > 1)
             {
                 GUILayout.Label("Scripting Backends", UnityBuildGUIUtility.midHeaderStyle);
                 for (int i = 0; i < scriptingBackendList.arraySize; i++)
