@@ -1,16 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
-using System.Reflection;
-using System.Linq;
 using System.IO;
-using System;
+using System.Linq;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
 {
     [System.Serializable]
-    public class BuildScriptBackend
+    public class BuildScriptingBackend
     {
         private static readonly Dictionary<ScriptingImplementation, string> scriptingImplementationNames = new Dictionary<ScriptingImplementation, string>()
         {
@@ -18,14 +18,14 @@ namespace SuperUnityBuild.BuildTool
             { ScriptingImplementation.IL2CPP, "IL2CPP" },
         };
 
-        public ScriptingImplementation scriptImplementation;
+        public ScriptingImplementation scriptingImplementation;
         public string name;
         public bool enabled;
 
-        public BuildScriptBackend(ScriptingImplementation scriptImplementation, bool enabled)
+        public BuildScriptingBackend(ScriptingImplementation scriptingImplementation, bool enabled)
         {
-            this.scriptImplementation = scriptImplementation;
-            this.name = scriptingImplementationNames.TryGetValue(scriptImplementation, out string name) ? name : "Unknown Scripting Backend";
+            this.scriptingImplementation = scriptingImplementation;
+            this.name = scriptingImplementationNames.TryGetValue(scriptingImplementation, out string name) ? name : "Unknown Scripting Backend";
             this.enabled = enabled;
         }
 
@@ -73,7 +73,7 @@ namespace SuperUnityBuild.BuildTool
                 return false;
             }
 
-            if(PlayerPackage == null || PlayerPackage == "")
+            if (PlayerPackage == null || PlayerPackage == "")
             {
                 //If PlaybackEngineDirectory still doesn't exist, just return false
                 return false;
@@ -147,7 +147,7 @@ namespace SuperUnityBuild.BuildTool
                                 "linux64_withgfx_nondevelopment_il2cpp",
                             };
                         }
-                        
+
 #endif
 
                         break;
@@ -189,11 +189,13 @@ namespace SuperUnityBuild.BuildTool
                     return false;
             }
 
-            if (Target == BuildTarget.WSAPlayer) {
+            if (Target == BuildTarget.WSAPlayer)
+            {
                 return IL2CPPVariations.ToList().Exists((string x) =>
                     File.Exists(Path.Combine(Path.Combine(PlayerPackage, "Players/UAP"), Path.Combine(x, PlayerName))));
             }
-            else {
+            else
+            {
                 return IL2CPPVariations.ToList().Exists((string x) =>
                     File.Exists(Path.Combine(Path.Combine(PlayerPackage, "Variations"), Path.Combine(x, PlayerName))));
             }
