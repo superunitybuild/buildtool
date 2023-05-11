@@ -371,7 +371,7 @@ namespace SuperUnityBuild.BuildTool
 
             for (int i = 0; i < scriptingBackends.Length; i++)
             {
-                // Skip if architecture is disabled.
+                // Skip if scripting backend is disabled.
                 if (!scriptingBackends[i].enabled)
                     continue;
 
