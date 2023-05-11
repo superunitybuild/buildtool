@@ -12,14 +12,20 @@ namespace SuperUnityBuild.BuildTool
     [System.Serializable]
     public class BuildScriptBackend
     {
+        private static readonly Dictionary<ScriptingImplementation, string> scriptingImplementationNames = new Dictionary<ScriptingImplementation, string>()
+        {
+            { ScriptingImplementation.Mono2x, "Mono" },
+            { ScriptingImplementation.IL2CPP, "IL2CPP" },
+        };
+
         public ScriptingImplementation scriptImplementation;
         public string name;
         public bool enabled;
 
-        public BuildScriptBackend(ScriptingImplementation scriptImplementation, string name, bool enabled)
+        public BuildScriptBackend(ScriptingImplementation scriptImplementation, bool enabled)
         {
             this.scriptImplementation = scriptImplementation;
-            this.name = name;
+            this.name = scriptingImplementationNames.TryGetValue(scriptImplementation, out string name) ? name : "Unknown Scripting Backend";
             this.enabled = enabled;
         }
 
