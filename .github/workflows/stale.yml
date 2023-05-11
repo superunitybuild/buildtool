@@ -25,3 +25,4 @@ jobs:
         stale-issue-label: 'stale'
         stale-pr-label: 'stale'
         exempt-issue-labels: 'bug,defect,enhancement,hacktoberfest,help wanted'
+        exempt-pr-labels: 'bug,defect,enhancement,hacktoberfest,help wanted'
