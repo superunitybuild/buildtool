@@ -68,9 +68,7 @@ namespace SuperUnityBuild.BuildTool
             if (variants == null || variants.Length == 0)
             {
                 variants = new BuildVariant[] {
-#if UNITY_2020_2_OR_NEWER
                     new BuildVariant(_macOSArchitectureVariantId, EnumNamesToArray<MacOSArchitecture>(true), 0),
-#endif
                     new BuildVariant(_buildOutputTypeVariantId, EnumNamesToArray<BuildOutputType>(true), 0)
                 };
             }
@@ -108,11 +106,7 @@ namespace SuperUnityBuild.BuildTool
         private void SetMacOSArchitecture(string key)
         {
 #if UNITY_STANDALONE_OSX
-#if UNITY_2022_1_OR_NEWER
-            UnityEditor.OSXStandalone.UserBuildSettings.architecture = (UnityEditor.Build.OSArchitecture)EnumValueFromKey<MacOSArchitecture>(key);
-#elif UNITY_2020_2_OR_NEWER
             UnityEditor.OSXStandalone.UserBuildSettings.architecture = (UnityEditor.OSXStandalone.MacOSArchitecture)EnumValueFromKey<MacOSArchitecture>(key);
-#endif
 #endif
         }
     }

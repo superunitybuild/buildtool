@@ -83,7 +83,6 @@ namespace SuperUnityBuild.BuildTool
 
             switch (Target)
             {
-#if UNITY_2018_1_OR_NEWER
                 case BuildTarget.StandaloneWindows:
                 case BuildTarget.StandaloneWindows64:
                     {
@@ -109,16 +108,10 @@ namespace SuperUnityBuild.BuildTool
                         break;
                     }
 
-#if UNITY_2019_2_OR_NEWER
-#else
-                case BuildTarget.StandaloneLinux:
-                case BuildTarget.StandaloneLinuxUniversal:
-#endif
                 case BuildTarget.StandaloneLinux64:
                     {
                         PlayerName = "LinuxPlayer";
 
-#if UNITY_2019_2_OR_NEWER
                         IL2CPPVariations = new string[]
                         {
                             "linux64_headless_development_il2cpp",
@@ -126,29 +119,6 @@ namespace SuperUnityBuild.BuildTool
                             "linux64_withgfx_development_il2cpp",
                             "linux64_withgfx_nondevelopment_il2cpp",
                         };
-#else
-                        if (Target == BuildTarget.StandaloneLinux)
-                        {
-                            IL2CPPVariations = new string[]
-                            {
-                                "linux32_headless_development_il2cpp",
-                                "linux32_headless_nondevelopment_il2cpp",
-                                "linux32_withgfx_development_il2cpp",
-                                "linux32_withgfx_nondevelopment_il2cpp"
-                            };
-                        }
-                        else
-                        {
-                            IL2CPPVariations = new string[]
-                            {
-                                "linux64_headless_development_il2cpp",
-                                "linux64_headless_nondevelopment_il2cpp",
-                                "linux64_withgfx_development_il2cpp",
-                                "linux64_withgfx_nondevelopment_il2cpp",
-                            };
-                        }
-
-#endif
 
                         break;
                     }
@@ -164,7 +134,7 @@ namespace SuperUnityBuild.BuildTool
 
                         break;
                     }
-#endif
+
                 case BuildTarget.WSAPlayer:
                     {
                         PlayerName = "UnityPlayer.dll";
@@ -200,6 +170,5 @@ namespace SuperUnityBuild.BuildTool
                     File.Exists(Path.Combine(Path.Combine(PlayerPackage, "Variations"), Path.Combine(x, PlayerName))));
             }
         }
-
     }
 }
