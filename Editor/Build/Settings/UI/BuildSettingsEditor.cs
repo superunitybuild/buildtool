@@ -12,9 +12,7 @@ namespace SuperUnityBuild.BuildTool
             GUI.backgroundColor = Color.green;
 
             if (GUILayout.Button("Open SuperUnityBuild", GUILayout.ExpandWidth(true), GUILayout.MinHeight(30)))
-            {
                 UnityBuildWindow.ShowWindow();
-            }
 
             GUI.backgroundColor = defaultBackgroundColor;
         }

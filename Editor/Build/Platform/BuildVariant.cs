@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace SuperUnityBuild.BuildTool
 {
-    using System;
-    using System.Linq;
-
-    [System.Serializable]
+    [Serializable]
     public class BuildVariant
     {
         public string variantName;

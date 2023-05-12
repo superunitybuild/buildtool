@@ -1,9 +1,10 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BuildAction : ScriptableObject // This really should be an abstract class but needs to be concrete to work with Unity serialization.
     {
         public enum ActionType
@@ -33,8 +34,9 @@ namespace SuperUnityBuild.BuildTool
             BuildReleaseType releaseType,
             BuildPlatform platform,
             BuildArchitecture architecture,
+            BuildScriptingBackend scriptingBackend,
             BuildDistribution distribution,
-            System.DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
+            DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
         {
         }
 
@@ -42,7 +44,7 @@ namespace SuperUnityBuild.BuildTool
         {
             DrawProperties(obj);
 
-            System.Type myType = GetType();
+            Type myType = GetType();
             bool isPreBuildAction = typeof(IPreBuildAction).IsAssignableFrom(myType);
             bool isPostBuildAction = typeof(IPostBuildAction).IsAssignableFrom(myType);
             bool isPreBuildPerPlatformAction = typeof(IPreBuildPerPlatformAction).IsAssignableFrom(myType);
@@ -51,35 +53,23 @@ namespace SuperUnityBuild.BuildTool
             bool actionTypeSelectable = false;
 
             if ((isPreBuildAction && isPreBuildPerPlatformAction) || (isPostBuildAction && isPostBuildPerPlatformAction))
-            {
                 actionTypeSelectable = true;
-            }
             else if (isPreBuildAction || isPostBuildAction)
-            {
                 actionType = ActionType.SingleRun;
-            }
             else if (isPreBuildPerPlatformAction || isPostBuildPerPlatformAction)
-            {
                 actionType = ActionType.PerPlatform;
-            }
 
             if (actionTypeSelectable)
-            {
                 actionType = (ActionType)EditorGUILayout.EnumPopup("Action Type", actionType);
-            }
 
             if (isPreBuildActionCanConfigureEditor)
-            {
                 EditorGUILayout.PropertyField(obj.FindProperty("configureEditor"));
-            }
 
             EditorGUILayout.PropertyField(obj.FindProperty("note"));
 
             // Only Per-Platform actions can be filtered
             if (actionType == ActionType.PerPlatform)
-            {
                 EditorGUILayout.PropertyField(obj.FindProperty("filter"), GUILayout.Height(0));
-            }
 
             obj.ApplyModifiedProperties();
         }
@@ -88,7 +78,7 @@ namespace SuperUnityBuild.BuildTool
         {
             string name = actionName;
             name += !string.IsNullOrEmpty(note) ?
-                " (" + note + ")" :
+                $" ({note})" :
                 "";
 
             return name;

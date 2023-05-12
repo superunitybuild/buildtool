@@ -55,9 +55,7 @@ namespace SuperUnityBuild.BuildTool
                     EditorGUILayout.PropertyField(property.FindPropertyRelative("buildCounter"));
 
                     if (GUILayout.Button("Reset Build Counter", GUILayout.ExpandWidth(true)))
-                    {
                         property.FindPropertyRelative("buildCounter").intValue = 0;
-                    }
                 }
 
                 if (!autoGenerate.boolValue && !syncWithPlayerSettings.boolValue && GUILayout.Button("Generate Version Now", GUILayout.ExpandWidth(true)))

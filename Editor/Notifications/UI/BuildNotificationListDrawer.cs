@@ -47,16 +47,14 @@ namespace SuperUnityBuild.BuildTool
             EditorGUILayout.BeginHorizontal();
             GUI.backgroundColor = Color.red;
             UnityBuildGUIUtility.DropdownHeader(
-                "Errors (" + errorCount + ")",
+                $"Errors ({errorCount})",
                 ref show, true,
                 GUILayout.ExpandWidth(true));
 
             if (clearableCount > 0)
             {
                 if (GUILayout.Button(clearButtonContent, UnityBuildGUIUtility.helpButtonStyle))
-                {
                     BuildNotificationList.instance.RefreshErrors();
-                }
             }
 
             GUI.backgroundColor = defaultBackgroundColor;
@@ -102,16 +100,14 @@ namespace SuperUnityBuild.BuildTool
             EditorGUILayout.BeginHorizontal();
             GUI.backgroundColor = Color.yellow;
             UnityBuildGUIUtility.DropdownHeader(
-                "Warnings (" + warningCount + ")",
+                $"Warnings ({warningCount})",
                 ref show, true,
                 GUILayout.ExpandWidth(true));
 
             if (clearableCount > 0)
             {
                 if (GUILayout.Button(clearButtonContent, UnityBuildGUIUtility.helpButtonStyle))
-                {
                     BuildNotificationList.instance.RefreshWarnings();
-                }
             }
 
             GUI.backgroundColor = defaultBackgroundColor;
@@ -157,16 +153,14 @@ namespace SuperUnityBuild.BuildTool
             EditorGUILayout.BeginHorizontal();
             GUI.backgroundColor = Color.cyan;
             UnityBuildGUIUtility.DropdownHeader(
-                "Log (" + warningCount + ")",
+                $"Log ({warningCount})",
                 ref show, true,
                 GUILayout.ExpandWidth(true));
 
             if (clearableCount > 0)
             {
                 if (GUILayout.Button(clearButtonContent, UnityBuildGUIUtility.helpButtonStyle))
-                {
                     BuildNotificationList.instance.RefreshNotifications();
-                }
             }
 
             GUI.backgroundColor = defaultBackgroundColor;

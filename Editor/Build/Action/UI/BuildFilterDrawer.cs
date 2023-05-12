@@ -64,9 +64,9 @@ namespace SuperUnityBuild.BuildTool
 
                     testValue.stringValue = GUILayout.TextField(testValue.stringValue);
 
-                    if (GUILayout.Button("X", UnityBuildGUIUtility.helpButtonStyle))
+                    if (UnityBuildGUIUtility.DeleteButton())
                     {
-                        list.DeleteArrayElementAtIndex(i);
+                        list.SafeDeleteArrayElementAtIndex(i);
                         list.serializedObject.ApplyModifiedProperties();
                     }
 
@@ -74,9 +74,7 @@ namespace SuperUnityBuild.BuildTool
                 }
 
                 if (GUILayout.Button("Add Condition", GUILayout.ExpandWidth(true)))
-                {
                     AddClause();
-                }
 
                 EditorGUILayout.EndVertical();
             }

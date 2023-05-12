@@ -28,15 +28,9 @@ namespace SuperUnityBuild.BuildTool
 
             list = property.FindPropertyRelative("buildActions");
 
-            List<Type> actionTypes;
-            if (property.name.ToUpper().Contains("PRE"))
-            {
-                actionTypes = BuildActionListUtility.preBuildActions;
-            }
-            else
-            {
-                actionTypes = BuildActionListUtility.postBuildActions;
-            }
+            List<Type> actionTypes = property.name.ToUpper().Contains("PRE") ?
+                BuildActionListUtility.preBuildActions :
+                BuildActionListUtility.postBuildActions;
 
             if (show)
             {
@@ -45,9 +39,7 @@ namespace SuperUnityBuild.BuildTool
                 DrawActions(property);
 
                 if (list.arraySize > 0)
-                {
                     GUILayout.Space(10);
-                }
 
                 DrawActionList(property, actionTypes);
 
@@ -66,7 +58,7 @@ namespace SuperUnityBuild.BuildTool
                 BuildAction buildAction = listEntry.objectReferenceValue as BuildAction;
                 if (buildAction == null)
                 {
-                    list.DeleteArrayElementAtIndex(i);
+                    list.SafeDeleteArrayElementAtIndex(i);
                     --i;
                     continue;
                 }
@@ -84,44 +76,18 @@ namespace SuperUnityBuild.BuildTool
                 EditorGUI.EndDisabledGroup();
                 listEntry.isExpanded = show;
 
-                EditorGUI.BeginDisabledGroup(i == 0);
-                if (GUILayout.Button("↑↑", UnityBuildGUIUtility.helpButtonStyle))
-                {
-                    list.MoveArrayElement(i, 0);
-                }
-                if (GUILayout.Button("↑", UnityBuildGUIUtility.helpButtonStyle))
-                {
-                    list.MoveArrayElement(i, i - 1);
-                }
-                EditorGUI.EndDisabledGroup();
+                UnityBuildGUIUtility.ReorderArrayControls(list, i);
 
-                EditorGUI.BeginDisabledGroup(i == list.arraySize - 1);
-                if (GUILayout.Button("↓", UnityBuildGUIUtility.helpButtonStyle))
+                if (UnityBuildGUIUtility.DeleteButton())
                 {
-                    list.MoveArrayElement(i, i + 1);
-                }
-                EditorGUI.EndDisabledGroup();
-
-                if (GUILayout.Button("X", UnityBuildGUIUtility.helpButtonStyle))
-                {
-                    BuildAction[] buildActions;
-                    if (property.name.ToUpper().Contains("PRE"))
-                    {
-                        buildActions = BuildSettings.preBuildActions.buildActions;
-                    }
-                    else
-                    {
-                        buildActions = BuildSettings.postBuildActions.buildActions;
-                    }
+                    BuildAction[] buildActions = GetBuildActionsForProperty(property);
 
                     // Destroy underlying object.
                     ScriptableObject.DestroyImmediate(buildActions[i], true);
                     AssetDatabaseUtility.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
 
                     // Remove object reference from list.
-                    // TODO: Why do I need to call this twice? First call nulls reference, second one then deletes null entry.
-                    list.DeleteArrayElementAtIndex(i);
-                    list.DeleteArrayElementAtIndex(i);
+                    list.SafeDeleteArrayElementAtIndex(i);
                     show = false;
                 }
 
@@ -157,15 +123,7 @@ namespace SuperUnityBuild.BuildTool
                     list.InsertArrayElementAtIndex(addedIndex);
                     list.serializedObject.ApplyModifiedProperties();
 
-                    BuildAction[] buildActions;
-                    if (property.name.ToUpper().Contains("PRE"))
-                    {
-                        buildActions = BuildSettings.preBuildActions.buildActions;
-                    }
-                    else
-                    {
-                        buildActions = BuildSettings.postBuildActions.buildActions;
-                    }
+                    BuildAction[] buildActions = GetBuildActionsForProperty(property);
 
                     buildActions[addedIndex] = ScriptableObject.CreateInstance(addedType) as BuildAction;
                     buildActions[addedIndex].name = addedType.Name;
@@ -184,6 +142,13 @@ namespace SuperUnityBuild.BuildTool
             {
                 EditorGUILayout.HelpBox("No Build Actions found.", MessageType.Info);
             }
+        }
+
+        private BuildAction[] GetBuildActionsForProperty(SerializedProperty property)
+        {
+            return property.name.ToUpper().Contains("PRE") ?
+                BuildSettings.preBuildActions.buildActions :
+                BuildSettings.postBuildActions.buildActions;
         }
     }
 }

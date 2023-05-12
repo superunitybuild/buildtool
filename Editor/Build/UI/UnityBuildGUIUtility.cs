@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,9 +17,7 @@ namespace SuperUnityBuild.BuildTool
             get
             {
                 if (_instance == null)
-                {
                     _instance = new UnityBuildGUIUtility();
-                }
 
                 return _instance;
             }
@@ -46,6 +44,7 @@ namespace SuperUnityBuild.BuildTool
             _dropdownHeaderStyle.alignment = TextAnchor.MiddleLeft;
             _dropdownHeaderStyle.fontStyle = FontStyle.Bold;
             _dropdownHeaderStyle.margin = new RectOffset(5, 5, 0, 0);
+            _dropdownHeaderStyle.wordWrap = true;
 
             _popupStyle = new GUIStyle(EditorStyles.popup);
             _popupStyle.fontSize = 11;
@@ -85,6 +84,11 @@ namespace SuperUnityBuild.BuildTool
             Application.OpenURL(string.Format(HELP_URL, anchor));
         }
 
+        public static bool DeleteButton()
+        {
+            return GUILayout.Button("X", instance._helpButtonStyle);
+        }
+
         public static void DropdownHeader(string content, ref bool showDropdown, bool noColor, params GUILayoutOption[] options)
         {
             DropdownHeader(new GUIContent { text = content }, ref showDropdown, noColor, options);
@@ -96,9 +100,7 @@ namespace SuperUnityBuild.BuildTool
                 GUI.backgroundColor = instance._mainHeaderColor;
 
             if (EditorGUILayout.DropdownButton(new GUIContent(content), FocusType.Keyboard, dropdownHeaderStyle, options))
-            {
                 showDropdown = !showDropdown;
-            }
 
             if (!noColor)
                 GUI.backgroundColor = instance._defaultBackgroundColor;
@@ -108,6 +110,44 @@ namespace SuperUnityBuild.BuildTool
         {
             if (GUILayout.Button(_instance.helpButtonContent, helpButtonStyle))
                 OpenHelp(anchor);
+        }
+
+        public static bool MoveUpButton()
+        {
+            return GUILayout.Button("↑", instance._helpButtonStyle);
+        }
+
+        public static bool MoveDownButton()
+        {
+            return GUILayout.Button("↓", instance._helpButtonStyle);
+        }
+
+        public static bool MoveToFrontButton()
+        {
+            return GUILayout.Button("↑↑", instance._helpButtonStyle);
+        }
+
+        public static void ReorderArrayControls(SerializedProperty array, int i)
+        {
+            int moveIndex = -1;
+
+            EditorGUI.BeginDisabledGroup(i == 0);
+            if (MoveToFrontButton())
+                moveIndex = 0;
+
+            if (MoveUpButton())
+                moveIndex = i - 1;
+
+            EditorGUI.EndDisabledGroup();
+
+            EditorGUI.BeginDisabledGroup(i == array.arraySize - 1);
+            if (MoveDownButton())
+                moveIndex = i + 1;
+
+            EditorGUI.EndDisabledGroup();
+
+            if (moveIndex != -1)
+                array.MoveArrayElement(i, moveIndex);
         }
 
         public static string ToLabel(string input, int maxLength = 60)
@@ -143,76 +183,15 @@ namespace SuperUnityBuild.BuildTool
             return Regex.Replace(input, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ");
         }
 
-        public static GUIStyle helpButtonStyle
-        {
-            get
-            {
-                return instance._helpButtonStyle;
-            }
-        }
 
-        public static GUIStyle midHeaderStyle
-        {
-            get
-            {
-                return instance._midHeaderStyle;
-            }
-        }
-
-        public static GUIStyle dropdownHeaderStyle
-        {
-            get
-            {
-                return instance._dropdownHeaderStyle;
-            }
-        }
-
-        public static GUIStyle dropdownContentStyle
-        {
-            get
-            {
-                return instance._dropdownContentStyle;
-            }
-        }
-
-        public static GUIStyle popupStyle
-        {
-            get
-            {
-                return instance._popupStyle;
-            }
-        }
-
-        public static GUIStyle mainTitleStyle
-        {
-            get
-            {
-                return instance._mainTitleStyle;
-            }
-        }
-
-        public static Color defaultBackgroundColor
-        {
-            get
-            {
-                return instance._defaultBackgroundColor;
-            }
-        }
-
-        public static Color mainHeaderColor
-        {
-            get
-            {
-                return instance._mainHeaderColor;
-            }
-        }
-
-        public static GUIStyle dragDropStyle
-        {
-            get
-            {
-                return instance._dragDropArea;
-            }
-        }
+        public static GUIStyle helpButtonStyle { get => instance._helpButtonStyle; }
+        public static GUIStyle midHeaderStyle { get => instance._midHeaderStyle; }
+        public static GUIStyle dropdownHeaderStyle { get => instance._dropdownHeaderStyle; }
+        public static GUIStyle dropdownContentStyle { get => instance._dropdownContentStyle; }
+        public static GUIStyle popupStyle { get => instance._popupStyle; }
+        public static GUIStyle mainTitleStyle { get => instance._mainTitleStyle; }
+        public static Color defaultBackgroundColor { get => instance._defaultBackgroundColor; }
+        public static Color mainHeaderColor { get => instance._mainHeaderColor; }
+        public static GUIStyle dragDropStyle { get => instance._dragDropArea; }
     }
 }
