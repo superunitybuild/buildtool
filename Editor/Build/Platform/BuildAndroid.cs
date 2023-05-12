@@ -95,6 +95,7 @@ namespace SuperUnityBuild.BuildTool
                 variants = new BuildVariant[] {
                     new BuildVariant(_deviceTypeVariantId, EnumNamesToArray<AndroidArchitecture>()
                         .Skip(1)
+                        .SkipLast(1)
                         .ToArray(),
                     0, true),
                     new BuildVariant(_textureCompressionVariantId, EnumNamesToArray<MobileTextureSubtarget>(), 0),
