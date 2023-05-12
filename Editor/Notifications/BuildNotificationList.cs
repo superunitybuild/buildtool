@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace SuperUnityBuild.BuildTool
@@ -39,35 +39,25 @@ namespace SuperUnityBuild.BuildTool
                 case BuildNotification.Category.Error:
                     entry = FindDuplicate(notification, errors);
                     if (entry == null)
-                    {
                         errors.Add(notification);
-                    }
                     else if (entry.valid == null && notification.valid != null)
-                    {
                         entry.valid = notification.valid;
-                    }
                     break;
+
                 case BuildNotification.Category.Warning:
                     entry = FindDuplicate(notification, warnings);
                     if (entry == null)
-                    {
                         warnings.Add(notification);
-                    }
                     else if (entry.valid == null && notification.valid != null)
-                    {
                         entry.valid = notification.valid;
-                    }
                     break;
+
                 case BuildNotification.Category.Notification:
                     entry = FindDuplicate(notification, notifications);
                     if (entry == null)
-                    {
                         notifications.Add(notification);
-                    }
                     else if (entry.valid == null && notification.valid != null)
-                    {
                         entry.valid = notification.valid;
-                    }
                     break;
             }
         }
@@ -104,11 +94,13 @@ namespace SuperUnityBuild.BuildTool
                     if (entry != null)
                         errors.Remove(entry);
                     break;
+
                 case BuildNotification.Category.Warning:
                     entry = FindDuplicate(notification, warnings);
                     if (entry != null)
                         warnings.Remove(entry);
                     break;
+
                 case BuildNotification.Category.Notification:
                     entry = FindDuplicate(notification, notifications);
                     if (entry != null)
@@ -141,7 +133,7 @@ namespace SuperUnityBuild.BuildTool
                         for (int i = 0; i < platformCount; i++)
                         {
                             BuildPlatform platform = BuildSettings.platformList.platforms[i];
-                            if (platform.enabled && platform.atLeastOneArch)
+                            if (platform.enabled && platform.atLeastOneArch && platform.atLeastOneBackend)
                             {
                                 validError = false;
                                 break;
@@ -155,7 +147,7 @@ namespace SuperUnityBuild.BuildTool
             AddNotification(new BuildNotification(
                 BuildNotification.Category.Error,
                 "Invalid ReleaseType Name",
-                "One or more ReleaseType names is invalid. They may not be empty or '" + BuildConstantsGenerator.NONE + "'.",
+                $"One or more ReleaseType names is invalid. They may not be empty or '{BuildConstantsGenerator.NONE}'.",
                 false,
                 () =>
                 {
@@ -179,7 +171,7 @@ namespace SuperUnityBuild.BuildTool
             AddNotification(new BuildNotification(
                 BuildNotification.Category.Error,
                 "Invalid Distribution Name",
-                "One or more Distribution names is invalid. They may not be empty or '" + BuildConstantsGenerator.NONE + "'.",
+                $"One or more Distribution names is invalid. They may not be empty or '{BuildConstantsGenerator.NONE}'.",
                 false,
                 () =>
                 {

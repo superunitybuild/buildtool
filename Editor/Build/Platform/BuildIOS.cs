@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
@@ -35,6 +35,14 @@ namespace SuperUnityBuild.BuildTool
             {
                 architectures = new BuildArchitecture[] {
                     new BuildArchitecture(BuildTarget.iOS, "iOS", true, _binaryNameFormat)
+                };
+            }
+
+            if (scriptingBackends == null || scriptingBackends.Length == 0)
+            {
+                scriptingBackends = new BuildScriptingBackend[]
+                {
+                    new BuildScriptingBackend(ScriptingImplementation.IL2CPP, true),
                 };
             }
 
@@ -75,11 +83,11 @@ namespace SuperUnityBuild.BuildTool
 
         private void SetBuildConfigType(string key)
         {
-            #if UNITY_2021_2_OR_NEWER
+#if UNITY_2021_2_OR_NEWER
             EditorUserBuildSettings.iOSXcodeBuildConfig = EnumValueFromKey<XcodeBuildConfig>(key);
-            #else
+#else
             EditorUserBuildSettings.iOSBuildConfigType = EnumValueFromKey<iOSBuildType>(key);
-            #endif
+#endif
         }
 
         private void SetDeviceType(string key)

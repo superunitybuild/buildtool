@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BuildPC : BuildPlatform
     {
         #region Constants
@@ -43,6 +44,15 @@ namespace SuperUnityBuild.BuildTool
                 architectures = new BuildArchitecture[] {
                     new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true, _binaryNameFormats[0]),
                     new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false, _binaryNameFormats[0])
+                };
+            }
+
+            if (scriptingBackends == null || scriptingBackends.Length == 0)
+            {
+                scriptingBackends = new BuildScriptingBackend[]
+                {
+                    new BuildScriptingBackend(ScriptingImplementation.Mono2x, true),
+                    new BuildScriptingBackend(ScriptingImplementation.IL2CPP, false),
                 };
             }
 

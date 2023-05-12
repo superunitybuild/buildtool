@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
@@ -108,15 +105,17 @@ namespace SuperUnityBuild.BuildTool
                     {
                         BuildReleaseType releaseType;
                         BuildPlatform platform;
-                        BuildArchitecture arch;
-                        BuildDistribution dist;
+                        BuildArchitecture architecture;
+                        BuildDistribution distribution;
+                        BuildScriptingBackend scriptingBackend;
                         BuildOptions buildOptions = BuildOptions.None;
 
-                        bool parseSuccess = BuildSettings.projectConfigurations.ParseKeychain(selectedKeyChain.stringValue, out releaseType, out platform, out arch, out dist);
+                        bool parseSuccess = BuildSettings.projectConfigurations.ParseKeychain(selectedKeyChain.stringValue, out releaseType, out platform,
+                            out architecture, out scriptingBackend, out distribution);
 
                         if (parseSuccess)
                         {
-                            string defines = BuildProject.GenerateDefaultDefines(releaseType, platform, arch, dist);
+                            string defines = BuildProject.GenerateDefaultDefines(releaseType, platform, architecture, scriptingBackend, distribution);
 
                             EditorGUILayout.LabelField("Misc Info", UnityBuildGUIUtility.midHeaderStyle);
                             EditorGUILayout.LabelField("Defines:");
@@ -140,16 +139,22 @@ namespace SuperUnityBuild.BuildTool
                                 EditorGUILayout.LabelField("Name:\t\t" + platform.platformName);
                             }
 
-                            if (arch != null)
+                            if (architecture != null)
                             {
                                 EditorGUILayout.LabelField("Architecture", UnityBuildGUIUtility.midHeaderStyle);
-                                EditorGUILayout.LabelField("Name:\t\t" + arch.name);
+                                EditorGUILayout.LabelField("Name:\t\t" + architecture.name);
                             }
 
-                            if (dist != null)
+                            if (distribution != null)
                             {
                                 EditorGUILayout.LabelField("Distribution", UnityBuildGUIUtility.midHeaderStyle);
-                                EditorGUILayout.LabelField("Name:\t\t" + dist.distributionName);
+                                EditorGUILayout.LabelField("Name:\t\t" + distribution.distributionName);
+                            }
+
+                            if (scriptingBackend != null)
+                            {
+                                EditorGUILayout.LabelField("Scripting Backend", UnityBuildGUIUtility.midHeaderStyle);
+                                EditorGUILayout.LabelField("Name:\t\t" + scriptingBackend.name);
                             }
 
                             GUILayout.Space(20);
@@ -231,7 +236,7 @@ namespace SuperUnityBuild.BuildTool
                 }
                 else
                 {
-                    text = UnityBuildGUIUtility.ToLabel(tooltip);
+                    text = tooltip;
                     config.enabled = EditorGUILayout.Toggle(config.enabled, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(10));
                 }
 

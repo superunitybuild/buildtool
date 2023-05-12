@@ -18,6 +18,7 @@ namespace SuperUnityBuild.BuildTool
         private const string BUILD_TYPE = "BUILD_TYPE_";
         private const string BUILD_PLATFORM = "BUILD_PLATFORM_";
         private const string BUILD_ARCH = "BUILD_ARCH_";
+        private const string BUILD_BACKEND = "BUILD_BACKEND_";
         private const string BUILD_DIST = "BUILD_DIST_";
 
         #endregion
@@ -50,10 +51,11 @@ namespace SuperUnityBuild.BuildTool
                 true, null));
 
             // Parse build config
-            BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture architecture, out BuildDistribution distribution);
+            BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture architecture,
+                out BuildScriptingBackend scriptingBackend, out BuildDistribution distribution);
 
             // Configure environment
-            ConfigureEnvironment(releaseType, platform, architecture, distribution, configureTime);
+            ConfigureEnvironment(releaseType, platform, architecture, scriptingBackend, distribution, configureTime);
 
             // Run pre-build actions that have opted in to configuring the Editor
             BuildAction[] buildActions = BuildSettings.preBuildActions.buildActions.Where(item => item.configureEditor).ToArray();
@@ -62,33 +64,38 @@ namespace SuperUnityBuild.BuildTool
                 releaseType,
                 platform,
                 architecture,
+                scriptingBackend,
                 distribution,
                 configureTime, ref options, configKey, null, buildActions, "'Configure Editor' Pre-"
             );
         }
 
-        public static string GenerateDefaultDefines(BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist)
+        public static string GenerateDefaultDefines(BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch,
+            BuildScriptingBackend scriptingBackend, BuildDistribution dist)
         {
             List<string> defines = new List<string>();
 
             if (releaseType != null)
-                defines.Add(BUILD_TYPE + SanitizeCodeString(releaseType.typeName.ToUpper().Replace(" ", "")));
+                defines.Add($"{BUILD_TYPE}{SanitizeDefine(releaseType.typeName)}");
 
             if (buildPlatform != null)
-                defines.Add(BUILD_PLATFORM + SanitizeCodeString(buildPlatform.platformName.ToUpper().Replace(" ", "")));
+                defines.Add($"{BUILD_PLATFORM}{SanitizeDefine(buildPlatform.platformName)}");
 
             if (arch != null)
-                defines.Add(BUILD_ARCH + SanitizeCodeString(arch.name.ToUpper().Replace(" ", "")));
+                defines.Add($"{BUILD_ARCH}{SanitizeDefine(arch.name)}");
+
+            if (scriptingBackend != null)
+                defines.Add($"{BUILD_BACKEND}{SanitizeDefine(scriptingBackend.name)}");
 
             if (dist != null)
-                defines.Add(BUILD_DIST + SanitizeCodeString(dist.distributionName.ToUpper().Replace(" ", "")));
+                defines.Add($"{BUILD_DIST}{SanitizeDefine(dist.distributionName)}");
 
             if (releaseType != null && !string.IsNullOrEmpty(releaseType.customDefines))
             {
                 string[] customDefines = releaseType.customDefines.Split(';', ',');
                 for (int i = 0; i < customDefines.Length; i++)
                 {
-                    defines.Add(SanitizeCodeString(customDefines[i]).ToUpper());
+                    defines.Add(SanitizeDefine(customDefines[i]));
                 }
             }
 
@@ -120,6 +127,7 @@ namespace SuperUnityBuild.BuildTool
                 if (testString.StartsWith(BUILD_TYPE) ||
                     testString.StartsWith(BUILD_PLATFORM) ||
                     testString.StartsWith(BUILD_ARCH) ||
+                    testString.StartsWith(BUILD_BACKEND) ||
                     testString.StartsWith(BUILD_DIST))
                 {
                     defines.RemoveAt(i);
@@ -185,16 +193,18 @@ namespace SuperUnityBuild.BuildTool
             return retVal;
         }
 
-        public static string GenerateBuildPath(string prototype, BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist, DateTime buildTime)
+        public static string GenerateBuildPath(string prototype, BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch,
+            BuildScriptingBackend scriptingBackend, BuildDistribution dist, DateTime buildTime)
         {
-            string resolvedProto = ResolvePath(prototype, releaseType, buildPlatform, arch, dist, buildTime);
+            string resolvedProto = ResolvePath(prototype, releaseType, buildPlatform, arch, scriptingBackend, dist, buildTime);
             string buildPath = Path.Combine(BuildSettings.basicSettings.baseBuildFolder, resolvedProto);
             buildPath = Path.GetFullPath(buildPath).TrimEnd('\\').TrimEnd('/');
 
             return buildPath;
         }
 
-        public static string ResolvePath(string prototype, BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch, BuildDistribution dist, DateTime buildTime)
+        public static string ResolvePath(string prototype, BuildReleaseType releaseType, BuildPlatform buildPlatform, BuildArchitecture arch,
+            BuildScriptingBackend scriptingBackend, BuildDistribution dist, DateTime buildTime)
         {
             StringBuilder sb = new StringBuilder(prototype);
 
@@ -215,6 +225,7 @@ namespace SuperUnityBuild.BuildTool
             sb.Replace("$VERSION", SanitizeFolderName(BuildSettings.productParameters.buildVersion));
             sb.Replace("$BUILD", BuildSettings.productParameters.buildCounter.ToString());
             sb.Replace("$PRODUCT_NAME", SanitizeFolderName(releaseType.productName));
+            sb.Replace("$SCRIPTING_BACKEND", SanitizeFolderName(scriptingBackend.name));
 
             return sb.ToString();
         }
@@ -223,11 +234,16 @@ namespace SuperUnityBuild.BuildTool
         public static string SanitizeCodeString(string str)
         {
             str = Regex.Replace(str, "[^a-zA-Z0-9_]", "_", RegexOptions.Compiled);
+
             if (char.IsDigit(str[0]))
-            {
                 str = "_" + str;
-            }
+
             return str;
+        }
+
+        public static string SanitizeDefine(string input)
+        {
+            return SanitizeCodeString(input.ToUpper().Replace(" ", ""));
         }
 
         public static string SanitizeFolderName(string folderName)
@@ -261,14 +277,18 @@ namespace SuperUnityBuild.BuildTool
 
         #region Private Methods
 
-        private static void ConfigureEnvironment(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, DateTime buildTime)
+        private static void ConfigureEnvironment(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture,
+            BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime)
         {
             // Switch to target build platform
             EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, architecture.target);
 
+            // Adjust scripting backend
+            PlayerSettings.SetScriptingBackend(platform.targetGroup, scriptingBackend.scriptingImplementation);
+
             // Apply defines
             string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
-            string buildDefines = GenerateDefaultDefines(releaseType, platform, architecture, distribution);
+            string buildDefines = GenerateDefaultDefines(releaseType, platform, architecture, scriptingBackend, distribution);
             buildDefines = MergeDefines(preBuildDefines, buildDefines);
 
             PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, buildDefines);
@@ -343,8 +363,9 @@ namespace SuperUnityBuild.BuildTool
 
                 // Parse build config and perform build.
                 string notification = string.Format("Building ({0}/{1}): ", i + 1, buildConfigs.Length);
-                BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture arch, out BuildDistribution dist);
-                bool success = BuildPlayer(notification, releaseType, platform, arch, dist, buildTime, options, configKey);
+                BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture arch,
+                    out BuildScriptingBackend scriptingBackend, out BuildDistribution dist);
+                bool success = BuildPlayer(notification, releaseType, platform, arch, scriptingBackend, dist, buildTime, options, configKey);
 
                 if (success)
                     ++successCount;
@@ -402,7 +423,8 @@ namespace SuperUnityBuild.BuildTool
             }
         }
 
-        private static bool BuildPlayer(string notification, BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildDistribution distribution, DateTime buildTime, BuildOptions options, string configKey)
+        private static bool BuildPlayer(string notification, BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture,
+            BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime, BuildOptions options, string configKey)
         {
             bool success = true;
 
@@ -416,14 +438,14 @@ namespace SuperUnityBuild.BuildTool
             string preBuildBundleIdentifier = PlayerSettings.GetApplicationIdentifier(platform.targetGroup);
 
             // Configure environment settings to match the build configuration
-            ConfigureEnvironment(releaseType, platform, architecture, distribution, buildTime);
+            ConfigureEnvironment(releaseType, platform, architecture, scriptingBackend, distribution, buildTime);
 
             // Generate build path
-            string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, distribution, buildTime);
+            string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, scriptingBackend, distribution, buildTime);
             string binName = string.Format(architecture.binaryNameFormat, SanitizeFileName(releaseType.productName));
 
             // Pre-build actions
-            PerformPreBuild(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
+            PerformPreBuild(releaseType, platform, architecture, scriptingBackend, distribution, buildTime, ref options, configKey, buildPath);
 
             // Report build starting
             BuildNotificationList.instance.AddNotification(new BuildNotification(
@@ -458,7 +480,7 @@ namespace SuperUnityBuild.BuildTool
             }
 
             // Post-build actions
-            PerformPostBuild(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
+            PerformPostBuild(releaseType, platform, architecture, scriptingBackend, distribution, buildTime, ref options, configKey, buildPath);
 
             // Restore pre-build environment settings
             PlayerSettings.SetScriptingDefineSymbolsForGroup(platform.targetGroup, preBuildDefines);
@@ -490,6 +512,7 @@ namespace SuperUnityBuild.BuildTool
             BuildReleaseType releaseType,
             BuildPlatform platform,
             BuildArchitecture architecture,
+            BuildScriptingBackend scriptingBackend,
             BuildDistribution distribution,
             DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
         {
@@ -497,6 +520,7 @@ namespace SuperUnityBuild.BuildTool
                 releaseType,
                 platform,
                 architecture,
+                scriptingBackend,
                 distribution,
                 buildTime, ref options, configKey, buildPath, BuildSettings.preBuildActions.buildActions, "Pre-"
             );
@@ -511,6 +535,7 @@ namespace SuperUnityBuild.BuildTool
             BuildReleaseType releaseType,
             BuildPlatform platform,
             BuildArchitecture architecture,
+            BuildScriptingBackend scriptingBackend,
             BuildDistribution distribution,
             DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
         {
@@ -518,6 +543,7 @@ namespace SuperUnityBuild.BuildTool
                 releaseType,
                 platform,
                 architecture,
+                scriptingBackend,
                 distribution,
                 buildTime, ref options, configKey, buildPath, BuildSettings.postBuildActions.buildActions, "Post-"
             );
@@ -540,7 +566,7 @@ namespace SuperUnityBuild.BuildTool
                         {
                             BuildNotificationList.instance.AddNotification(new BuildNotification(
                                 BuildNotification.Category.Notification,
-                                string.Format("Performing {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), action.actionName,
+                                string.Format("Performing {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), $"{action}",
                                 true, null));
 
                             action.Execute();
@@ -549,7 +575,7 @@ namespace SuperUnityBuild.BuildTool
                         {
                             BuildNotificationList.instance.AddNotification(new BuildNotification(
                                 BuildNotification.Category.Notification,
-                                string.Format("Skipping {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), action.actionName,
+                                string.Format("Skipping {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), $"{action}",
                                 true, null));
                         }
                     }
@@ -561,6 +587,7 @@ namespace SuperUnityBuild.BuildTool
             BuildReleaseType releaseType,
             BuildPlatform platform,
             BuildArchitecture architecture,
+            BuildScriptingBackend scriptingBackend,
             BuildDistribution distribution,
             DateTime buildTime, ref BuildOptions options, string configKey, string buildPath, BuildAction[] buildActions, string notificationLabel)
         {
@@ -580,23 +607,22 @@ namespace SuperUnityBuild.BuildTool
                         {
                             BuildNotificationList.instance.AddNotification(new BuildNotification(
                                 BuildNotification.Category.Notification,
-                                string.Format("Performing {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
+                                string.Format("Performing {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), string.Format("{0}: {1}", action, configKey),
                                 true, null));
 
-                            action.PerBuildExecute(releaseType, platform, architecture, distribution, buildTime, ref options, configKey, buildPath);
+                            action.PerBuildExecute(releaseType, platform, architecture, scriptingBackend, distribution, buildTime, ref options, configKey, buildPath);
                         }
                         else
                         {
                             BuildNotificationList.instance.AddNotification(new BuildNotification(
                                 BuildNotification.Category.Notification,
-                                string.Format("Skipping {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), string.Format("{0}: {1}", action.actionName, configKey),
+                                string.Format("Skipping {0}Build Action ({1}/{2}):", notificationLabel, i + 1, buildActions.Length), string.Format("{0}: {1}", action, configKey),
                                 true, null));
                         }
                     }
                 }
             }
         }
-
         #endregion
     }
 }

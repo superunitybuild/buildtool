@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
@@ -44,6 +44,7 @@ namespace SuperUnityBuild.BuildTool
             _dropdownHeaderStyle.alignment = TextAnchor.MiddleLeft;
             _dropdownHeaderStyle.fontStyle = FontStyle.Bold;
             _dropdownHeaderStyle.margin = new RectOffset(5, 5, 0, 0);
+            _dropdownHeaderStyle.wordWrap = true;
 
             _popupStyle = new GUIStyle(EditorStyles.popup);
             _popupStyle.fontSize = 11;

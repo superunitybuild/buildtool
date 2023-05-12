@@ -1,8 +1,9 @@
+using System;
 using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BuildWebGL : BuildPlatform
     {
         #region Constants
@@ -30,6 +31,14 @@ namespace SuperUnityBuild.BuildTool
             {
                 architectures = new BuildArchitecture[] {
                     new BuildArchitecture(BuildTarget.WebGL, "WebGL", true, _binaryNameFormat),
+                };
+            }
+
+            if (scriptingBackends == null || scriptingBackends.Length == 0)
+            {
+                scriptingBackends = new BuildScriptingBackend[]
+                {
+                    new BuildScriptingBackend(ScriptingImplementation.IL2CPP, true),
                 };
             }
         }

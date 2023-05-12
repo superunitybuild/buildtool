@@ -23,7 +23,7 @@ namespace SuperUnityBuild.BuildTool
 
             if (instance == null)
             {
-                Debug.Log("SuperUnityBuild: Creating settings file - " + defaultAssetPath);
+                Debug.Log($"SuperUnityBuild: Creating settings file: {defaultAssetPath}");
                 instance = CreateInstance<T>();
                 instance.name = assetName;
 

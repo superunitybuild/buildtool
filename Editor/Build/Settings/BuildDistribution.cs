@@ -1,7 +1,8 @@
 ﻿
+using System;
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BuildDistribution
     {
         public string distributionName;

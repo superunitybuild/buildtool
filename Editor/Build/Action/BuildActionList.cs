@@ -1,7 +1,9 @@
 ﻿
+using System;
+
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BuildActionList
     {
         public BuildAction[] buildActions = new BuildAction[] { };

@@ -1,7 +1,9 @@
 ﻿
+using System;
+
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BuildFilter
     {
         #region Constants and Enums
@@ -94,7 +96,7 @@ namespace SuperUnityBuild.BuildTool
             return success;
         }
 
-        [System.Serializable]
+        [Serializable]
         public class FilterClause
         {
             public FilterType type;
@@ -134,9 +136,9 @@ namespace SuperUnityBuild.BuildTool
                 switch (comparison)
                 {
                     case FilterComparison.Equals:
-                        return targetString.Equals(test, System.StringComparison.OrdinalIgnoreCase);
+                        return targetString.Equals(test, StringComparison.OrdinalIgnoreCase);
                     case FilterComparison.NotEqual:
-                        return !(targetString.Equals(test, System.StringComparison.OrdinalIgnoreCase));
+                        return !(targetString.Equals(test, StringComparison.OrdinalIgnoreCase));
                     case FilterComparison.Contains:
                         return targetString.ToUpper().Contains(test);
                     case FilterComparison.DoesNotContain:
