@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -11,7 +11,7 @@ namespace SuperUnityBuild.BuildTool
         #region Constants
 
         private const string _name = "Android";
-        private Dictionary<BinaryType, string> _binaryNameFormats = new Dictionary<BinaryType, string>{
+        private readonly Dictionary<BinaryType, string> _binaryNameFormats = new Dictionary<BinaryType, string>{
             {BinaryType.APK, "{0}.apk"},
             {BinaryType.SplitAPK, "{0}"},
             {BinaryType.AAB, "{0}.aab"},
@@ -209,8 +209,7 @@ namespace SuperUnityBuild.BuildTool
 
         private void SetTextureCompression(string key)
         {
-            EditorUserBuildSettings.androidBuildSubtarget
-                = EnumValueFromKey<MobileTextureSubtarget>(key);
+            EditorUserBuildSettings.androidBuildSubtarget = EnumValueFromKey<MobileTextureSubtarget>(key);
         }
     }
 }
