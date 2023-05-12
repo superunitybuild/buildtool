@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Support for configuring `symbols.zip` generation on Android platform
 -   **Breaking change:** Added support for selecting scripting backend per platform. (by [@RobProductions](https://github.com/RobProductions))
 -   Added documentation, changelog and license URLs to package manifest.
+-   Support for selecting multiple device type values on Android platform (by [@MatthieuG9](https://github.com/MatthieuG9))
 
 ### Changed
 
