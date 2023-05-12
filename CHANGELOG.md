@@ -7,21 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   Support for configuring `symbols.zip` generation on Android platform
+-   **Breaking change:** Added support for selecting scripting backend per platform. (by [@RobProductions](https://github.com/RobProductions))
+-   Added documentation, changelog and license URLs to package manifest.
+
 ### Changed
 
 -   Code refactoring for improved developer experience
+-   **Breaking change:** Drop support for versions of Unity older than 2020.3 LTS.
 
 ### Fixed
 
 -   Correctly handle inconsistent behaviour of different Unity Editor versions when deleting elements in Inspector lists
 -   Fixed macOS Xcode project output path.
+-   Fixed Build Platform names not being set before serialization.
+-   iOSBuildType obsolete in U2021.2+ (by [@nickfourtimes](https://github.com/nickfourtimes))
+-   Open build folder fails w/bad slashes (by [@nickfourtimes](https://github.com/nickfourtimes))
 
 ## [5.0.4] - 2022-02-03
 
 ### Fixed
 
 -   Properly check output folder is valid before trying to open it after a build.
--   Fixed Build Platform names not being set before serialization.
 
 ## [5.0.3] - 2022-02-03
 
