@@ -1,8 +1,9 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BuildArchitecture
     {
         public BuildTarget target;

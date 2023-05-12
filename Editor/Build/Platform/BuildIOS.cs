@@ -83,11 +83,11 @@ namespace SuperUnityBuild.BuildTool
 
         private void SetBuildConfigType(string key)
         {
-            #if UNITY_2021_2_OR_NEWER
+#if UNITY_2021_2_OR_NEWER
             EditorUserBuildSettings.iOSXcodeBuildConfig = EnumValueFromKey<XcodeBuildConfig>(key);
-            #else
+#else
             EditorUserBuildSettings.iOSBuildConfigType = EnumValueFromKey<iOSBuildType>(key);
-            #endif
+#endif
         }
 
         private void SetDeviceType(string key)

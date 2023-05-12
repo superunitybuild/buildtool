@@ -1,8 +1,9 @@
+﻿using System;
 using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BasicSettings
     {
         [FilePath(true, true, "Choose location for build output")]

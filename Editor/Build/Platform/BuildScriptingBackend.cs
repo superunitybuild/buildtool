@@ -1,15 +1,13 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
-using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BuildScriptingBackend
     {
         private static readonly Dictionary<ScriptingImplementation, string> scriptingImplementationNames = new Dictionary<ScriptingImplementation, string>()

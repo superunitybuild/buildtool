@@ -618,7 +618,6 @@ namespace SuperUnityBuild.BuildTool
                 }
             }
         }
-
         #endregion
     }
 }

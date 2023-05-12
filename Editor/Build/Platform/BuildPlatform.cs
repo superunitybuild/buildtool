@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BuildPlatform : ScriptableObject
     {
         public bool enabled = false;

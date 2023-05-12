@@ -1,9 +1,10 @@
+﻿using System;
 using System.Collections.Generic;
 using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BuildPC : BuildPlatform
     {
         #region Constants

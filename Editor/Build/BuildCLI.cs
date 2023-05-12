@@ -12,6 +12,5 @@ namespace SuperUnityBuild.BuildTool
             // Exit w/ 0 to indicate success.
             EditorApplication.Exit(0);
         }
-
     }
 }

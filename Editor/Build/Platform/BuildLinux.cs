@@ -1,8 +1,9 @@
+﻿using System;
 using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BuildLinux : BuildPlatform
     {
         #region Constants

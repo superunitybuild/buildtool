@@ -1,9 +1,10 @@
+﻿using System;
 using System.Linq;
 using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BuildUWP : BuildPlatform
     {
         #region Constants
