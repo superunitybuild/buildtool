@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -161,13 +161,16 @@ namespace SuperUnityBuild.BuildTool
 
                     if (isFlag.boolValue)
                     {
+                        // Don't allow 'Nothing' to be selected
+                        int selected = selectedVariantIndex.intValue > 0 ? selectedVariantIndex.intValue : -1;
+
                         selectedVariantIndex.intValue =
-                            EditorGUILayout.MaskField(selectedVariantIndex.intValue, valueNames.ToArray(), UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));
+                            EditorGUILayout.MaskField(selected, valueNames.ToArray(), UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));
                     }
                     else
                     {
                         selectedVariantIndex.intValue =
-                            EditorGUILayout.Popup(selectedVariantIndex.intValue, valueNames.ToArray(), UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));   
+                            EditorGUILayout.Popup(selectedVariantIndex.intValue, valueNames.ToArray(), UnityBuildGUIUtility.popupStyle, GUILayout.ExpandWidth(false), GUILayout.MaxWidth(250));
                     }
 
                     GUILayout.EndHorizontal();
