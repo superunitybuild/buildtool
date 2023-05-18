@@ -5,24 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+<!-- ## [Unreleased] -->
+
+## [6.0.0] - 2023-05-16
 
 ### Added
 
--   Support for configuring `symbols.zip` generation on Android platform
+-   Support for configuring `symbols.zip` generation on Android platform.
 -   **Breaking change:** Added support for selecting scripting backend per platform. (by [@RobProductions](https://github.com/RobProductions))
 -   Added documentation, changelog and license URLs to package manifest.
--   Support for selecting multiple device type values on Android platform (by [@MatthieuG9](https://github.com/MatthieuG9))
+-   Support for selecting multiple device type values on Android platform. (by [@MatthieuG9](https://github.com/MatthieuG9))
 
 ### Changed
 
--   Code refactoring for improved developer experience
+-   Code refactoring for improved developer experience.
 -   **Breaking change:** Drop support for versions of Unity older than 2020.3 LTS.
 -   Only open build output folder if at least one build has succeeded.
 
 ### Fixed
 
--   Correctly handle inconsistent behaviour of different Unity Editor versions when deleting elements in Inspector lists
+-   Correctly handle inconsistent behaviour of different Unity Editor versions when deleting elements in Inspector lists.
 -   Fixed macOS Xcode project output path.
 -   Fixed Build Platform names not being set before serialization.
 -   iOSBuildType obsolete in U2021.2+ (by [@nickfourtimes](https://github.com/nickfourtimes))
@@ -226,7 +228,8 @@ This release includes all changes from 1.0.0 pre-releases ([1.0.0-pre.1](#100-pr
 -   Fixed issue in Linux build name moving `binaryName` to `BuildArchitecture`. [PR #41](https://github.com/superunitybuild/buildtool/pull/41)
 -   Fixed an issue where custom defines were overwrite when build was finished. [Issue #36](https://github.com/superunitybuild/buildtool/issues/36)
 
-[unreleased]: https://github.com/superunitybuild/buildtool/compare/v5.0.4...HEAD
+[unreleased]: https://github.com/superunitybuild/buildtool/compare/v6.0.0...HEAD
+[6.0.0]: https://github.com/superunitybuild/buildtool/compare/v5.0.4...v6.0.0
 [5.0.4]: https://github.com/superunitybuild/buildtool/compare/v5.0.3...v5.0.4
 [5.0.3]: https://github.com/superunitybuild/buildtool/compare/v5.0.2...v5.0.3
 [5.0.2]: https://github.com/superunitybuild/buildtool/compare/v5.0.1...v5.0.2
