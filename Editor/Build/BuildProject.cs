@@ -408,7 +408,7 @@ namespace SuperUnityBuild.BuildTool
                     true, null));
 
             // Open output folder if option is enabled.
-            if (BuildSettings.basicSettings.openFolderPostBuild)
+            if (BuildSettings.basicSettings.openFolderPostBuild && successCount > 0)
             {
                 string outputFolder = Path.GetFullPath(BuildSettings.basicSettings.baseBuildFolder);
 

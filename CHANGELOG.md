@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -   Code refactoring for improved developer experience
 -   **Breaking change:** Drop support for versions of Unity older than 2020.3 LTS.
+-   Only open build output folder if at least one build has succeeded.
 
 ### Fixed
 
