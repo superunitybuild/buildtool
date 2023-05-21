@@ -90,6 +90,9 @@ namespace SuperUnityBuild.BuildTool
 
                         //Top actions + name
 
+                        //Vertical padding
+                        EditorGUILayout.Space(4f);
+
                         EditorGUILayout.BeginHorizontal();
 
                         sceneActiveProperty.boolValue = UnityBuildGUIUtility.SceneActiveToggle(sceneActiveProperty.boolValue);
@@ -97,22 +100,12 @@ namespace SuperUnityBuild.BuildTool
 
                         GUILayout.FlexibleSpace();
 
-                        EditorGUILayout.BeginVertical();
-                        //Provide vertical padding
-                        EditorGUILayout.Space(3f);
-
-                        EditorGUILayout.BeginHorizontal();
-
                         UnityBuildGUIUtility.ReorderArrayControls(list, i);
 
                         if (UnityBuildGUIUtility.DeleteButton())
                         {
                             list.SafeDeleteArrayElementAtIndex(i);
                         }
-
-                        EditorGUILayout.EndHorizontal();
-
-                        EditorGUILayout.EndVertical();
 
                         EditorGUILayout.EndHorizontal();
 
