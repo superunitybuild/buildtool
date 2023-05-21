@@ -54,7 +54,7 @@ namespace SuperUnityBuild.BuildTool
 
                 if (GUILayout.Button("Open Build Folder", GUILayout.ExpandWidth(true)))
                 {
-                    string path = BuildSettings.basicSettings.baseBuildFolder;
+                    string path = Path.GetFullPath(BuildSettings.basicSettings.baseBuildFolder);
                     if (!Directory.Exists(path))
                         Directory.CreateDirectory(path);
 

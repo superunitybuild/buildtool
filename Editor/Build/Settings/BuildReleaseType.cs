@@ -1,9 +1,10 @@
+using System;
 using UnityEditor;
 using UnityEngine.Serialization;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class BuildReleaseType
     {
         public string typeName = string.Empty;

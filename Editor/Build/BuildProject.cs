@@ -76,26 +76,29 @@ namespace SuperUnityBuild.BuildTool
             List<string> defines = new List<string>();
 
             if (releaseType != null)
-                defines.Add(BUILD_TYPE + SanitizeCodeString(releaseType.typeName.ToUpper().Replace(" ", "")));
+                defines.Add($"{BUILD_TYPE}{SanitizeDefine(releaseType.typeName)}");
 
             if (buildPlatform != null)
-                defines.Add(BUILD_PLATFORM + SanitizeCodeString(buildPlatform.platformName.ToUpper().Replace(" ", "")));
+                defines.Add($"{BUILD_PLATFORM}{SanitizeDefine(buildPlatform.platformName)}");
 
             if (arch != null)
-                defines.Add(BUILD_ARCH + SanitizeCodeString(arch.name.ToUpper().Replace(" ", "")));
+                defines.Add($"{BUILD_ARCH}{SanitizeDefine(arch.name)}");
+
+            if (scriptingBackend != null)
+                defines.Add($"{BUILD_BACKEND}{SanitizeDefine(scriptingBackend.name)}");
 
             if (scriptingBackend != null)
                 defines.Add(BUILD_BACKEND + SanitizeCodeString(scriptingBackend.name.ToUpper().Replace(" ", "")));
 
             if (dist != null)
-                defines.Add(BUILD_DIST + SanitizeCodeString(dist.distributionName.ToUpper().Replace(" ", "")));
+                defines.Add($"{BUILD_DIST}{SanitizeDefine(dist.distributionName)}");
 
             if (releaseType != null && !string.IsNullOrEmpty(releaseType.customDefines))
             {
                 string[] customDefines = releaseType.customDefines.Split(';', ',');
                 for (int i = 0; i < customDefines.Length; i++)
                 {
-                    defines.Add(SanitizeCodeString(customDefines[i]).ToUpper());
+                    defines.Add(SanitizeDefine(customDefines[i]));
                 }
             }
 
@@ -234,11 +237,16 @@ namespace SuperUnityBuild.BuildTool
         public static string SanitizeCodeString(string str)
         {
             str = Regex.Replace(str, "[^a-zA-Z0-9_]", "_", RegexOptions.Compiled);
+
             if (char.IsDigit(str[0]))
-            {
                 str = "_" + str;
-            }
+
             return str;
+        }
+
+        public static string SanitizeDefine(string input)
+        {
+            return SanitizeCodeString(input.ToUpper().Replace(" ", ""));
         }
 
         public static string SanitizeFolderName(string folderName)
@@ -403,9 +411,9 @@ namespace SuperUnityBuild.BuildTool
                     true, null));
 
             // Open output folder if option is enabled.
-            if (BuildSettings.basicSettings.openFolderPostBuild)
+            if (BuildSettings.basicSettings.openFolderPostBuild && successCount > 0)
             {
-                string outputFolder = BuildSettings.basicSettings.baseBuildFolder;
+                string outputFolder = Path.GetFullPath(BuildSettings.basicSettings.baseBuildFolder);
 
                 try
                 {
@@ -618,7 +626,6 @@ namespace SuperUnityBuild.BuildTool
                 }
             }
         }
-
         #endregion
     }
 }

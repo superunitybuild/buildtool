@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class SceneList
     {
         public List<Scene> enabledScenes = new List<Scene>();
@@ -40,7 +41,7 @@ namespace SuperUnityBuild.BuildTool
             return scenes.ToArray();
         }
 
-        [System.Serializable]
+        [Serializable]
         public class Scene
         {
             public string fileGUID = string.Empty;

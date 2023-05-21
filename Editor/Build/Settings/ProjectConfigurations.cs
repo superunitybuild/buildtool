@@ -1,8 +1,9 @@
+﻿using System;
 using System.Collections.Generic;
 
 namespace SuperUnityBuild.BuildTool
 {
-    [System.Serializable]
+    [Serializable]
     public class ProjectConfigurations
     {
         // Data
