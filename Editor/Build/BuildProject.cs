@@ -204,7 +204,7 @@ namespace SuperUnityBuild.BuildTool
         public static void SetEditorBuildSettingsScenes(BuildReleaseType releaseType)
         {
             // Create EditorBuildSettingsScene instances from release type scene list
-            List<EditorBuildSettingsScene> editorBuildSettingsScenes = releaseType.sceneList.GetSceneFileList()
+            List<EditorBuildSettingsScene> editorBuildSettingsScenes = releaseType.sceneList.GetActiveSceneFileList()
                 .Select(path => new EditorBuildSettingsScene(path, true))
                 .ToList();
 
@@ -401,7 +401,7 @@ namespace SuperUnityBuild.BuildTool
             {
                 locationPathName = Path.Combine(buildPath, binName),
                 options = options,
-                scenes = releaseType.sceneList.GetSceneFileList(),
+                scenes = releaseType.sceneList.GetActiveSceneFileList(),
                 target = architecture.target
             });
 
