@@ -98,8 +98,6 @@ namespace SuperUnityBuild.BuildTool
                         sceneActiveProperty.boolValue = UnityBuildGUIUtility.SceneActiveToggle(sceneActiveProperty.boolValue);
                         UnityBuildGUIUtility.SceneNameLabel(sceneName);
 
-                        GUILayout.FlexibleSpace();
-
                         UnityBuildGUIUtility.ReorderArrayControls(list, i);
 
                         if (UnityBuildGUIUtility.DeleteButton())
@@ -155,8 +153,8 @@ namespace SuperUnityBuild.BuildTool
                         break;
                 }
 
-                if (GUILayout.Button("Clear Scene List", GUILayout.ExpandWidth(true)))
-                    list.ClearArray();
+                if (GUILayout.Button("Add Current Scene", GUILayout.ExpandWidth(true)))
+                    GetSceneFilesFromBuildSettings();
 
                 if (GUILayout.Button("Add Scene Files from Build Settings", GUILayout.ExpandWidth(true)))
                     GetSceneFilesFromBuildSettings();
@@ -166,6 +164,9 @@ namespace SuperUnityBuild.BuildTool
 
                 if (GUILayout.Button("Set First Scene by File", GUILayout.ExpandWidth(true)))
                     SetFirstSceneByFile();
+
+                if (GUILayout.Button("Clear Scene List", GUILayout.ExpandWidth(true)))
+                    list.ClearArray();
 
                 list.serializedObject.ApplyModifiedProperties();
                 property.serializedObject.ApplyModifiedProperties();
