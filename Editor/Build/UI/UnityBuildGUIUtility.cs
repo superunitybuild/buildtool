@@ -84,6 +84,7 @@ namespace SuperUnityBuild.BuildTool
             _sceneNameLabelStyle.margin = new RectOffset(0, 0, 0, 0);
             _sceneNameLabelStyle.padding = new RectOffset(5, 0, 0, 0);
             _sceneNameLabelStyle.alignment = TextAnchor.MiddleLeft;
+            _sceneNameLabelStyle.wordWrap = false;
             _sceneNameLabelStyle.fixedWidth = 0;
 
             _sceneInfoLabelStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
@@ -173,7 +174,7 @@ namespace SuperUnityBuild.BuildTool
 
         public static void SceneNameLabel(string sceneName)
         {
-            EditorGUILayout.LabelField(new GUIContent($"{sceneName}"), instance._sceneNameLabelStyle);
+            EditorGUILayout.LabelField(new GUIContent($"{sceneName}"), instance._sceneNameLabelStyle, GUILayout.ExpandWidth(true));
         }
 
         public static void SceneInfoLabel(string sceneInfo)
