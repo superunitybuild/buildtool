@@ -10,7 +10,6 @@ namespace SuperUnityBuild.BuildTool
 
         private const string _name = "iOS";
         private const string _binaryNameFormat = "";
-        private const string _dataDirNameFormat = "{0}_Data";
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.iOS;
 
         private const string _deviceTypeVariantId = "Device Type";
@@ -28,7 +27,6 @@ namespace SuperUnityBuild.BuildTool
         public override void Init()
         {
             platformName = _name;
-            dataDirNameFormat = _dataDirNameFormat;
             targetGroup = _targetGroup;
 
             if (architectures == null || architectures.Length == 0)

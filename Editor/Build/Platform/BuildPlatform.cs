@@ -16,7 +16,6 @@ namespace SuperUnityBuild.BuildTool
         public BuildScriptingBackend[] scriptingBackends = new BuildScriptingBackend[0];
 
         public string platformName;
-        public string dataDirNameFormat;
         public BuildTargetGroup targetGroup;
 
         public virtual void Init()
