@@ -60,6 +60,7 @@ namespace SuperUnityBuild.BuildTool
             _helpButtonStyle.fontStyle = FontStyle.Normal;
             _helpButtonStyle.margin = new RectOffset(0, 5, 0, 0);
             _helpButtonStyle.fixedWidth = 35;
+            _helpButtonStyle.wordWrap = false;
 
             _midHeaderStyle = new GUIStyle(EditorStyles.helpBox);
             _midHeaderStyle.fontStyle = FontStyle.Bold;

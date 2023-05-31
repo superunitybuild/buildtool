@@ -106,7 +106,13 @@ namespace SuperUnityBuild.BuildTool
         private void SetMacOSArchitecture(string key)
         {
 #if UNITY_STANDALONE_OSX
-            UnityEditor.OSXStandalone.UserBuildSettings.architecture = (UnityEditor.OSXStandalone.MacOSArchitecture)EnumValueFromKey<MacOSArchitecture>(key);
+            UnityEditor.OSXStandalone.UserBuildSettings.architecture =
+#if UNITY_2022_1_OR_NEWER
+                (UnityEditor.Build.OSArchitecture)
+#else
+                (UnityEditor.OSXStandalone.MacOSArchitecture)
+#endif
+                    EnumValueFromKey<MacOSArchitecture>(key);
 #endif
         }
     }

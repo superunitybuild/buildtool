@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- ## [Unreleased] -->
 
+## [6.0.1] - 2023-05-26
+
+### Fixed
+
+-   Fix help button text wrapping in certain situations.
+-   Fix regression in 6.0.0 that broke macOS builds in Unity 2022.1+.
+
 ## [6.0.0] - 2023-05-16
 
 ### Added
@@ -228,7 +235,8 @@ This release includes all changes from 1.0.0 pre-releases ([1.0.0-pre.1](#100-pr
 -   Fixed issue in Linux build name moving `binaryName` to `BuildArchitecture`. [PR #41](https://github.com/superunitybuild/buildtool/pull/41)
 -   Fixed an issue where custom defines were overwrite when build was finished. [Issue #36](https://github.com/superunitybuild/buildtool/issues/36)
 
-[unreleased]: https://github.com/superunitybuild/buildtool/compare/v6.0.0...HEAD
+[unreleased]: https://github.com/superunitybuild/buildtool/compare/v6.0.1...HEAD
+[6.0.1]: https://github.com/superunitybuild/buildtool/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/superunitybuild/buildtool/compare/v5.0.4...v6.0.0
 [5.0.4]: https://github.com/superunitybuild/buildtool/compare/v5.0.3...v5.0.4
 [5.0.3]: https://github.com/superunitybuild/buildtool/compare/v5.0.2...v5.0.3
