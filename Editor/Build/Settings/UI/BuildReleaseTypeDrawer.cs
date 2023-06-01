@@ -50,7 +50,7 @@ namespace SuperUnityBuild.BuildTool
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PrefixLabel("Type Name");
-                typeName.stringValue = BuildProject.SanitizeFolderName(GUILayout.TextArea(typeName.stringValue));
+                typeName.stringValue = GUILayout.TextArea(typeName.stringValue).SanitizeFolderName();
                 EditorGUILayout.EndHorizontal();
 
                 var productNameProperty = property.FindPropertyRelative("productName");

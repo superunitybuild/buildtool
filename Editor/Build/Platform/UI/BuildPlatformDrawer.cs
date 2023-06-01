@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -79,7 +79,7 @@ namespace SuperUnityBuild.BuildTool
                         GUILayout.BeginHorizontal();
 
                         distEnabled.boolValue = GUILayout.Toggle(distEnabled.boolValue, GUIContent.none, GUILayout.ExpandWidth(false));
-                        distName.stringValue = BuildProject.SanitizeFolderName(GUILayout.TextField(distName.stringValue));
+                        distName.stringValue = GUILayout.TextField(distName.stringValue).SanitizeFolderName();
 
                         if (UnityBuildGUIUtility.DeleteButton())
                             distList.SafeDeleteArrayElementAtIndex(i);

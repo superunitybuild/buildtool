@@ -84,29 +84,29 @@ namespace SuperUnityBuild.BuildTool
             List<string> defines = new List<string>();
 
             if (releaseType != null)
-                defines.Add($"{BUILD_TYPE}{SanitizeDefine(releaseType.typeName)}");
+                defines.Add($"{BUILD_TYPE}{releaseType.typeName.SanitizeDefine()}");
 
             if (buildPlatform != null)
-                defines.Add($"{BUILD_PLATFORM}{SanitizeDefine(buildPlatform.platformName)}");
+                defines.Add($"{BUILD_PLATFORM}{buildPlatform.platformName.SanitizeDefine()}");
 
             if (arch != null)
-                defines.Add($"{BUILD_ARCH}{SanitizeDefine(arch.name)}");
+                defines.Add($"{BUILD_ARCH}{arch.name.SanitizeDefine()}");
 
             if (scriptingBackend != null)
-                defines.Add($"{BUILD_BACKEND}{SanitizeDefine(scriptingBackend.name)}");
+                defines.Add($"{BUILD_BACKEND}{scriptingBackend.name.SanitizeDefine()}");
 
             if (scriptingBackend != null)
-                defines.Add(BUILD_BACKEND + SanitizeCodeString(scriptingBackend.name.ToUpper().Replace(" ", "")));
+                defines.Add(BUILD_BACKEND + scriptingBackend.name.ToUpper().Replace(" ", "").SanitizeCodeString());
 
             if (dist != null)
-                defines.Add($"{BUILD_DIST}{SanitizeDefine(dist.distributionName)}");
+                defines.Add($"{BUILD_DIST}{dist.distributionName.SanitizeDefine()}");
 
             if (releaseType != null && !string.IsNullOrEmpty(releaseType.customDefines))
             {
                 string[] customDefines = releaseType.customDefines.Split(';', ',');
                 for (int i = 0; i < customDefines.Length; i++)
                 {
-                    defines.Add(SanitizeDefine(customDefines[i]));
+                    defines.Add(customDefines[i].SanitizeDefine());
                 }
             }
 
@@ -226,51 +226,26 @@ namespace SuperUnityBuild.BuildTool
 
             string variants = "";
             if (buildPlatform.variants != null && buildPlatform.variants.Length > 0)
+            {
                 variants = buildPlatform.variantKey.Replace(",", ", ");
+            }
+            string distName = "";
+            if(dist != null)
+            {
+                distName = dist.distributionName;
+            }
 
-            sb.Replace("$RELEASE_TYPE", SanitizeFolderName(releaseType.typeName));
-            sb.Replace("$PLATFORM", SanitizeFolderName(buildPlatform.platformName));
-            sb.Replace("$ARCHITECTURE", SanitizeFolderName(arch.name));
-            sb.Replace("$VARIANTS", SanitizeFolderName(variants));
-            sb.Replace("$DISTRIBUTION", SanitizeFolderName(dist != null ? dist.distributionName : ""));
-            sb.Replace("$VERSION", SanitizeFolderName(BuildSettings.productParameters.buildVersion));
+            sb.Replace("$RELEASE_TYPE", releaseType.typeName.SanitizeFolderName());
+            sb.Replace("$PLATFORM", buildPlatform.platformName.SanitizeFolderName());
+            sb.Replace("$ARCHITECTURE", arch.name.SanitizeFolderName());
+            sb.Replace("$VARIANTS", variants.SanitizeFolderName());
+            sb.Replace("$DISTRIBUTION", distName.SanitizeFolderName());
+            sb.Replace("$VERSION", BuildSettings.productParameters.buildVersion.SanitizeFolderName());
             sb.Replace("$BUILD", BuildSettings.productParameters.buildCounter.ToString());
-            sb.Replace("$PRODUCT_NAME", SanitizeFolderName(releaseType.productName));
-            sb.Replace("$SCRIPTING_BACKEND", SanitizeFolderName(scriptingBackend.name));
+            sb.Replace("$PRODUCT_NAME", releaseType.productName.SanitizeFolderName());
+            sb.Replace("$SCRIPTING_BACKEND", scriptingBackend.name.SanitizeFolderName());
 
             return sb.ToString();
-        }
-
-        // TODO: Convert sanitize string methods into extensions.
-        public static string SanitizeCodeString(string str)
-        {
-            str = Regex.Replace(str, "[^a-zA-Z0-9_]", "_", RegexOptions.Compiled);
-
-            if (char.IsDigit(str[0]))
-                str = "_" + str;
-
-            return str;
-        }
-
-        public static string SanitizeDefine(string input)
-        {
-            return SanitizeCodeString(input.ToUpper().Replace(" ", ""));
-        }
-
-        public static string SanitizeFolderName(string folderName)
-        {
-            string invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()));
-            string invalidRegStr = string.Format(@"[{0}]", invalidChars);
-
-            return Regex.Replace(folderName, invalidRegStr, "");
-        }
-
-        public static string SanitizeFileName(string fileName)
-        {
-            string invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()));
-            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
-
-            return Regex.Replace(fileName, invalidRegStr, "_");
         }
 
         public static void SetEditorBuildSettingsScenes(BuildReleaseType releaseType)
@@ -475,7 +450,7 @@ namespace SuperUnityBuild.BuildTool
                 finalBuildName = releaseType.appBuildName;
             }
 
-            string binName = string.Format(architecture.binaryNameFormat, SanitizeFileName(finalBuildName));
+            string binName = string.Format(architecture.binaryNameFormat, finalBuildName.SanitizeFileName());
 
             // Pre-build actions
             PerformPreBuild(releaseType, platform, architecture, scriptingBackend, distribution, buildTime, ref options, configKey, buildPath);

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
 using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
@@ -19,6 +21,37 @@ namespace SuperUnityBuild.BuildTool
             }
 
             return value.Substring(0, maxLength).Trim(trimChars) + suffix;
+        }
+
+        public static string SanitizeCodeString(this string str)
+        {
+            str = Regex.Replace(str, "[^a-zA-Z0-9_]", "_", RegexOptions.Compiled);
+
+            if (char.IsDigit(str[0]))
+                str = "_" + str;
+
+            return str;
+        }
+
+        public static string SanitizeDefine(this string input)
+        {
+            return SanitizeCodeString(input.ToUpper().Replace(" ", ""));
+        }
+
+        public static string SanitizeFolderName(this string folderName)
+        {
+            string invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()));
+            string invalidRegStr = string.Format(@"[{0}]", invalidChars);
+
+            return Regex.Replace(folderName, invalidRegStr, "");
+        }
+
+        public static string SanitizeFileName(this string fileName)
+        {
+            string invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+            return Regex.Replace(fileName, invalidRegStr, "_");
         }
 
         public static void SafeDeleteArrayElementAtIndex(this SerializedProperty value, int i)
