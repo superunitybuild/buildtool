@@ -35,9 +35,11 @@ namespace SuperUnityBuild.BuildTool
         private GUIStyle _sceneNameLabelStyle;
         private GUIStyle _sceneInfoLabelStyle;
         private GUIStyle _sceneActiveToggleStyle;
+        private GUIStyle _buildButtonStyle;
 
         private Color32 _defaultBackgroundColor = GUI.backgroundColor;
         private Color32 _mainHeaderColor = new Color32(180, 180, 255, 255);
+        private Color32 _buildButtonColor = new Color32(102, 230, 102, 255);
 
         private GUIContent helpButtonContent;
 
@@ -95,6 +97,10 @@ namespace SuperUnityBuild.BuildTool
             _sceneActiveToggleStyle.margin = new RectOffset(0, 0, 0, 0);
             _sceneActiveToggleStyle.fixedWidth = 0;
 
+            _buildButtonStyle = new GUIStyle(GUI.skin.button);
+            _buildButtonStyle.normal.textColor = Color.black;
+            _buildButtonStyle.hover.textColor = new Color32(0, 0, 0, 200);
+
             helpButtonContent = new GUIContent("?", "Help");
         }
 
@@ -131,6 +137,25 @@ namespace SuperUnityBuild.BuildTool
             {
                 OpenHelp(anchor);
             }
+        }
+
+        public static bool BuildButton(string text, int minHeight = 0)
+        {
+            GUI.backgroundColor = instance._buildButtonColor;
+
+            bool buttonPress;
+            if(minHeight > 0)
+            {
+                buttonPress = GUILayout.Button(text, instance._buildButtonStyle, GUILayout.ExpandWidth(true), GUILayout.MinHeight(minHeight));
+            }
+            else
+            {
+                buttonPress = GUILayout.Button(text, instance._buildButtonStyle, GUILayout.ExpandWidth(true));
+            }
+
+            GUI.backgroundColor = instance._defaultBackgroundColor;
+
+            return buttonPress;
         }
 
         public static bool MoveUpButton()

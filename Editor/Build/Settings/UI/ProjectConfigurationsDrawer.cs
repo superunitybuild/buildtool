@@ -158,13 +158,12 @@ namespace SuperUnityBuild.BuildTool
                             }
 
                             GUILayout.Space(20);
-                            GUI.backgroundColor = Color.green;
-                            if (GUILayout.Button("Build", GUILayout.ExpandWidth(true)))
+                            if (UnityBuildGUIUtility.BuildButton("Build"))
                             {
                                 EditorApplication.delayCall += () =>
                                     BuildProject.BuildSingle(selectedKeyChain.stringValue, buildOptions);
                             }
-                            if (GUILayout.Button("Build and Run", GUILayout.ExpandWidth(true)))
+                            if (UnityBuildGUIUtility.BuildButton("Build and Run"))
                             {
                                 buildOptions |= BuildOptions.AutoRunPlayer;
                                 BuildOptions finalBuildOptions = buildOptions;
@@ -173,7 +172,7 @@ namespace SuperUnityBuild.BuildTool
                             }
 
                             EditorGUI.BeginDisabledGroup((buildOptions & BuildOptions.Development) != BuildOptions.Development);
-                            if (GUILayout.Button("Build and Run with Profiler", GUILayout.ExpandWidth(true)))
+                            if (UnityBuildGUIUtility.BuildButton("Build and Run with Profiler"))
                             {
                                 buildOptions |= BuildOptions.AutoRunPlayer;
                                 buildOptions |= BuildOptions.ConnectWithProfiler;
@@ -182,7 +181,6 @@ namespace SuperUnityBuild.BuildTool
                                     BuildProject.BuildSingle(selectedKeyChain.stringValue, finalBuildOptions);
                             }
                             EditorGUI.EndDisabledGroup();
-                            GUI.backgroundColor = defaultBackgroundColor;
 
                             if (GUILayout.Button(new GUIContent("Configure Editor Environment", "Switches platform, refreshes BuildConstants, applies scripting defines and variant settings and sets Build Settings scene list to match the selected build configuration"), GUILayout.ExpandWidth(true)))
                             {
