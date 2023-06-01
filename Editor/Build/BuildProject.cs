@@ -341,7 +341,6 @@ namespace SuperUnityBuild.BuildTool
 
             // Save current script defines, build constants, etc. so we can restore them after build.
 
-            //TOOD: Make sure BuildConstants are restored after build is done
             string buildConstantsPath = BuildConstantsGenerator.FindFile();
             string currentBuildConstantsFile = null;
             if (!string.IsNullOrEmpty(buildConstantsPath))
