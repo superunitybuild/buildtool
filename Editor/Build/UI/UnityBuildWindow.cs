@@ -94,6 +94,7 @@ namespace SuperUnityBuild.BuildTool
         public void RefreshSelectedBuildSettings()
         {
             currentBuildSettings = BuildSettings.instance;
+            settings = null;
         }
 
         #endregion
