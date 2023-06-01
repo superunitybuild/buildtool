@@ -75,7 +75,7 @@ namespace SuperUnityBuild.BuildTool
 
         #endregion
 
-        #region Asset Events
+        #region Events
 
         [OnOpenAssetAttribute(1)]
         public static bool OpenInUnityBuildWindow(int instanceID, int line)
@@ -84,9 +84,14 @@ namespace SuperUnityBuild.BuildTool
             if(assetPath == null)
             {
                 //Asset did not exist
-                return true;
+                return false;
             }
             var asset = AssetDatabase.LoadAssetAtPath<BuildSettings>(assetPath);
+            if(asset == null)
+            {
+                //Not the right type
+                return false;
+            }
             
             //Show the window using the same process as pressing the menu button
             UnityBuildWindow.ShowWindow();
