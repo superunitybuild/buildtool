@@ -302,7 +302,6 @@ namespace SuperUnityBuild.BuildTool
             int failCount = 0;
 
             // Save current script defines, build constants, etc. so we can restore them after build.
-            
             string buildConstantsPath = BuildConstantsGenerator.FindFile();
             string currentBuildConstantsFile = null;
             if (!string.IsNullOrEmpty(buildConstantsPath))
