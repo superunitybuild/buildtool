@@ -19,15 +19,16 @@ namespace SuperUnityBuild.BuildTool
                 defaultAssetPath;
             string assetPath = File.Exists(prefsAssetPath) ? prefsAssetPath : defaultAssetPath;
 
-            T instance = AssetDatabase.LoadAssetAtPath<T>(assetPath) as T;
+            T instance = AssetDatabase.LoadAssetAtPath<T>(assetPath);
 
             if (instance == null)
             {
+                //Create the default settings file 
                 Debug.Log($"SuperUnityBuild: Creating settings file: {defaultAssetPath}");
                 instance = CreateInstance<T>();
                 instance.name = assetName;
 
-                AssetDatabaseUtility.EnsureDirectoriesExist();
+                AssetDatabaseUtility.EnsureDefaultDirectoriesExist();
 
                 AssetDatabase.CreateAsset(instance, defaultAssetPath);
             }
