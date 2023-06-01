@@ -20,7 +20,7 @@ namespace SuperUnityBuild.BuildTool
             string filePath = null;
             for (int i = 0; i < fileSearchResults.Length; i++)
             {
-                if (fileSearchResults[i].EndsWith(DefaultFilePath))
+                if (fileSearchResults[i].EndsWith(FileName))
                 {
                     filePath = fileSearchResults[i];
                     break;

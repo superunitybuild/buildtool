@@ -37,6 +37,13 @@ namespace SuperUnityBuild.BuildTool
             PerformBuild(buildConfigs, options);
         }
 
+        /// <summary>
+        /// Special user function that runs ConfigureEnvironment on the selected build.
+        /// Unlike BuildPlayer(), this does not revert previous settings such as PlayerPrefs
+        /// and instead directly matches the environment and generates BuildConstants.
+        /// </summary>
+        /// <param name="configKey"></param>
+        /// <param name="options"></param>
         public static void ConfigureEditor(string configKey, BuildOptions options = BuildOptions.None)
         {
             DateTime configureTime = DateTime.Now;
@@ -287,6 +294,9 @@ namespace SuperUnityBuild.BuildTool
             int failCount = 0;
 
             // Save current script defines, build constants, etc. so we can restore them after build.
+
+            //TODO: Make file finder work for custom path with a better path split approach
+            //TOOD: Make sure BuildConstants are restored after build is done
             string buildConstantsPath = BuildConstantsGenerator.FindFile();
             string currentBuildConstantsFile = null;
             if (!string.IsNullOrEmpty(buildConstantsPath))
