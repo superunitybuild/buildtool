@@ -53,9 +53,10 @@ namespace SuperUnityBuild.BuildTool
             // Parse build config
             BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture architecture,
                 out BuildScriptingBackend scriptingBackend, out BuildDistribution distribution);
+            string constantsFileLocation = BuildSettings.basicSettings.constantsFileLocation;
 
             // Configure environment
-            ConfigureEnvironment(releaseType, platform, architecture, scriptingBackend, distribution, configureTime);
+            ConfigureEnvironment(releaseType, platform, architecture, scriptingBackend, distribution, configureTime, constantsFileLocation);
 
             // Run pre-build actions that have opted in to configuring the Editor
             BuildAction[] buildActions = BuildSettings.preBuildActions.buildActions.Where(item => item.configureEditor).ToArray();
@@ -268,10 +269,16 @@ namespace SuperUnityBuild.BuildTool
         public static void SetEditorBuildSettingsScenes(BuildReleaseType releaseType)
         {
             // Create EditorBuildSettingsScene instances from release type scene list
-            List<EditorBuildSettingsScene> editorBuildSettingsScenes = releaseType.sceneList.GetActiveSceneFileList()
-                .Select(path => new EditorBuildSettingsScene(path, true))
-                .ToList();
+            List<EditorBuildSettingsScene> editorBuildSettingsScenes = new List<EditorBuildSettingsScene>();
 
+            var releaseScenes = releaseType.sceneList.releaseScenes;
+            for (int i = 0; i < releaseScenes.Count; i++)
+            {
+                var thisScene = releaseScenes[i];
+                editorBuildSettingsScenes.Add(
+                    new EditorBuildSettingsScene(releaseType.sceneList.SceneGUIDToPath(thisScene.fileGUID),
+                    thisScene.sceneActive));
+            }
             // Set the Build Settings scene list
             EditorBuildSettings.scenes = editorBuildSettingsScenes.ToArray();
         }
@@ -281,7 +288,7 @@ namespace SuperUnityBuild.BuildTool
         #region Private Methods
 
         private static void ConfigureEnvironment(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture,
-            BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime)
+            BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime, string constantsFileLocation)
         {
             // Switch to target build platform
             EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, architecture.target);
@@ -307,7 +314,8 @@ namespace SuperUnityBuild.BuildTool
             platform.ApplyVariant();
 
             // Generate BuildConstants
-            BuildConstantsGenerator.Generate(buildTime, BuildSettings.productParameters.buildVersion, releaseType, platform, architecture, distribution);
+            BuildConstantsGenerator.Generate(buildTime, constantsFileLocation, BuildSettings.productParameters.buildVersion,
+                releaseType, platform, architecture, distribution);
 
             // Refresh scene list to make sure nothing has been deleted or moved
             releaseType.sceneList.Refresh();
@@ -366,9 +374,11 @@ namespace SuperUnityBuild.BuildTool
 
                 // Parse build config and perform build.
                 string notification = string.Format("Building ({0}/{1}): ", i + 1, buildConfigs.Length);
+                string constantsFileLocation = BuildSettings.basicSettings.constantsFileLocation;
                 BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture arch,
                     out BuildScriptingBackend scriptingBackend, out BuildDistribution dist);
-                bool success = BuildPlayer(notification, releaseType, platform, arch, scriptingBackend, dist, buildTime, options, configKey);
+                bool success = BuildPlayer(notification, releaseType, platform, arch, scriptingBackend, dist, buildTime, options,
+                    constantsFileLocation, configKey);
 
                 if (success)
                     ++successCount;
@@ -427,7 +437,8 @@ namespace SuperUnityBuild.BuildTool
         }
 
         private static bool BuildPlayer(string notification, BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture,
-            BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime, BuildOptions options, string configKey)
+            BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime, BuildOptions options,
+            string constantsFileLocation, string configKey)
         {
             bool success = true;
 
@@ -441,7 +452,7 @@ namespace SuperUnityBuild.BuildTool
             string preBuildBundleIdentifier = PlayerSettings.GetApplicationIdentifier(platform.targetGroup);
 
             // Configure environment settings to match the build configuration
-            ConfigureEnvironment(releaseType, platform, architecture, scriptingBackend, distribution, buildTime);
+            ConfigureEnvironment(releaseType, platform, architecture, scriptingBackend, distribution, buildTime, constantsFileLocation);
 
             // Generate build path
             string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, scriptingBackend, distribution, buildTime);
