@@ -18,7 +18,7 @@ namespace SuperUnityBuild.BuildTool
             AssetDatabase.ImportAsset(path, options);
         }
 
-        public static void EnsureDirectoriesExist()
+        public static void EnsureDefaultDirectoriesExist()
         {
             string assetsRoot = Path.Combine(Constants.AssetsDirectoryName, Constants.RootDirectoryName);
             string editorRoot = Path.Combine(assetsRoot, Constants.EditorDirectoryName);

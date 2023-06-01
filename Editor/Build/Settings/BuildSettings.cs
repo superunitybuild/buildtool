@@ -18,7 +18,9 @@ namespace SuperUnityBuild.BuildTool
             get
             {
                 if (_instance == null)
+                {
                     _instance = CreateAsset<BuildSettings>(Constants.DefaultSettingsFileName);
+                }
 
                 return _instance;
             }
