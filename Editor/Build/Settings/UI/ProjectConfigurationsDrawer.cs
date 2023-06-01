@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
@@ -89,7 +89,7 @@ namespace SuperUnityBuild.BuildTool
                 GUILayout.Space(5);
                 EditorGUILayout.BeginHorizontal();
                 show = showBuildInfo.isExpanded;
-                UnityBuildGUIUtility.DropdownHeader("Build Info", ref show, false, GUILayout.ExpandWidth(true));
+                UnityBuildGUIUtility.DropdownHeader("Selected Build Info", ref show, false, GUILayout.ExpandWidth(true));
                 showBuildInfo.isExpanded = show;
                 EditorGUILayout.EndHorizontal();
 

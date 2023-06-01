@@ -372,7 +372,9 @@ namespace SuperUnityBuild.BuildTool
             bool success = true;
 
             if (options == BuildOptions.None)
+            {
                 options = releaseType.buildOptions;
+            }
 
             // Save current environment settings
             string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
@@ -386,7 +388,12 @@ namespace SuperUnityBuild.BuildTool
 
             // Generate build path
             string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, scriptingBackend, distribution, buildTime);
-            string binName = string.Format(architecture.binaryNameFormat, releaseType.productName.SanitizeFileName());
+            string finalBuildName = releaseType.productName;
+            if(!releaseType.syncAppNameWithProduct)
+            {
+                finalBuildName = releaseType.appBuildName;
+            }
+            string binName = string.Format(architecture.binaryNameFormat, finalBuildName.SanitizeFileName());
 
             // Pre-build actions
             PerformPreBuild(releaseType, platform, architecture, scriptingBackend, distribution, buildTime, ref options, configKey, buildPath);
@@ -411,7 +418,9 @@ namespace SuperUnityBuild.BuildTool
             });
 
             if (buildReport.summary.result == BuildResult.Failed)
+            {
                 error = buildReport.summary.totalErrors + " occurred.";
+            }
 
             if (!string.IsNullOrEmpty(error))
             {

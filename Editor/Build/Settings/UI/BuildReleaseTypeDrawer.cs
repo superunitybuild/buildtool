@@ -35,9 +35,20 @@ namespace SuperUnityBuild.BuildTool
                 typeName.stringValue = GUILayout.TextArea(typeName.stringValue.SanitizeFolderName());
                 EditorGUILayout.EndHorizontal();
 
+                var productNameProperty = property.FindPropertyRelative("productName");
                 EditorGUILayout.PropertyField(property.FindPropertyRelative("bundleIdentifier"));
-                EditorGUILayout.PropertyField(property.FindPropertyRelative("productName"));
+                EditorGUILayout.PropertyField(productNameProperty);
                 EditorGUILayout.PropertyField(property.FindPropertyRelative("companyName"));
+                var syncAppNameProperty = property.FindPropertyRelative("syncAppNameWithProduct");
+                var appBuildNameProperty = property.FindPropertyRelative("appBuildName");
+                EditorGUILayout.PropertyField(syncAppNameProperty, new GUIContent("Sync App Build Name"));
+                EditorGUI.BeginDisabledGroup(syncAppNameProperty.boolValue);
+                if(syncAppNameProperty.boolValue)
+                {
+                    appBuildNameProperty.stringValue = productNameProperty.stringValue;
+                }
+                EditorGUILayout.PropertyField(appBuildNameProperty);
+                EditorGUI.EndDisabledGroup();
 
                 GUILayout.Space(20);
                 GUILayout.Label("Build Options", UnityBuildGUIUtility.midHeaderStyle);
