@@ -71,8 +71,12 @@ namespace SuperUnityBuild.BuildTool
             }
             else
             {
-                // Ensure default path exists if generating for the first time.
-                AssetDatabaseUtility.EnsureDirectoriesExist();
+                // Ensure desired path exists if generating for the first time.
+                var fileInfo = new FileInfo(finalFileLocation);
+                if(!fileInfo.Directory.Exists)
+                {
+                    Directory.CreateDirectory(fileInfo.Directory.FullName);
+                }
             }
 
             // Create a buffer that we'll use to check for any duplicated names.
