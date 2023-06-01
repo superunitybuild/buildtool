@@ -14,7 +14,6 @@ namespace SuperUnityBuild.BuildTool
             {BuildOutputType.App, "{0}.exe"},
             {BuildOutputType.VisualStudioSolution, "{0}.sln"},
         };
-        private const string _dataDirNameFormat = "{0}_Data";
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.Standalone;
 
         private const string _buildOutputTypeVariantId = "Build Output";
@@ -36,7 +35,6 @@ namespace SuperUnityBuild.BuildTool
         public override void Init()
         {
             platformName = _name;
-            dataDirNameFormat = _dataDirNameFormat;
             targetGroup = _targetGroup;
 
             if (architectures == null || architectures.Length == 0)
