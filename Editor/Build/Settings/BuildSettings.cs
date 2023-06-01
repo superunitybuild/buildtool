@@ -80,7 +80,7 @@ namespace SuperUnityBuild.BuildTool
         #region Events
 
         [OnOpenAssetAttribute(1)]
-        public static bool OpenInUnityBuildWindow(int instanceID, int line)
+        public static bool HandleOpenAsset(int instanceID, int line)
         {
             var assetPath = AssetDatabase.GetAssetPath(instanceID);
             if(assetPath == null)
@@ -94,22 +94,28 @@ namespace SuperUnityBuild.BuildTool
                 //Not the right type
                 return false;
             }
-            
+
+            asset.OpenInUnityBuildWindow();
+
+            return true;
+        }
+
+        public void OpenInUnityBuildWindow()
+        {
             //Show the window using the same process as pressing the menu button
             UnityBuildWindow.ShowWindow();
             var thisWindow = EditorWindow.GetWindow<UnityBuildWindow>();
-            if(thisWindow != null)
+            if (thisWindow != null)
             {
                 //If the window exists
 
-                //Set the default BuildSettings
-                BuildSettings.instance = asset;
+                //Set this as the current BuildSettings to be used
+                BuildSettings.instance = this;
 
                 //Tell the window to use the new settings 
                 thisWindow.RefreshSelectedBuildSettings();
             }
 
-            return true;
         }
 
         #endregion
