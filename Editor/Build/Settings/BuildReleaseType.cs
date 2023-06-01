@@ -13,6 +13,9 @@ namespace SuperUnityBuild.BuildTool
         public string companyName = string.Empty;
         public string productName = string.Empty;
 
+        public bool syncAppNameWithProduct = true;
+        public string appBuildName = string.Empty;
+
         public BuildOptions buildOptions;
         public string customDefines = string.Empty;
 

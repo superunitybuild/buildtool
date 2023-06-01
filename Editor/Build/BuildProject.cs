@@ -443,20 +443,29 @@ namespace SuperUnityBuild.BuildTool
             bool success = true;
 
             if (options == BuildOptions.None)
+            {
                 options = releaseType.buildOptions;
+            }
 
             // Save current environment settings
             string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
             string preBuildCompanyName = PlayerSettings.companyName;
             string preBuildProductName = PlayerSettings.productName;
             string preBuildBundleIdentifier = PlayerSettings.GetApplicationIdentifier(platform.targetGroup);
+            ScriptingImplementation preBuildImplementation = PlayerSettings.GetScriptingBackend(platform.targetGroup);
 
             // Configure environment settings to match the build configuration
             ConfigureEnvironment(releaseType, platform, architecture, scriptingBackend, distribution, buildTime, constantsFileLocation);
 
             // Generate build path
             string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, scriptingBackend, distribution, buildTime);
-            string binName = string.Format(architecture.binaryNameFormat, SanitizeFileName(releaseType.productName));
+            string finalBuildName = releaseType.productName;
+            if(!releaseType.syncAppNameWithProduct)
+            {
+                finalBuildName = releaseType.appBuildName;
+            }
+
+            string binName = string.Format(architecture.binaryNameFormat, SanitizeFileName(finalBuildName));
 
             // Pre-build actions
             PerformPreBuild(releaseType, platform, architecture, scriptingBackend, distribution, buildTime, ref options, configKey, buildPath);
@@ -481,7 +490,9 @@ namespace SuperUnityBuild.BuildTool
             });
 
             if (buildReport.summary.result == BuildResult.Failed)
+            {
                 error = buildReport.summary.totalErrors + " occurred.";
+            }
 
             if (!string.IsNullOrEmpty(error))
             {
@@ -501,6 +512,7 @@ namespace SuperUnityBuild.BuildTool
             PlayerSettings.companyName = preBuildCompanyName;
             PlayerSettings.productName = preBuildProductName;
             PlayerSettings.SetApplicationIdentifier(platform.targetGroup, preBuildBundleIdentifier);
+            PlayerSettings.SetScriptingBackend(platform.targetGroup, preBuildImplementation);
 
             return success;
         }
