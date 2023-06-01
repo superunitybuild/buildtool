@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
@@ -39,6 +39,11 @@ namespace SuperUnityBuild.BuildTool
             }
 
             return scenes.ToArray();
+        }
+
+        public string SceneGUIDToPath(string guid)
+        {
+            return AssetDatabase.GUIDToAssetPath(guid);
         }
 
         [Serializable]
