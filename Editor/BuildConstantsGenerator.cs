@@ -12,7 +12,6 @@ namespace SuperUnityBuild.BuildTool
         public const string NONE = "None";
 
         private const string FileName = "BuildConstants.cs";
-        private static readonly string DefaultFilePath = Path.Combine(Constants.RootDirectoryName, FileName);
 
         public static string FindFile()
         {
@@ -23,9 +22,9 @@ namespace SuperUnityBuild.BuildTool
             {
                 var thisFilePath = fileSearchResults[i];
                 var thisFilePathSplit = thisFilePath.Split(separatorChars);
-                if(thisFilePathSplit.Length > 0)
+                if (thisFilePathSplit.Length > 0)
                 {
-                    if(thisFilePathSplit[thisFilePathSplit.Length - 1].Equals(FileName))
+                    if (thisFilePathSplit[thisFilePathSplit.Length - 1].Equals(FileName))
                     {
                         filePath = thisFilePath;
                         break;
