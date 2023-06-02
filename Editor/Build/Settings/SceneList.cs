@@ -41,10 +41,15 @@ namespace SuperUnityBuild.BuildTool
                     //Don't return inactive scenes
                     continue;
                 }
-                scenes.Add(AssetDatabase.GUIDToAssetPath(thisScene.fileGUID));
+                scenes.Add(SceneGUIDToPath(thisScene.fileGUID));
             }
 
             return scenes.ToArray();
+        }
+
+        public string SceneGUIDToPath(string guid)
+        {
+            return AssetDatabase.GUIDToAssetPath(guid);
         }
 
         [Serializable]
