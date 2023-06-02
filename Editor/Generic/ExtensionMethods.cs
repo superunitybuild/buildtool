@@ -1,18 +1,51 @@
+using System.IO;
+using System.Text.RegularExpressions;
 using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
 {
     public static class ExtensionMethods
     {
+        public static string SanitizeCodeString(this string str)
+        {
+            str = Regex.Replace(str, "[^a-zA-Z0-9_]", "_", RegexOptions.Compiled);
+
+            if (char.IsDigit(str[0]))
+                str = "_" + str;
+
+            return str;
+        }
+
+        public static string SanitizeDefine(this string input)
+        {
+            return input.ToUpper().Replace(" ", "").SanitizeCodeString();
+        }
+
+        public static string SanitizeFolderName(this string folderName)
+        {
+            string invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars()));
+            string invalidRegStr = string.Format(@"[{0}]", invalidChars);
+
+            return Regex.Replace(folderName, invalidRegStr, "");
+        }
+
+        public static string SanitizeFileName(this string fileName)
+        {
+            string invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
+
+            return Regex.Replace(fileName, invalidRegStr, "_");
+        }
+
         public static string Truncate(this string value, int maxLength, string suffix = "", char[] trimChars = null)
         {
             trimChars = trimChars ?? new char[] { ' ' };
 
-            if(string.IsNullOrEmpty(value) || value.Length <= maxLength)
+            if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
             {
                 return value;
             }
-            if(maxLength <= 0)
+            if (maxLength <= 0)
             {
                 return suffix;
             }

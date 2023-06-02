@@ -40,6 +40,24 @@ namespace SuperUnityBuild.BuildTool
         {
         }
 
+        public static string ResolveExecuteTokens(string prototype)
+        {
+            DateTime runTime = DateTime.Now;
+
+            prototype = TokensUtility.ResolveBuildTimeTokens(prototype, runTime);
+            prototype = TokensUtility.ResolveBuildVersionTokens(prototype);
+
+            return prototype;
+        }
+
+        public static string ResolvePerBuildExecuteTokens(string prototype, BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime, string buildPath)
+        {
+            prototype = TokensUtility.ResolveBuildOutputTokens(prototype, buildPath);
+            prototype = TokensUtility.ResolveBuildConfigurationTokens(prototype, releaseType, platform, architecture, scriptingBackend, distribution, buildTime);
+
+            return prototype;
+        }
+
         public void Draw(SerializedObject obj)
         {
             DrawProperties(obj);
