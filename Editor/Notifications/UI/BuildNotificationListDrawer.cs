@@ -13,7 +13,7 @@ namespace SuperUnityBuild.BuildTool
         private SerializedProperty notificationsList;
 
         private GUIContent clearButtonContent = new GUIContent("X", "Clear");
-        private Color32 logHeaderColor = new Color32(60, 150, 230, 255);
+        private Color32 logHeaderColor = new Color32(100, 200, 240, 255);
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {

@@ -83,8 +83,8 @@ namespace SuperUnityBuild.BuildTool
             _dragDropArea.normal.textColor = GUI.skin.textField.normal.textColor;
             
             _buildButtonStyle = new GUIStyle(GUI.skin.button);
-            _buildButtonStyle.normal.textColor = Color.black;
-            _buildButtonStyle.hover.textColor = new Color32(0, 0, 0, 200);
+            //_buildButtonStyle.normal.textColor = Color.black;
+            //_buildButtonStyle.hover.textColor = new Color32(0, 0, 0, 200);
 
             _sceneNameLabelStyle = new GUIStyle(EditorStyles.largeLabel);
             _sceneNameLabelStyle.margin = new RectOffset(0, 0, 0, 0);
