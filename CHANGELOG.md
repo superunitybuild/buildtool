@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 -   Remove redundant `dataDirNameFormat` variable from Build Platforms.
+-   Renamed 'Per-Platform' Build Action type to 'Per-Build' to reflect when they are run.
 
 ## [6.0.1] - 2023-05-26
 

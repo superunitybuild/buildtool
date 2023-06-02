@@ -10,10 +10,10 @@ namespace SuperUnityBuild.BuildTool
         public enum ActionType
         {
             SingleRun,
-            PerPlatform
+            PerBuild
         }
 
-        public ActionType actionType = ActionType.PerPlatform;
+        public ActionType actionType = ActionType.PerBuild;
         public string actionName = string.Empty;
         public string note = string.Empty;
         public bool actionEnabled = true;
@@ -57,7 +57,7 @@ namespace SuperUnityBuild.BuildTool
             else if (isPreBuildAction || isPostBuildAction)
                 actionType = ActionType.SingleRun;
             else if (isPreBuildPerPlatformAction || isPostBuildPerPlatformAction)
-                actionType = ActionType.PerPlatform;
+                actionType = ActionType.PerBuild;
 
             if (actionTypeSelectable)
                 actionType = (ActionType)EditorGUILayout.EnumPopup("Action Type", actionType);
@@ -67,8 +67,8 @@ namespace SuperUnityBuild.BuildTool
 
             EditorGUILayout.PropertyField(obj.FindProperty("note"));
 
-            // Only Per-Platform actions can be filtered
-            if (actionType == ActionType.PerPlatform)
+            // Only Per-Build actions can be filtered
+            if (actionType == ActionType.PerBuild)
                 EditorGUILayout.PropertyField(obj.FindProperty("filter"), GUILayout.Height(0));
 
             obj.ApplyModifiedProperties();

@@ -600,7 +600,7 @@ namespace SuperUnityBuild.BuildTool
                     // Check if execute method has been overriden.
                     MethodInfo m = action.GetType().GetMethod("PerBuildExecute");
 
-                    if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.PerPlatform)
+                    if (m.GetBaseDefinition().DeclaringType != m.DeclaringType && action.actionType == BuildAction.ActionType.PerBuild)
                     {
                         // Check build filter and execute if true.
                         if (action.filter == null || action.filter.Evaluate(releaseType, platform, architecture, distribution, configKey) && action.actionEnabled)
