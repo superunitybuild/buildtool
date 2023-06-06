@@ -452,6 +452,9 @@ namespace SuperUnityBuild.BuildTool
                 BuildNotification.Category.Notification,
                 notification, configKey,
                 true, null));
+            
+            // Ensure settings are synchronized (see issue #100)
+            AssetDatabase.SaveAssets();
 
             // Build player
             FileUtil.DeleteFileOrDirectory(buildPath);
