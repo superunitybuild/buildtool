@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Renamed 'Per-Platform' Build Action type to 'Per-Build' to reflect when they are run.
 -   Enhanced support for string token usage in Build Action configurations. Per-Build actions have gained support for `$BASEPATH` and `$BUILDPATH`, whilst Single Run actions can now use `$VERSION`, `$BUILD`, `$YEAR`, `$MONTH`, `$DAY` and `$TIME`, with the time-based tokens corresponding to the time at which the action was run.
 
+### Fixed
+
+-   Remove dependency on .NET Standard 2.1. (by [@RobProductions](https://github.com/RobProductions))
+-   Fix scripting backend not being restored after build. (by [@RobProductions](https://github.com/RobProductions))
+
 ## [6.0.1] - 2023-05-26
 
 ### Fixed
