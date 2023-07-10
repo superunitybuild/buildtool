@@ -375,6 +375,7 @@ namespace SuperUnityBuild.BuildTool
             string preBuildCompanyName = PlayerSettings.companyName;
             string preBuildProductName = PlayerSettings.productName;
             string preBuildBundleIdentifier = PlayerSettings.GetApplicationIdentifier(platform.targetGroup);
+            ScriptingImplementation preBuildImplementation = PlayerSettings.GetScriptingBackend(platform.targetGroup);
 
             // Configure environment settings to match the build configuration
             ConfigureEnvironment(releaseType, platform, architecture, scriptingBackend, distribution, buildTime);
@@ -426,6 +427,7 @@ namespace SuperUnityBuild.BuildTool
             PlayerSettings.companyName = preBuildCompanyName;
             PlayerSettings.productName = preBuildProductName;
             PlayerSettings.SetApplicationIdentifier(platform.targetGroup, preBuildBundleIdentifier);
+            PlayerSettings.SetScriptingBackend(platform.targetGroup, preBuildImplementation);
 
             return success;
         }

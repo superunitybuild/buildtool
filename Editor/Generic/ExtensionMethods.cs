@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -69,6 +70,21 @@ namespace SuperUnityBuild.BuildTool
 
             if (value.arraySize == oldLength)
                 value.DeleteArrayElementAtIndex(i);
+        }
+
+        // Provided by Jon Skeet in https://stackoverflow.com/questions/969091/c-skiplast-implementation
+        public static IEnumerable<T> SkipLast<T>(this IEnumerable<T> source)
+        {
+            T previous = default(T);
+            bool first = true;
+            foreach (T element in source)
+            {
+                if (!first)
+                    yield return previous;
+
+                previous = element;
+                first = false;
+            }
         }
     }
 }
