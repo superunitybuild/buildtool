@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Remove redundant `dataDirNameFormat` variable from Build Platforms.
 -   Renamed 'Per-Platform' Build Action type to 'Per-Build' to reflect when they are run.
 -   Enhanced support for string token usage in Build Action configurations. Per-Build actions have gained support for `$BASEPATH` and `$BUILDPATH`, whilst Single Run actions can now use `$VERSION`, `$BUILD`, `$YEAR`, `$MONTH`, `$DAY` and `$TIME`, with the time-based tokens corresponding to the time at which the action was run.
+-   Scene list UI overhaul. (by [@RobProductions](https://github.com/RobProductions))
+-   Release list UI overhaul. (by [@RobProductions](https://github.com/RobProductions))
 
 ### Fixed
 
