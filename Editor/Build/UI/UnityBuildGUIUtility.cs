@@ -32,6 +32,9 @@ namespace SuperUnityBuild.BuildTool
         private GUIStyle _popupStyle;
         private GUIStyle _mainTitleStyle;
         private GUIStyle _dragDropArea;
+        private GUIStyle _sceneNameLabelStyle;
+        private GUIStyle _sceneInfoLabelStyle;
+        private GUIStyle _sceneActiveToggleStyle;
 
         private Color32 _defaultBackgroundColor = GUI.backgroundColor;
         private Color32 _mainHeaderColor = new Color32(180, 180, 255, 255);
@@ -56,8 +59,8 @@ namespace SuperUnityBuild.BuildTool
             _helpButtonStyle.alignment = TextAnchor.MiddleCenter;
             _helpButtonStyle.fontStyle = FontStyle.Normal;
             _helpButtonStyle.margin = new RectOffset(0, 5, 0, 0);
-            _helpButtonStyle.fixedWidth = 30;
             _helpButtonStyle.wordWrap = false;
+            _helpButtonStyle.fixedWidth = 35;
 
             _midHeaderStyle = new GUIStyle(EditorStyles.helpBox);
             _midHeaderStyle.fontStyle = FontStyle.Bold;
@@ -76,6 +79,21 @@ namespace SuperUnityBuild.BuildTool
             _dragDropArea.stretchWidth = true;
             _dragDropArea.alignment = TextAnchor.MiddleCenter;
             _dragDropArea.normal.textColor = GUI.skin.textField.normal.textColor;
+
+            _sceneNameLabelStyle = new GUIStyle(EditorStyles.largeLabel);
+            _sceneNameLabelStyle.margin = new RectOffset(0, 0, 0, 0);
+            _sceneNameLabelStyle.padding = new RectOffset(5, 0, 0, 0);
+            _sceneNameLabelStyle.alignment = TextAnchor.MiddleLeft;
+            _sceneNameLabelStyle.wordWrap = false;
+            _sceneNameLabelStyle.fixedWidth = 0;
+
+            _sceneInfoLabelStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel);
+            _sceneInfoLabelStyle.alignment = TextAnchor.MiddleLeft;
+
+            _sceneActiveToggleStyle = new GUIStyle(EditorStyles.toggle);
+            _sceneActiveToggleStyle.padding = new RectOffset(0, 0, 0, 0);
+            _sceneActiveToggleStyle.margin = new RectOffset(0, 0, 0, 0);
+            _sceneActiveToggleStyle.fixedWidth = 0;
 
             helpButtonContent = new GUIContent("?", "Help");
         }
@@ -110,7 +128,9 @@ namespace SuperUnityBuild.BuildTool
         public static void HelpButton(string anchor = "")
         {
             if (GUILayout.Button(_instance.helpButtonContent, helpButtonStyle))
+            {
                 OpenHelp(anchor);
+            }
         }
 
         public static bool MoveUpButton()
@@ -149,6 +169,22 @@ namespace SuperUnityBuild.BuildTool
 
             if (moveIndex != -1)
                 array.MoveArrayElement(i, moveIndex);
+
+        }
+
+        public static void SceneNameLabel(string sceneName)
+        {
+            EditorGUILayout.LabelField(new GUIContent($"{sceneName}"), instance._sceneNameLabelStyle, GUILayout.ExpandWidth(true));
+        }
+
+        public static void SceneInfoLabel(string sceneInfo)
+        {
+            EditorGUILayout.LabelField(new GUIContent($"{sceneInfo}"), instance._sceneInfoLabelStyle);
+        }
+
+        public static bool SceneActiveToggle(bool toggleOn)
+        {
+            return EditorGUILayout.Toggle(toggleOn, instance._sceneActiveToggleStyle, GUILayout.Width(15));
         }
 
         public static string ToLabel(string input, int maxLength = 60)
