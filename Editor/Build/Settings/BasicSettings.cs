@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
@@ -13,6 +14,6 @@ namespace SuperUnityBuild.BuildTool
         public bool openFolderPostBuild = true;
         [Tooltip("The folder path for the " + BuildConstantsGenerator.FileName + " file which will be generated on build. Use the Configure Editor Environment button on a selected configuration to generate it now.")]
         [FilePath(true, true, "Choose folder location for the " + BuildConstantsGenerator.FileName + " file")]
-        public string constantsFileLocation = Constants.DefaultConstantsFilePath;
+        public string constantsFileLocation = Path.Combine(Constants.AssetsDirectoryName, Constants.RootDirectoryName);
     }
 }
