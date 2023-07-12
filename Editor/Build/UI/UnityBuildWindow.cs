@@ -89,12 +89,23 @@ namespace SuperUnityBuild.BuildTool
 
         #endregion
 
-        #region Private Methods
+        #region Public Methods
 
+        public void RefreshSelectedBuildSettings()
+        {
+            currentBuildSettings = BuildSettings.instance;
+            settings = null;
+        }
+
+        #endregion
+
+        #region Private Methods
         private void Init()
         {
             if (go == null)
+            {
                 go = new SerializedObject(this);
+            }
 
             // Add field to switch the BuildSettings asset
             EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
@@ -106,7 +117,7 @@ namespace SuperUnityBuild.BuildTool
             // Override a 'None' selection for the BuildSettings asset
             if (currentBuildSettings == null)
             {
-                currentBuildSettings = BuildSettings.instance;
+                RefreshSelectedBuildSettings();
             }
 
             if (currentBuildSettings != BuildSettings.instance)
@@ -116,7 +127,9 @@ namespace SuperUnityBuild.BuildTool
             }
 
             if (settings == null)
+            {
                 settings = new SerializedObject(BuildSettings.instance);
+            }
 
             BuildSettings.Init();
         }

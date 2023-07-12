@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -18,12 +18,18 @@ namespace SuperUnityBuild.BuildTool
         {
             string[] fileSearchResults = Directory.GetFiles(Application.dataPath, FileName, SearchOption.AllDirectories);
             string filePath = null;
+            char[] separatorChars = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
             for (int i = 0; i < fileSearchResults.Length; i++)
             {
-                if (fileSearchResults[i].EndsWith(DefaultFilePath))
+                var thisFilePath = fileSearchResults[i];
+                var thisFilePathSplit = thisFilePath.Split(separatorChars);
+                if(thisFilePathSplit.Length > 0)
                 {
-                    filePath = fileSearchResults[i];
-                    break;
+                    if(thisFilePathSplit[thisFilePathSplit.Length - 1].Equals(FileName))
+                    {
+                        filePath = thisFilePath;
+                        break;
+                    }
                 }
             }
 

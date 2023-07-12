@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
@@ -8,13 +8,15 @@ namespace SuperUnityBuild.BuildTool
     {
         public override void OnInspectorGUI()
         {
-            Color defaultBackgroundColor = GUI.backgroundColor;
-            GUI.backgroundColor = Color.green;
-
-            if (GUILayout.Button("Open SuperUnityBuild", GUILayout.ExpandWidth(true), GUILayout.MinHeight(30)))
-                UnityBuildWindow.ShowWindow();
-
-            GUI.backgroundColor = defaultBackgroundColor;
+            if (GUILayout.Button("Open in SuperUnityBuild", GUILayout.ExpandWidth(true), GUILayout.MinHeight(30)))
+            {
+                BuildSettings targetObj = (BuildSettings)this.target;
+                if(targetObj != null)
+                {
+                    //Open this asset in the UnityBuildWindow
+                    targetObj.OpenInUnityBuildWindow();
+                }
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
@@ -71,6 +72,49 @@ namespace SuperUnityBuild.BuildTool
         public static ProjectConfigurations projectConfigurations { get => instance._projectConfigurations; }
         public static BuildActionList preBuildActions { get => instance._preBuildActions; }
         public static BuildActionList postBuildActions { get => instance._postBuildActions; }
+
+        #endregion
+
+        #region Events
+
+        [OnOpenAssetAttribute(1)]
+        public static bool HandleOpenAsset(int instanceID, int line)
+        {
+            var assetPath = AssetDatabase.GetAssetPath(instanceID);
+            if(assetPath == null)
+            {
+                //Asset did not exist
+                return false;
+            }
+            var asset = AssetDatabase.LoadAssetAtPath<BuildSettings>(assetPath);
+            if(asset == null)
+            {
+                //Not the right type
+                return false;
+            }
+
+            asset.OpenInUnityBuildWindow();
+
+            return true;
+        }
+
+        public void OpenInUnityBuildWindow()
+        {
+            //Show the window using the same process as pressing the menu button
+            UnityBuildWindow.ShowWindow();
+            var thisWindow = EditorWindow.GetWindow<UnityBuildWindow>();
+            if (thisWindow != null)
+            {
+                //If the window exists
+
+                //Set this as the current BuildSettings to be used
+                BuildSettings.instance = this;
+
+                //Tell the window to use the new settings 
+                thisWindow.RefreshSelectedBuildSettings();
+            }
+
+        }
 
         #endregion
     }
