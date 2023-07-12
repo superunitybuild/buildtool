@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   Double-click settings assets to assign them as the active settings in the SuperUnityBuild window. (by [@RobProductions](https://github.com/RobProductions))
+
 ### Changed
 
 -   Remove redundant `dataDirNameFormat` variable from Build Platforms.
@@ -15,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   Scene list UI overhaul. (by [@RobProductions](https://github.com/RobProductions))
 -   Release list UI overhaul. (by [@RobProductions](https://github.com/RobProductions))
 -   Streamline UI colors. (by [@RobProductions](https://github.com/RobProductions))
+-   Replaced the 'Open SuperUnityBuild' button shown in the Inspector for settings assets with new 'Open in SuperUnityBuild' button to assign them as the active settings in the SuperUnityBuild window. (by [@RobProductions](https://github.com/RobProductions))
 
 ### Fixed
 
