@@ -18,9 +18,27 @@ namespace SuperUnityBuild.BuildTool
             //    Event.current.character = '\0';
             //}
 
+            EditorGUILayout.BeginHorizontal();
             bool show = property.isExpanded;
             UnityBuildGUIUtility.DropdownHeader(property.FindPropertyRelative("typeName").stringValue, ref show, false);
             property.isExpanded = show;
+
+            if (UnityBuildGUIUtility.DeleteButton())
+            {
+                BuildReleaseType[] types = BuildSettings.releaseTypeList.releaseTypes;
+                for (int i = 0; i < types.Length; i++)
+                {
+                    if (types[i].typeName == property.FindPropertyRelative("typeName").stringValue)
+                    {
+                        ArrayUtility.RemoveAt<BuildReleaseType>(ref BuildSettings.releaseTypeList.releaseTypes, i);
+                        GUIUtility.keyboardControl = 0;
+                        break;
+                    }
+                }
+                show = false;
+            }
+
+            EditorGUILayout.EndHorizontal();
 
             if (show)
             {
@@ -79,20 +97,6 @@ namespace SuperUnityBuild.BuildTool
                 buildOptions.intValue = (int)(BuildOptions)EditorGUILayout.EnumFlagsField("Advanced Options", (BuildOptions)buildOptions.intValue);
 
                 EditorGUILayout.PropertyField(property.FindPropertyRelative("sceneList"));
-
-                if (GUILayout.Button("Delete", GUILayout.ExpandWidth(true)))
-                {
-                    BuildReleaseType[] types = BuildSettings.releaseTypeList.releaseTypes;
-                    for (int i = 0; i < types.Length; i++)
-                    {
-                        if (types[i].typeName == property.FindPropertyRelative("typeName").stringValue)
-                        {
-                            ArrayUtility.RemoveAt<BuildReleaseType>(ref BuildSettings.releaseTypeList.releaseTypes, i);
-                            GUIUtility.keyboardControl = 0;
-                            break;
-                        }
-                    }
-                }
 
                 property.serializedObject.ApplyModifiedProperties();
 

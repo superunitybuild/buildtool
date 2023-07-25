@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -35,5 +35,6 @@ namespace SuperUnityBuild.BuildTool
 
             return instance;
         }
+
     }
 }

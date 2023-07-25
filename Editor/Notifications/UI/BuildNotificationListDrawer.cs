@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 
 namespace SuperUnityBuild.BuildTool
@@ -13,6 +13,7 @@ namespace SuperUnityBuild.BuildTool
         private SerializedProperty notificationsList;
 
         private GUIContent clearButtonContent = new GUIContent("X", "Clear");
+        private Color32 logHeaderColor = new Color32(100, 200, 240, 255);
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -151,7 +152,7 @@ namespace SuperUnityBuild.BuildTool
             Color defaultBackgroundColor = GUI.backgroundColor;
 
             EditorGUILayout.BeginHorizontal();
-            GUI.backgroundColor = Color.cyan;
+            GUI.backgroundColor = logHeaderColor;
             UnityBuildGUIUtility.DropdownHeader(
                 $"Log ({warningCount})",
                 ref show, true,
