@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -   Double-click settings assets to assign them as the active settings in the SuperUnityBuild window. (by [@RobProductions](https://github.com/RobProductions))
+-   Customize app build name. (by [@RobProductions](https://github.com/RobProductions))
+-   Customize `BuildConstants` file path. (by [@RobProductions](https://github.com/RobProductions))
 
 ### Changed
 
