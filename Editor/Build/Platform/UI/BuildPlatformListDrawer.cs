@@ -80,19 +80,19 @@ namespace SuperUnityBuild.BuildTool
             {
                 SerializedProperty listEntry = list.GetArrayElementAtIndex(i);
 
-                BuildPlatform buildPlatform = listEntry.objectReferenceValue as BuildPlatform;
-                if (buildPlatform == null)
+                BuildPlatform platform = listEntry.objectReferenceValue as BuildPlatform;
+                if (platform == null)
                 {
                     list.SafeDeleteArrayElementAtIndex(i);
                     --i;
                     continue;
                 }
 
-                SerializedObject serializedBuildPlatform = new SerializedObject(buildPlatform);
+                SerializedObject serializedBuildPlatform = new SerializedObject(platform);
 
                 EditorGUILayout.BeginHorizontal();
                 bool show = listEntry.isExpanded;
-                string tooltip = buildPlatform.ToString();
+                string tooltip = platform.ToString();
                 string text = UnityBuildGUIUtility.ToLabel(tooltip);
 
                 UnityBuildGUIUtility.DropdownHeader(new GUIContent(text, tooltip), ref show, false, GUILayout.ExpandWidth(true));
@@ -101,10 +101,10 @@ namespace SuperUnityBuild.BuildTool
 
                 if (UnityBuildGUIUtility.DeleteButton())
                 {
-                    List<BuildPlatform> buildPlatforms = BuildSettings.platformList.platforms;
+                    List<BuildPlatform> platforms = BuildSettings.platformList.platforms;
 
                     // Destroy underlying object
-                    ScriptableObject.DestroyImmediate(buildPlatforms[i], true);
+                    ScriptableObject.DestroyImmediate(platforms[i], true);
                     AssetDatabaseUtility.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
 
                     // Remove object reference from list
@@ -114,10 +114,10 @@ namespace SuperUnityBuild.BuildTool
 
                 EditorGUILayout.EndHorizontal();
 
-                if (show && buildPlatform.enabled)
+                if (show && platform.enabled)
                 {
                     EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
-                    buildPlatform.Draw(serializedBuildPlatform);
+                    platform.Draw(serializedBuildPlatform);
                     EditorGUILayout.EndVertical();
                 }
             }

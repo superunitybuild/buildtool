@@ -14,7 +14,6 @@ namespace SuperUnityBuild.BuildTool
             {BuildOutputType.App, "{0}.app"},
             {BuildOutputType.XcodeProject, "{0}"},
         };
-        private const string _dataDirNameFormat = "{0}.app/Contents";
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.Standalone;
 
         private const string _buildOutputTypeVariantId = "Build Output";
@@ -46,7 +45,6 @@ namespace SuperUnityBuild.BuildTool
         public override void Init()
         {
             platformName = _name;
-            dataDirNameFormat = _dataDirNameFormat;
             targetGroup = _targetGroup;
 
             if (architectures == null || architectures.Length == 0)

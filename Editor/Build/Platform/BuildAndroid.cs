@@ -16,7 +16,6 @@ namespace SuperUnityBuild.BuildTool
             {BinaryType.SplitAPK, "{0}"},
             {BinaryType.AAB, "{0}.aab"},
         };
-        private const string _dataDirNameFormat = "{0}_Data";
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.Android;
 
         private const string _apkExpansionFilesTypeVariantId = "APK Expansion Type";
@@ -60,7 +59,6 @@ namespace SuperUnityBuild.BuildTool
         public override void Init()
         {
             platformName = _name;
-            dataDirNameFormat = _dataDirNameFormat;
             targetGroup = _targetGroup;
 
             if (architectures == null || architectures.Length == 0)
@@ -95,7 +93,7 @@ namespace SuperUnityBuild.BuildTool
                 variants = new BuildVariant[] {
                     new BuildVariant(_deviceTypeVariantId, EnumNamesToArray<AndroidArchitecture>()
                         .Skip(1)
-                        .SkipLast(1)
+                        .SkipLast()
                         .ToArray(),
                     0, true),
                     new BuildVariant(_textureCompressionVariantId, EnumNamesToArray<MobileTextureSubtarget>(), 0),

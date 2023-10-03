@@ -89,12 +89,23 @@ namespace SuperUnityBuild.BuildTool
 
         #endregion
 
-        #region Private Methods
+        #region Public Methods
 
+        public void RefreshSelectedBuildSettings()
+        {
+            currentBuildSettings = BuildSettings.instance;
+            settings = null;
+        }
+
+        #endregion
+
+        #region Private Methods
         private void Init()
         {
             if (go == null)
+            {
                 go = new SerializedObject(this);
+            }
 
             // Add field to switch the BuildSettings asset
             EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
@@ -106,7 +117,7 @@ namespace SuperUnityBuild.BuildTool
             // Override a 'None' selection for the BuildSettings asset
             if (currentBuildSettings == null)
             {
-                currentBuildSettings = BuildSettings.instance;
+                RefreshSelectedBuildSettings();
             }
 
             if (currentBuildSettings != BuildSettings.instance)
@@ -116,7 +127,9 @@ namespace SuperUnityBuild.BuildTool
             }
 
             if (settings == null)
+            {
                 settings = new SerializedObject(BuildSettings.instance);
+            }
 
             BuildSettings.Init();
         }
@@ -152,12 +165,12 @@ namespace SuperUnityBuild.BuildTool
 
             EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
             EditorGUI.BeginDisabledGroup(totalBuildCount < 1);
-            GUI.backgroundColor = Color.green;
 
-            if (GUILayout.Button($"Perform All Enabled Builds ({totalBuildCount} Builds)", GUILayout.ExpandWidth(true), GUILayout.MinHeight(30)))
+            if (UnityBuildGUIUtility.BuildButton($"Perform All Enabled Builds ({totalBuildCount} Builds)", 30))
+            {
                 EditorApplication.delayCall += BuildProject.BuildAll;
+            }
 
-            GUI.backgroundColor = UnityBuildGUIUtility.defaultBackgroundColor;
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndVertical();
         }

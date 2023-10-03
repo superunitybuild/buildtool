@@ -16,7 +16,6 @@ namespace SuperUnityBuild.BuildTool
         public BuildScriptingBackend[] scriptingBackends = new BuildScriptingBackend[0];
 
         public string platformName;
-        public string dataDirNameFormat;
         public BuildTargetGroup targetGroup;
 
         public virtual void Init()
@@ -192,7 +191,7 @@ namespace SuperUnityBuild.BuildTool
                     GUILayout.BeginHorizontal();
 
                     distEnabled.boolValue = GUILayout.Toggle(distEnabled.boolValue, GUIContent.none, GUILayout.ExpandWidth(false));
-                    distName.stringValue = BuildProject.SanitizeFolderName(GUILayout.TextField(distName.stringValue));
+                    distName.stringValue = GUILayout.TextField(distName.stringValue.SanitizeFolderName());
 
                     if (UnityBuildGUIUtility.DeleteButton())
                         distList.SafeDeleteArrayElementAtIndex(i);

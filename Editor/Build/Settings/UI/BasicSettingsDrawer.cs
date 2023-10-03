@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -60,6 +60,11 @@ namespace SuperUnityBuild.BuildTool
 
                     System.Diagnostics.Process.Start(path);
                 }
+
+                GUILayout.Space(20);
+                GUILayout.Label("Build Constants Options", UnityBuildGUIUtility.midHeaderStyle);
+
+                EditorGUILayout.PropertyField(property.FindPropertyRelative("constantsFileLocation"));
 
                 property.serializedObject.ApplyModifiedProperties();
 

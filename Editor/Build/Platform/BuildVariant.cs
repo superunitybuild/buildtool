@@ -24,7 +24,7 @@ namespace SuperUnityBuild.BuildTool
         {
             get
             {
-                return isFlag ? string.Join('+', flags) : values[selectedIndex];
+                return isFlag ? string.Join("+", flags) : values[selectedIndex];
             }
         }
 
@@ -64,7 +64,7 @@ namespace SuperUnityBuild.BuildTool
 
         public override string ToString()
         {
-            return isFlag ? string.Join('+', flags) : values[selectedIndex];
+            return isFlag ? string.Join("+", flags) : values[selectedIndex];
         }
     }
 }

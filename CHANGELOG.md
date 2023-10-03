@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- ## [Unreleased] -->
 
+## [7.0.0] - 2023-10-03
+
+### Added
+
+-   Double-click settings assets to assign them as the active settings in the SuperUnityBuild window. (by [@RobProductions](https://github.com/RobProductions))
+-   Customize app build name. (by [@RobProductions](https://github.com/RobProductions))
+-   Customize `BuildConstants` file path. (by [@RobProductions](https://github.com/RobProductions))
+
+### Changed
+
+-   **Breaking change:** Namespaced generated `BuildConstants` class and enums, added `BuildConstants.scriptingBackend` constant.
+-   Remove redundant `dataDirNameFormat` variable from Build Platforms.
+-   Renamed 'Per-Platform' Build Action type to 'Per-Build' to reflect when they are run.
+-   Enhanced support for string token usage in Build Action configurations. Per-Build actions have gained support for `$BASEPATH` and `$BUILDPATH`, whilst Single Run actions can now use `$VERSION`, `$BUILD`, `$YEAR`, `$MONTH`, `$DAY` and `$TIME`, with the time-based tokens corresponding to the time at which the action was run.
+-   Scene list UI overhaul. (by [@RobProductions](https://github.com/RobProductions))
+-   Release list UI overhaul. (by [@RobProductions](https://github.com/RobProductions))
+-   Streamline UI colors. (by [@RobProductions](https://github.com/RobProductions))
+-   Replaced the 'Open SuperUnityBuild' button shown in the Inspector for settings assets with new 'Open in SuperUnityBuild' button to assign them as the active settings in the SuperUnityBuild window. (by [@RobProductions](https://github.com/RobProductions))
+
+### Fixed
+
+-   Remove dependency on .NET Standard 2.1. (by [@RobProductions](https://github.com/RobProductions))
+-   Fix scripting backend not being restored after build. (by [@RobProductions](https://github.com/RobProductions))
+
 ## [6.0.1] - 2023-05-26
 
 ### Fixed
@@ -235,7 +259,8 @@ This release includes all changes from 1.0.0 pre-releases ([1.0.0-pre.1](#100-pr
 -   Fixed issue in Linux build name moving `binaryName` to `BuildArchitecture`. [PR #41](https://github.com/superunitybuild/buildtool/pull/41)
 -   Fixed an issue where custom defines were overwrite when build was finished. [Issue #36](https://github.com/superunitybuild/buildtool/issues/36)
 
-[unreleased]: https://github.com/superunitybuild/buildtool/compare/v6.0.1...HEAD
+[unreleased]: https://github.com/superunitybuild/buildtool/compare/v7.0.0...HEAD
+[7.0.0]: https://github.com/superunitybuild/buildtool/compare/v6.0.1...v7.0.0
 [6.0.1]: https://github.com/superunitybuild/buildtool/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/superunitybuild/buildtool/compare/v5.0.4...v6.0.0
 [5.0.4]: https://github.com/superunitybuild/buildtool/compare/v5.0.3...v5.0.4
