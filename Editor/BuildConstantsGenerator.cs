@@ -41,6 +41,7 @@ namespace SuperUnityBuild.BuildTool
             string currentVersion = "",
             BuildReleaseType currentReleaseType = null,
             BuildPlatform currentBuildPlatform = null,
+            BuildScriptingBackend currentScriptingBackend = null,
             BuildArchitecture currentBuildArchitecture = null,
             BuildDistribution currentBuildDistribution = null)
         {
@@ -60,7 +61,8 @@ namespace SuperUnityBuild.BuildTool
             string versionString = currentVersion;
             string releaseTypeString = currentReleaseType == null ? NONE : SanitizeString(currentReleaseType.typeName);
             string platformString = currentBuildPlatform == null ? NONE : SanitizeString(currentBuildPlatform.platformName);
-            string archString = currentBuildArchitecture == null ? NONE : SanitizeString(currentBuildArchitecture.name);
+            string scriptingBackendString = currentScriptingBackend == null ? NONE : SanitizeString(currentScriptingBackend.name);
+            string architectureString = currentBuildArchitecture == null ? NONE : SanitizeString(currentBuildArchitecture.name);
             string distributionString = currentBuildDistribution == null ? NONE : SanitizeString(currentBuildDistribution.distributionName);
 
             if (File.Exists(finalFileLocation))
@@ -72,7 +74,7 @@ namespace SuperUnityBuild.BuildTool
             {
                 // Ensure desired path exists if generating for the first time.
                 var fileInfo = new FileInfo(finalFileLocation);
-                if(!fileInfo.Directory.Exists)
+                if (!fileInfo.Directory.Exists)
                 {
                     Directory.CreateDirectory(fileInfo.Directory.FullName);
                 }
@@ -83,12 +85,12 @@ namespace SuperUnityBuild.BuildTool
 
             using (StreamWriter writer = new StreamWriter(finalFileLocation))
             {
-                // Start of file and class.
+                // Start of file
                 writer.WriteLine("using System;");
                 writer.WriteLine("");
                 writer.WriteLine("// This file is auto-generated. Do not modify or move this file.");
                 writer.WriteLine();
-                writer.WriteLine("public static class BuildConstants");
+                writer.WriteLine("namespace SuperUnityBuild.Generated");
                 writer.WriteLine("{");
 
                 // Write ReleaseType enum.
@@ -136,6 +138,35 @@ namespace SuperUnityBuild.BuildTool
                 if (!enumBuffer.Contains(platformString))
                     platformString = NONE;
 
+                // Write Scripting Backend enum.
+                enumBuffer.Clear();
+                writer.WriteLine("    public enum ScriptingBackend");
+                writer.WriteLine("    {");
+                writer.WriteLine("        {0},", NONE);
+                enumBuffer.Add(NONE);
+                foreach (BuildPlatform platform in BuildSettings.platformList.platforms)
+                {
+                    if (platform.enabled)
+                    {
+                        foreach (BuildScriptingBackend scriptingBackend in platform.scriptingBackends)
+                        {
+                            string addedString = SanitizeString(scriptingBackend.name);
+
+                            if (scriptingBackend.enabled && !enumBuffer.Contains(addedString))
+                            {
+                                enumBuffer.Add(addedString);
+                                writer.WriteLine("        {0},", addedString);
+                            }
+                        }
+                    }
+                }
+                writer.WriteLine("    }");
+                writer.WriteLine();
+
+                // Validate Scripting Backend string.
+                if (!enumBuffer.Contains(scriptingBackendString))
+                    scriptingBackendString = NONE;
+
                 // Write Architecture enum.
                 enumBuffer.Clear();
                 writer.WriteLine("    public enum Architecture");
@@ -162,8 +193,8 @@ namespace SuperUnityBuild.BuildTool
                 writer.WriteLine();
 
                 // Validate Architecture string.
-                if (!enumBuffer.Contains(archString))
-                    archString = NONE;
+                if (!enumBuffer.Contains(architectureString))
+                    architectureString = NONE;
 
                 // Write Distribution enum.
                 enumBuffer.Clear();
@@ -194,15 +225,21 @@ namespace SuperUnityBuild.BuildTool
                 if (!enumBuffer.Contains(distributionString))
                     distributionString = NONE;
 
+                // Start of class.
+                writer.WriteLine("    public static class BuildConstants");
+                writer.WriteLine("    {");
+
                 // Write current values.
-                writer.WriteLine("    public static readonly DateTime buildDate = new DateTime({0});", buildTime.Ticks);
-                writer.WriteLine("    public const string version = \"{0}\";", versionString);
-                writer.WriteLine("    public const ReleaseType releaseType = ReleaseType.{0};", releaseTypeString);
-                writer.WriteLine("    public const Platform platform = Platform.{0};", platformString);
-                writer.WriteLine("    public const Architecture architecture = Architecture.{0};", archString);
-                writer.WriteLine("    public const Distribution distribution = Distribution.{0};", distributionString);
+                writer.WriteLine("        public static readonly DateTime buildDate = new DateTime({0});", buildTime.Ticks);
+                writer.WriteLine("        public const string version = \"{0}\";", versionString);
+                writer.WriteLine("        public const ReleaseType releaseType = ReleaseType.{0};", releaseTypeString);
+                writer.WriteLine("        public const Platform platform = Platform.{0};", platformString);
+                writer.WriteLine("        public const ScriptingBackend scriptingBackend = ScriptingBackend.{0};", scriptingBackendString);
+                writer.WriteLine("        public const Architecture architecture = Architecture.{0};", architectureString);
+                writer.WriteLine("        public const Distribution distribution = Distribution.{0};", distributionString);
 
                 // End of class.
+                writer.WriteLine("    }");
                 writer.WriteLine("}");
                 writer.WriteLine();
             }
