@@ -11,8 +11,7 @@ namespace SuperUnityBuild.BuildTool
     {
         public const string NONE = "None";
 
-        private const string FileName = "BuildConstants.cs";
-        private static readonly string DefaultFilePath = Path.Combine(Constants.RootDirectoryName, FileName);
+        public const string FileName = "BuildConstants.cs";
 
         public static string FindFile()
         {
@@ -23,9 +22,9 @@ namespace SuperUnityBuild.BuildTool
             {
                 var thisFilePath = fileSearchResults[i];
                 var thisFilePathSplit = thisFilePath.Split(separatorChars);
-                if(thisFilePathSplit.Length > 0)
+                if (thisFilePathSplit.Length > 0)
                 {
-                    if(thisFilePathSplit[thisFilePathSplit.Length - 1].Equals(FileName))
+                    if (thisFilePathSplit[thisFilePathSplit.Length - 1].Equals(FileName))
                     {
                         filePath = thisFilePath;
                         break;
@@ -38,6 +37,7 @@ namespace SuperUnityBuild.BuildTool
 
         public static void Generate(
             DateTime buildTime,
+            string filePath = "",
             string currentVersion = "",
             BuildReleaseType currentReleaseType = null,
             BuildPlatform currentBuildPlatform = null,
@@ -46,7 +46,15 @@ namespace SuperUnityBuild.BuildTool
         {
             // Find the BuildConstants file.
             string currentFilePath = FindFile();
-            string filePath = !string.IsNullOrEmpty(currentFilePath) ? currentFilePath : Path.Combine(Constants.AssetsDirectoryName, DefaultFilePath);
+            string finalFileLocation;
+            if (string.IsNullOrEmpty(currentFilePath))
+            {
+                finalFileLocation = Path.Combine(filePath, FileName);
+            }
+            else
+            {
+                finalFileLocation = currentFilePath;
+            }
 
             // Generate strings
             string versionString = currentVersion;
@@ -55,21 +63,25 @@ namespace SuperUnityBuild.BuildTool
             string archString = currentBuildArchitecture == null ? NONE : SanitizeString(currentBuildArchitecture.name);
             string distributionString = currentBuildDistribution == null ? NONE : SanitizeString(currentBuildDistribution.distributionName);
 
-            if (File.Exists(filePath))
+            if (File.Exists(finalFileLocation))
             {
                 // Delete existing version.
-                File.Delete(filePath);
+                File.Delete(finalFileLocation);
             }
             else
             {
-                // Ensure default path exists if generating for the first time.
-                AssetDatabaseUtility.EnsureDirectoriesExist();
+                // Ensure desired path exists if generating for the first time.
+                var fileInfo = new FileInfo(finalFileLocation);
+                if(!fileInfo.Directory.Exists)
+                {
+                    Directory.CreateDirectory(fileInfo.Directory.FullName);
+                }
             }
 
             // Create a buffer that we'll use to check for any duplicated names.
             List<string> enumBuffer = new List<string>();
 
-            using (StreamWriter writer = new StreamWriter(filePath))
+            using (StreamWriter writer = new StreamWriter(finalFileLocation))
             {
                 // Start of file and class.
                 writer.WriteLine("using System;");

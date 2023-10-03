@@ -37,6 +37,13 @@ namespace SuperUnityBuild.BuildTool
             PerformBuild(buildConfigs, options);
         }
 
+        /// <summary>
+        /// Special user function that runs ConfigureEnvironment on the selected build.
+        /// Unlike BuildPlayer(), this does not revert previous settings such as PlayerPrefs
+        /// and instead directly matches the environment and generates BuildConstants.
+        /// </summary>
+        /// <param name="configKey"></param>
+        /// <param name="options"></param>
         public static void ConfigureEditor(string configKey, BuildOptions options = BuildOptions.None)
         {
             DateTime configureTime = DateTime.Now;
@@ -53,9 +60,10 @@ namespace SuperUnityBuild.BuildTool
             // Parse build config
             BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture architecture,
                 out BuildScriptingBackend scriptingBackend, out BuildDistribution distribution);
+            string constantsFileLocation = BuildSettings.basicSettings.constantsFileLocation;
 
             // Configure environment
-            ConfigureEnvironment(releaseType, platform, architecture, scriptingBackend, distribution, configureTime);
+            ConfigureEnvironment(releaseType, platform, architecture, scriptingBackend, distribution, configureTime, constantsFileLocation);
 
             // Run pre-build actions that have opted in to configuring the Editor
             BuildAction[] buildActions = BuildSettings.preBuildActions.buildActions.Where(item => item.configureEditor).ToArray();
@@ -224,7 +232,7 @@ namespace SuperUnityBuild.BuildTool
         #region Private Methods
 
         private static void ConfigureEnvironment(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture,
-            BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime)
+            BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime, string constantsFileLocation)
         {
             // Switch to target build platform
             EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, architecture.target);
@@ -250,7 +258,8 @@ namespace SuperUnityBuild.BuildTool
             platform.ApplyVariant();
 
             // Generate BuildConstants
-            BuildConstantsGenerator.Generate(buildTime, BuildSettings.productParameters.buildVersion, releaseType, platform, architecture, distribution);
+            BuildConstantsGenerator.Generate(buildTime, constantsFileLocation, BuildSettings.productParameters.buildVersion,
+                releaseType, platform, architecture, distribution);
 
             // Refresh scene list to make sure nothing has been deleted or moved
             releaseType.sceneList.Refresh();
@@ -309,9 +318,11 @@ namespace SuperUnityBuild.BuildTool
 
                 // Parse build config and perform build.
                 string notification = string.Format("Building ({0}/{1}): ", i + 1, buildConfigs.Length);
+                string constantsFileLocation = BuildSettings.basicSettings.constantsFileLocation;
                 BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture arch,
                     out BuildScriptingBackend scriptingBackend, out BuildDistribution dist);
-                bool success = BuildPlayer(notification, releaseType, platform, arch, scriptingBackend, dist, buildTime, options, configKey);
+                bool success = BuildPlayer(notification, releaseType, platform, arch, scriptingBackend, dist, buildTime, options,
+                    constantsFileLocation, configKey);
 
                 if (success)
                     ++successCount;
@@ -370,12 +381,15 @@ namespace SuperUnityBuild.BuildTool
         }
 
         private static bool BuildPlayer(string notification, BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture,
-            BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime, BuildOptions options, string configKey)
+            BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime, BuildOptions options,
+            string constantsFileLocation, string configKey)
         {
             bool success = true;
 
             if (options == BuildOptions.None)
+            {
                 options = releaseType.buildOptions;
+            }
 
             // Save current environment settings
             string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
@@ -385,11 +399,16 @@ namespace SuperUnityBuild.BuildTool
             ScriptingImplementation preBuildImplementation = PlayerSettings.GetScriptingBackend(platform.targetGroup);
 
             // Configure environment settings to match the build configuration
-            ConfigureEnvironment(releaseType, platform, architecture, scriptingBackend, distribution, buildTime);
+            ConfigureEnvironment(releaseType, platform, architecture, scriptingBackend, distribution, buildTime, constantsFileLocation);
 
             // Generate build path
             string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, scriptingBackend, distribution, buildTime);
-            string binName = string.Format(architecture.binaryNameFormat, releaseType.productName.SanitizeFileName());
+            string finalBuildName = releaseType.productName;
+            if(!releaseType.syncAppNameWithProduct)
+            {
+                finalBuildName = releaseType.appBuildName;
+            }
+            string binName = string.Format(architecture.binaryNameFormat, finalBuildName.SanitizeFileName());
 
             // Pre-build actions
             PerformPreBuild(releaseType, platform, architecture, scriptingBackend, distribution, buildTime, ref options, configKey, buildPath);
@@ -414,7 +433,9 @@ namespace SuperUnityBuild.BuildTool
             });
 
             if (buildReport.summary.result == BuildResult.Failed)
+            {
                 error = buildReport.summary.totalErrors + " occurred.";
+            }
 
             if (!string.IsNullOrEmpty(error))
             {
