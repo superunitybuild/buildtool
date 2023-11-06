@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEditor;
 
 namespace SuperUnityBuild.BuildTool
@@ -13,7 +13,6 @@ namespace SuperUnityBuild.BuildTool
 
         #endregion
 
-        public bool _isDedicatedServer;
 
         public BuildLinux()
         {
