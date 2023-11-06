@@ -13,6 +13,8 @@ namespace SuperUnityBuild.BuildTool
 
         #endregion
 
+        public bool _isDedicatedServer;
+
         public BuildLinux()
         {
             enabled = false;
@@ -27,7 +29,8 @@ namespace SuperUnityBuild.BuildTool
             if (architectures == null || architectures.Length == 0)
             {
                 architectures = new BuildArchitecture[] {
-                    new BuildArchitecture(BuildTarget.StandaloneLinux64, "Linux x64", true, "{0}.x86_64")
+                    new BuildArchitecture(BuildTarget.StandaloneLinux64, "Linux x64", false, "{0}.x86_64", StandaloneBuildSubtarget.Player),
+                    new BuildArchitecture(BuildTarget.StandaloneLinux64, "Linux x64 Server", true, "{0}.x86_64", StandaloneBuildSubtarget.Server),
                 };
             }
 

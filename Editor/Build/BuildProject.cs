@@ -391,6 +391,11 @@ namespace SuperUnityBuild.BuildTool
                 options = releaseType.buildOptions;
             }
 
+            if (EditorUserBuildSettings.standaloneBuildSubtarget != architecture.subtarget)
+            {
+                EditorUserBuildSettings.standaloneBuildSubtarget = architecture.subtarget;
+            }
+
             // Save current environment settings
             string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
             string preBuildCompanyName = PlayerSettings.companyName;
@@ -404,7 +409,7 @@ namespace SuperUnityBuild.BuildTool
             // Generate build path
             string buildPath = GenerateBuildPath(BuildSettings.basicSettings.buildPath, releaseType, platform, architecture, scriptingBackend, distribution, buildTime);
             string finalBuildName = releaseType.productName;
-            if(!releaseType.syncAppNameWithProduct)
+            if (!releaseType.syncAppNameWithProduct)
             {
                 finalBuildName = releaseType.appBuildName;
             }
@@ -423,7 +428,6 @@ namespace SuperUnityBuild.BuildTool
             FileUtil.DeleteFileOrDirectory(buildPath);
 
             string error = "";
-
             BuildReport buildReport = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
                 locationPathName = Path.Combine(buildPath, binName),
