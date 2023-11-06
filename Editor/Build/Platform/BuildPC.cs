@@ -43,6 +43,7 @@ namespace SuperUnityBuild.BuildTool
                     new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true, _binaryNameFormats[0]),
                     new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false, _binaryNameFormats[0]),
                     new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86 Server", false, _binaryNameFormats[0], StandaloneBuildSubtarget.Server),
+                    new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64 Server", false, _binaryNameFormats[0], StandaloneBuildSubtarget.Server),
                 };
             }
 
