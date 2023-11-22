@@ -32,6 +32,10 @@ You can also [download the source zip][download] of this repository and extract 
 
 You may also want to [install](https://github.com/superunitybuild/buildtool#installation) the optional [BuildActions][buildactions] package to expand SuperUnityBuild's capabilities.
 
+#### Upgrading from previous versions
+
+When upgrading to a new major version, it is recommended to remove all traces of the previous SuperUnityBuild installation (by uninstalling the package and deleting the `Assets/SuperUnityBuild` directory), restart Unity, install the new release and then allow SuperUnityBuild to create a fresh Build Settings asset.
+
 ### Setup
 
 See [Standard Usage](https://github.com/superunitybuild/buildtool/wiki/Standard-Usage) in the wiki.
