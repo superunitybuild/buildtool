@@ -426,7 +426,15 @@ namespace SuperUnityBuild.BuildTool
 
             // Build player
             FileUtil.DeleteFileOrDirectory(buildPath);
-
+            if (architecture.subtarget == StandaloneBuildSubtarget.Server) //without this, server build won't run in headless mode
+            {
+                options |= BuildOptions.EnableHeadlessMode;
+            }
+            else
+            {
+                options &= ~BuildOptions.EnableHeadlessMode;
+            }
+            
             string error = "";
             BuildReport buildReport = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
