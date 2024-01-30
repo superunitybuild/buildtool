@@ -78,6 +78,34 @@ namespace SuperUnityBuild.BuildTool
             );
         }
 
+        /// <summary>
+        /// Ignore the Editor configuration steps and only generate the BuildConstants.cs file,
+        /// to avoid dealing with platform and scene list switching
+        /// </summary>
+        /// <param name="configKey"></param>
+        /// <param name="options"></param>
+        public static void GenerateBuildConstantsOnlyButton(string configKey, BuildOptions options = BuildOptions.None)
+        {
+            DateTime configureTime = DateTime.Now;
+
+            // Clear any old notifications
+            BuildNotificationList.instance.RefreshAll();
+
+            // Report Build Constants generation
+            BuildNotificationList.instance.AddNotification(new BuildNotification(
+                BuildNotification.Category.Notification,
+                "Generating BuildConstants for: ", configKey,
+                true, null));
+
+            // Parse build config
+            BuildSettings.projectConfigurations.ParseKeychain(configKey, out BuildReleaseType releaseType, out BuildPlatform platform, out BuildArchitecture architecture,
+                out BuildScriptingBackend scriptingBackend, out BuildDistribution distribution);
+            string constantsFileLocation = BuildSettings.basicSettings.constantsFileLocation;
+
+            GenerateBuildConstants(releaseType, platform, architecture, scriptingBackend, distribution, configureTime, constantsFileLocation);
+
+        }
+
         public static string GenerateDefaultDefines(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture arch,
             BuildScriptingBackend scriptingBackend, BuildDistribution dist)
         {
@@ -263,6 +291,14 @@ namespace SuperUnityBuild.BuildTool
 
             // Refresh scene list to make sure nothing has been deleted or moved
             releaseType.sceneList.Refresh();
+        }
+
+        ///Create the buildConstants.cs file
+        private static void GenerateBuildConstants(BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture,
+            BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime, string constantsFileLocation)
+        {
+            BuildConstantsGenerator.Generate(buildTime, constantsFileLocation, BuildSettings.productParameters.buildVersion,
+                releaseType, platform, scriptingBackend, architecture, distribution);
         }
 
         private static void ReplaceFromFile(StringBuilder sb, string keyString, string filename)

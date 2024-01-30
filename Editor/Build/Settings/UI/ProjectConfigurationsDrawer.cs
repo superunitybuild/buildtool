@@ -182,6 +182,12 @@ namespace SuperUnityBuild.BuildTool
                             }
                             EditorGUI.EndDisabledGroup();
 
+                            if (GUILayout.Button(new GUIContent("Generate Build Constants", "Only generate the BuildConstants.cs file without changing platform."), GUILayout.ExpandWidth(true)))
+                            {
+                                // Generate the Build Constants File
+                                BuildProject.GenerateBuildConstantsOnlyButton(selectedKeyChain.stringValue, buildOptions);
+                            }
+
                             if (GUILayout.Button(new GUIContent("Configure Editor Environment", "Switches platform, refreshes BuildConstants, applies scripting defines and variant settings and sets Build Settings scene list to match the selected build configuration"), GUILayout.ExpandWidth(true)))
                             {
                                 // Update Editor environment settings to match selected build configuration
