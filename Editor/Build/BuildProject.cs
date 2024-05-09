@@ -418,8 +418,8 @@ namespace SuperUnityBuild.BuildTool
                 BuildNotification.Category.Notification,
                 notification, configKey,
                 true, null));
-            
-            // Ensure settings are synchronized (see issue #100)
+
+            // Ensure settings are synchronized
             AssetDatabase.SaveAssets();
 
             // Build player
