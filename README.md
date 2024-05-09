@@ -34,7 +34,9 @@ You may also want to [install](https://github.com/superunitybuild/buildtool#inst
 
 #### Upgrading from previous versions
 
-When upgrading to a new major version, it is recommended to remove all traces of the previous SuperUnityBuild installation (by uninstalling the package and deleting the `Assets/SuperUnityBuild` directory), restart Unity, install the new release and then allow SuperUnityBuild to create a fresh Build Settings asset.
+When upgrading to a new major version, it is strongly recommended to remove all traces of the previous SuperUnityBuild installation by uninstalling the package, deleting the current Build Settings asset (stored in the `Assets/SuperUnityBuild` directory by default), restarting Unity, installing the new release and then allowing SuperUnityBuild to create a fresh Build Settings asset.
+
+Upgrades to new patch or minor versions (i.e. versions without breaking changes) can be performed in-place by simply updating the package.
 
 ### Setup
 
