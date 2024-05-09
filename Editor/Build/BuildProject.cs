@@ -164,29 +164,12 @@ namespace SuperUnityBuild.BuildTool
             ++productParameters.buildCounter;
 
             // Build version string
-            string prototype = TokensUtility.ResolveBuildNumberToken(productParameters.versionTemplate);
-            prototype = TokensUtility.ResolveBuildTimeTokens(prototype, buildTime);
+            string version = productParameters.versionTemplate;
 
-            StringBuilder sb = new StringBuilder(prototype);
-
-            // Regex = (?:\$DAYSSINCE\(")([^"]*)(?:"\))
-            Match match = Regex.Match(prototype, "(?:\\$DAYSSINCE\\(\")([^\"]*)(?:\"\\))");
-            while (match.Success)
-            {
-                int daysSince = (DateTime.TryParse(match.Groups[1].Value, out DateTime parsedTime)) ?
-                    buildTime.Subtract(parsedTime).Days :
-                    0;
-
-                sb.Replace(match.Captures[0].Value, daysSince.ToString());
-                match = match.NextMatch();
-            }
-
-            ReplaceFromFile(sb, "$NOUN", "nouns.txt");
-            ReplaceFromFile(sb, "$ADJECTIVE", "adjectives.txt");
-
-            sb.Replace("$SECONDS", (buildTime.TimeOfDay.TotalSeconds / 15f).ToString("F0"));
-
-            string version = sb.ToString();
+            version = TokensUtility.ResolveBuildNumberToken(version);
+            version = TokensUtility.ResolveBuildTimeUtilityTokens(version, buildTime);
+            version = TokensUtility.ResolveBuildTimeTokens(version, buildTime);
+            version = TokensUtility.ResolveBuildWordTokens(version);
 
             productParameters.buildVersion = version;
             PlayerSettings.bundleVersion = version;
@@ -263,37 +246,6 @@ namespace SuperUnityBuild.BuildTool
 
             // Refresh scene list to make sure nothing has been deleted or moved
             releaseType.sceneList.Refresh();
-        }
-
-        private static void ReplaceFromFile(StringBuilder sb, string keyString, string filename)
-        {
-            if (sb.ToString().IndexOf(keyString) > -1)
-            {
-                string[] fileSearchResults = Directory.GetFiles(Application.dataPath, filename, SearchOption.AllDirectories);
-                string filePath = null;
-                string desiredFilePath = string.Format("UnityBuild{0}Editor{0}{1}", Path.DirectorySeparatorChar, filename);
-                for (int i = 0; i < fileSearchResults.Length; i++)
-                {
-                    if (fileSearchResults[i].EndsWith(desiredFilePath))
-                    {
-                        filePath = fileSearchResults[i];
-                        break;
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(filePath))
-                {
-                    string[] lines = File.ReadAllLines(filePath);
-
-                    int index = sb.ToString().IndexOf(keyString, 0);
-                    while (index > -1)
-                    {
-                        string noun = lines[UnityEngine.Random.Range(0, lines.Length - 1)].ToUpper();
-                        sb.Replace(keyString, noun, index, keyString.Length);
-                        index = sb.ToString().IndexOf(keyString, index + 1);
-                    }
-                }
-            }
         }
 
         private static void PerformBuild(string[] buildConfigs, BuildOptions options = BuildOptions.None)

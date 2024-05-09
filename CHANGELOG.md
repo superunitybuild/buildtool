@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+-   Fix `$DAYSSINCE` build version template token being mangled by `$DAY` token.
+-   Fix `$NOUN` and `$ADJECTIVE` build version template tokens not working since conversion to UPM package.
 -   Fix 'Error building Player: Incompatible color space with graphics API' when building for Linear color space on Android. (by [@MatthieuG9](https://github.com/MatthieuG9))
 
 ## [7.0.0] - 2023-10-03
