@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+-   **Breaking change:** Solution for setting Android API levels that `UnityEditor.AndroidSdkVersions` does not include, which was preventing building Meta Quest Store-compatible apps in certain Unity versions.
+
 ### Fixed
 
--   Fix 'Error building Player: Incompatible color space with graphics API' when building for Linear color space on Android (by [@MatthieuG9](https://github.com/MatthieuG9))
+-   Fix 'Error building Player: Incompatible color space with graphics API' when building for Linear color space on Android. (by [@MatthieuG9](https://github.com/MatthieuG9))
 
 ## [7.0.0] - 2023-10-03
 

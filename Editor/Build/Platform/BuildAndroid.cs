@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -143,9 +143,9 @@ namespace SuperUnityBuild.BuildTool
             }
         }
 
-        private AndroidSdkVersions GetAndroidSdkVersionFromKey(string key)
+        private UnityEditor.AndroidSdkVersions GetAndroidSdkVersionFromKey(string key)
         {
-            return EnumValueFromKey<AndroidSdkVersions>(_androidApiLevelEnumPrefix + key);
+            return (UnityEditor.AndroidSdkVersions)EnumValueFromKey<AndroidSdkVersions>(_androidApiLevelEnumPrefix + key);
         }
 
         private void SetApkExpansionFilesType(string key)
@@ -209,5 +209,99 @@ namespace SuperUnityBuild.BuildTool
         {
             EditorUserBuildSettings.androidBuildSubtarget = EnumValueFromKey<MobileTextureSubtarget>(key);
         }
+    }
+
+    /// <summary>
+    /// Fork of <see cref="UnityEditor.AndroidSdkVersions"/> to enable SuperUnityBuild to be kept up-to-date with
+    /// Android API levels, independent of Unity Editor releases
+    /// </summary>
+    public enum AndroidSdkVersions
+    {
+        /// <summary>
+        /// Sets the target API level automatically, according to the latest installed SDK
+        /// on your computer.
+        /// </summary>
+        AndroidApiLevelAuto = 0,
+        /// <summary>
+        /// Android 4.1, "Jelly Bean", API level 16.
+        /// </summary>
+        [Obsolete("Minimum supported Android API level is 22 (Android 5.1 Lollipop). Please use AndroidApiLevel22 or higher", true)]
+        AndroidApiLevel16 = 16,
+        /// <summary>
+        /// Android 4.2, "Jelly Bean", API level 17.
+        /// </summary>
+        [Obsolete("Minimum supported Android API level is 22 (Android 5.1 Lollipop). Please use AndroidApiLevel22 or higher", true)]
+        AndroidApiLevel17 = 17,
+        /// <summary>
+        /// Android 4.3, "Jelly Bean", API level 18.
+        /// </summary>
+        [Obsolete("Minimum supported Android API level is 22 (Android 5.1 Lollipop). Please use AndroidApiLevel22 or higher", true)]
+        AndroidApiLevel18 = 18,
+        /// <summary>
+        /// Android 4.4, "KitKat", API level 19.
+        /// </summary>
+        [Obsolete("Minimum supported Android API level is 22 (Android 5.1 Lollipop). Please use AndroidApiLevel22 or higher", true)]
+        AndroidApiLevel19 = 19,
+        /// <summary>
+        /// Android 5.0, "Lollipop", API level 21.
+        /// </summary>
+        [Obsolete("Minimum supported Android API level is 22 (Android 5.1 Lollipop). Please use AndroidApiLevel22 or higher", true)]
+        AndroidApiLevel21 = 21,
+        /// <summary>
+        /// Android 5.1, "Lollipop", API level 22.
+        /// </summary>
+        AndroidApiLevel22 = 22,
+        /// <summary>
+        /// Android 6.0, "Marshmallow", API level 23.
+        /// </summary>
+        AndroidApiLevel23 = 23,
+        /// <summary>
+        /// Android 7.0, "Nougat", API level 24.
+        /// </summary>
+        AndroidApiLevel24 = 24,
+        /// <summary>
+        /// Android 7.1, "Nougat", API level 25.
+        /// </summary>
+        AndroidApiLevel25 = 25,
+        /// <summary>
+        /// Android 8.0, "Oreo", API level 26.
+        /// </summary>
+        AndroidApiLevel26 = 26,
+        /// <summary>
+        /// Android 8.1, "Oreo", API level 27.
+        /// </summary>
+        AndroidApiLevel27 = 27,
+        /// <summary>
+        /// Android 9.0, "Pie", API level 28.
+        /// </summary>
+        AndroidApiLevel28 = 28,
+        /// <summary>
+        /// Android 10.0, "Android Q", API level 29.
+        /// </summary>
+        AndroidApiLevel29 = 29,
+        /// <summary>
+        /// Android 11.0, "Red Velvet Cake", API level 30.
+        /// </summary>
+        AndroidApiLevel30 = 30,
+        /// <summary>
+        /// Android 12.0, "Snow Cone", API level 31.
+        /// </summary>
+        AndroidApiLevel31 = 31,
+        /// <summary>
+        /// Android 12.1, "Android 12L", API level 32.
+        /// </summary>
+        AndroidApiLevel32 = 32,
+        /// <summary>
+        /// Android 13.0, "Tiramisu", API level 33.
+        /// </summary>
+        AndroidApiLevel33 = 33,
+        /// <summary>
+        /// Android 14.0, "Upside Down Cake", API level 34.
+        /// </summary>
+        AndroidApiLevel34 = 34,
+        /// <summary>
+        /// Android 15.0, "Vanilla Ice Cream", API level 35.
+        /// </summary>
+        AndroidApiLevel35 = 35
     }
 }
