@@ -152,7 +152,11 @@ namespace SuperUnityBuild.BuildTool
         {
             ApkExpansionFilesType expansionFilesType = EnumValueFromKey<ApkExpansionFilesType>(key);
 
+#if UNITY_2023_1_OR_NEWER
+            PlayerSettings.Android.splitApplicationBinary = expansionFilesType == ApkExpansionFilesType.SplitAppBinary;
+#else
             PlayerSettings.Android.useAPKExpansionFiles = expansionFilesType == ApkExpansionFilesType.SplitAppBinary;
+#endif
         }
 
         private void SetBinaryType(string key)
