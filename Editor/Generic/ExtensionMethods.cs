@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -7,6 +8,8 @@ namespace SuperUnityBuild.BuildTool
 {
     public static class ExtensionMethods
     {
+        private static CultureInfo _culture = new CultureInfo("en-GB");
+
         public static string SanitizeCodeString(this string str)
         {
             str = Regex.Replace(str, "[^a-zA-Z0-9_]", "_", RegexOptions.Compiled);
@@ -19,7 +22,7 @@ namespace SuperUnityBuild.BuildTool
 
         public static string SanitizeDefine(this string input)
         {
-            return input.ToUpper().Replace(" ", "").SanitizeCodeString();
+            return input.ToUpper(_culture).Replace(" ", "").SanitizeCodeString();
         }
 
         public static string SanitizeFolderName(this string folderName)
