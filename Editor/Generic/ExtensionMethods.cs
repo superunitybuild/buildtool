@@ -8,7 +8,6 @@ namespace SuperUnityBuild.BuildTool
 {
     public static class ExtensionMethods
     {
-        private static CultureInfo _culture = new CultureInfo("en-GB");
 
         public static string SanitizeCodeString(this string str)
         {
@@ -22,7 +21,7 @@ namespace SuperUnityBuild.BuildTool
 
         public static string SanitizeDefine(this string input)
         {
-            return input.ToUpper(_culture).Replace(" ", "").SanitizeCodeString();
+            return input.ToUpperInvariant().Replace(" ", "").SanitizeCodeString();
         }
 
         public static string SanitizeFolderName(this string folderName)

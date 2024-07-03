@@ -117,7 +117,7 @@ namespace SuperUnityBuild.BuildTool
 
                     while (index > -1)
                     {
-                        string noun = lines[UnityEngine.Random.Range(0, lines.Length - 1)].ToUpper();
+                        string noun = lines[UnityEngine.Random.Range(0, lines.Length - 1)].ToUpperInvariant();
 
                         sb.Replace(token, noun, index, token.Length);
 

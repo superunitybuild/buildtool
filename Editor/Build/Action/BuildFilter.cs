@@ -107,7 +107,7 @@ namespace SuperUnityBuild.BuildTool
             {
                 bool success = false;
 
-                test = test.Trim().ToUpper();
+                test = test.Trim().ToUpperInvariant();
 
                 switch (type)
                 {
@@ -140,9 +140,9 @@ namespace SuperUnityBuild.BuildTool
                     case FilterComparison.NotEqual:
                         return !(targetString.Equals(test, StringComparison.OrdinalIgnoreCase));
                     case FilterComparison.Contains:
-                        return targetString.ToUpper().Contains(test);
+                        return targetString.ToUpperInvariant().Contains(test);
                     case FilterComparison.DoesNotContain:
-                        return !(targetString.ToUpper().Contains(test));
+                        return !(targetString.ToUpperInvariant().Contains(test));
                     default:
                         return false;
                 }
