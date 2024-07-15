@@ -8,7 +8,6 @@ namespace SuperUnityBuild.BuildTool
 {
     public static class ExtensionMethods
     {
-
         public static string SanitizeCodeString(this string str)
         {
             str = Regex.Replace(str, "[^a-zA-Z0-9_]", "_", RegexOptions.Compiled);
@@ -45,15 +44,11 @@ namespace SuperUnityBuild.BuildTool
             trimChars = trimChars ?? new char[] { ' ' };
 
             if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
-            {
                 return value;
-            }
-            if (maxLength <= 0)
-            {
+            else if (maxLength <= 0)
                 return suffix;
-            }
-
-            return value.Substring(0, maxLength).Trim(trimChars) + suffix;
+            else
+                return value.Substring(0, maxLength).Trim(trimChars) + suffix;
         }
 
         public static void SafeDeleteArrayElementAtIndex(this SerializedProperty value, int i)
@@ -79,6 +74,7 @@ namespace SuperUnityBuild.BuildTool
         {
             T previous = default(T);
             bool first = true;
+
             foreach (T element in source)
             {
                 if (!first)
