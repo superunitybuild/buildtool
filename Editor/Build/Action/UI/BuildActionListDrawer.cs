@@ -28,7 +28,7 @@ namespace SuperUnityBuild.BuildTool
 
             list = property.FindPropertyRelative("buildActions");
 
-            List<Type> actionTypes = property.name.ToUpper().Contains("PRE") ?
+            List<Type> actionTypes = property.name.ToUpperInvariant().Contains("PRE") ?
                 BuildActionListUtility.preBuildActions :
                 BuildActionListUtility.postBuildActions;
 
@@ -146,7 +146,7 @@ namespace SuperUnityBuild.BuildTool
 
         private BuildAction[] GetBuildActionsForProperty(SerializedProperty property)
         {
-            return property.name.ToUpper().Contains("PRE") ?
+            return property.name.ToUpperInvariant().Contains("PRE") ?
                 BuildSettings.preBuildActions.buildActions :
                 BuildSettings.postBuildActions.buildActions;
         }

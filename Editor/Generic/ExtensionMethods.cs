@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -7,6 +8,7 @@ namespace SuperUnityBuild.BuildTool
 {
     public static class ExtensionMethods
     {
+
         public static string SanitizeCodeString(this string str)
         {
             str = Regex.Replace(str, "[^a-zA-Z0-9_]", "_", RegexOptions.Compiled);
@@ -19,7 +21,7 @@ namespace SuperUnityBuild.BuildTool
 
         public static string SanitizeDefine(this string input)
         {
-            return input.ToUpper().Replace(" ", "").SanitizeCodeString();
+            return input.ToUpperInvariant().Replace(" ", "").SanitizeCodeString();
         }
 
         public static string SanitizeFolderName(this string folderName)
