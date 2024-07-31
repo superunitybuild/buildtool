@@ -242,7 +242,7 @@ namespace SuperUnityBuild.BuildTool
 
             // Generate BuildConstants
             BuildConstantsGenerator.Generate(buildTime, constantsFileLocation, BuildSettings.productParameters.buildVersion,
-                releaseType, platform, scriptingBackend, architecture, distribution);
+                BuildSettings.productParameters.buildCounter, releaseType, platform, scriptingBackend, architecture, distribution);
 
             // Refresh scene list to make sure nothing has been deleted or moved
             releaseType.sceneList.Refresh();
