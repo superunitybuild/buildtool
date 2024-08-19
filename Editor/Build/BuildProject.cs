@@ -220,6 +220,9 @@ namespace SuperUnityBuild.BuildTool
             // Switch to target build platform
             EditorUserBuildSettings.SwitchActiveBuildTarget(platform.targetGroup, architecture.target);
 
+            // Apply build subtarget
+            EditorUserBuildSettings.standaloneBuildSubtarget = architecture.subtarget;
+
             // Adjust scripting backend
             PlayerSettings.SetScriptingBackend(platform.targetGroup, scriptingBackend.scriptingImplementation);
 
@@ -343,11 +346,6 @@ namespace SuperUnityBuild.BuildTool
                 options = releaseType.buildOptions;
             }
 
-            if (EditorUserBuildSettings.standaloneBuildSubtarget != architecture.subtarget)
-            {
-                EditorUserBuildSettings.standaloneBuildSubtarget = architecture.subtarget;
-            }
-
             // Save current environment settings
             string preBuildDefines = PlayerSettings.GetScriptingDefineSymbolsForGroup(platform.targetGroup);
             string preBuildCompanyName = PlayerSettings.companyName;
@@ -381,14 +379,6 @@ namespace SuperUnityBuild.BuildTool
 
             // Build player
             FileUtil.DeleteFileOrDirectory(buildPath);
-            if (architecture.subtarget == StandaloneBuildSubtarget.Server) //without this, server build won't run in headless mode
-            {
-                options |= BuildOptions.EnableHeadlessMode;
-            }
-            else
-            {
-                options &= ~BuildOptions.EnableHeadlessMode;
-            }
             
             string error = "";
             BuildReport buildReport = BuildPipeline.BuildPlayer(new BuildPlayerOptions
@@ -396,7 +386,8 @@ namespace SuperUnityBuild.BuildTool
                 locationPathName = Path.Combine(buildPath, binName),
                 options = options,
                 scenes = releaseType.sceneList.GetActiveSceneFileList(),
-                target = architecture.target
+                target = architecture.target,
+                subtarget = (int)architecture.subtarget
             });
 
             if (buildReport.summary.result == BuildResult.Failed)
