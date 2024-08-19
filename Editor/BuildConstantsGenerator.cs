@@ -39,6 +39,7 @@ namespace SuperUnityBuild.BuildTool
             DateTime buildTime,
             string filePath = "",
             string currentVersion = "",
+            int currentBuildCounter = 0,
             BuildReleaseType currentReleaseType = null,
             BuildPlatform currentBuildPlatform = null,
             BuildScriptingBackend currentScriptingBackend = null,
@@ -232,6 +233,7 @@ namespace SuperUnityBuild.BuildTool
                 // Write current values.
                 writer.WriteLine("        public static readonly DateTime buildDate = new DateTime({0});", buildTime.Ticks);
                 writer.WriteLine("        public const string version = \"{0}\";", versionString);
+                writer.WriteLine("        public const int buildCounter = {0};", currentBuildCounter);
                 writer.WriteLine("        public const ReleaseType releaseType = ReleaseType.{0};", releaseTypeString);
                 writer.WriteLine("        public const Platform platform = Platform.{0};", platformString);
                 writer.WriteLine("        public const ScriptingBackend scriptingBackend = ScriptingBackend.{0};", scriptingBackendString);
