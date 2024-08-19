@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-   Added `BuildConstants.buildCounter` constant (by [@magicjar](https://github.com/magicjar))
+
 ### Changed
 
 -   **Breaking change:** Solution for setting Android API levels that `UnityEditor.AndroidSdkVersions` does not include, which was preventing building Meta Quest Store-compatible apps in certain Unity versions.
