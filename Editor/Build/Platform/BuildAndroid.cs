@@ -83,12 +83,7 @@ namespace SuperUnityBuild.BuildTool
                     .Select(i => i.Replace(_androidApiLevelEnumPrefix, ""))
                     .ToArray();
 
-                string[] createSymbolsOptions =
-#if UNITY_2021_1_OR_NEWER
-                    EnumNamesToArray<AndroidCreateSymbols>().ToArray();
-#else
-                    new string[] { "Disabled", "Enabled" };
-#endif
+                string[] createSymbolsOptions = EnumNamesToArray<AndroidCreateSymbols>().ToArray();
 
                 variants = new BuildVariant[] {
                     new BuildVariant(_deviceTypeVariantId, EnumNamesToArray<AndroidArchitecture>()
@@ -187,11 +182,7 @@ namespace SuperUnityBuild.BuildTool
 
         private void SetCreateSymbols(string key)
         {
-#if UNITY_2021_1_OR_NEWER
             EditorUserBuildSettings.androidCreateSymbols = EnumValueFromKey<AndroidCreateSymbols>(key);
-#else
-            EditorUserBuildSettings.androidCreateSymbolsZip = key != "Disabled";
-#endif
         }
 
         private void SetDeviceType(string key)
