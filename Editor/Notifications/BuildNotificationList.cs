@@ -121,7 +121,7 @@ namespace SuperUnityBuild.BuildTool
             AddNotification(new BuildNotification(
                 BuildNotification.Category.Error,
                 "No Build Platform Found",
-                "At least one Build Platform with one enabled Architecture is required to perform a build.",
+                "At least one Build Platform with one enabled Target is required to perform a build.",
                 false,
                 () =>
                 {
@@ -133,7 +133,7 @@ namespace SuperUnityBuild.BuildTool
                         for (int i = 0; i < platformCount; i++)
                         {
                             BuildPlatform platform = BuildSettings.platformList.platforms[i];
-                            if (platform.enabled && platform.atLeastOneArch && platform.atLeastOneBackend)
+                            if (platform.enabled && platform.atLeastOneTarget && platform.atLeastOneBackend)
                             {
                                 validError = false;
                                 break;

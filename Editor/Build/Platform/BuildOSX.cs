@@ -10,14 +10,16 @@ namespace SuperUnityBuild.BuildTool
         #region Constants
 
         private const string _name = "macOS";
-        private Dictionary<BuildOutputType, string> _binaryNameFormats = new Dictionary<BuildOutputType, string>{
+        private readonly Dictionary<BuildOutputType, string> _binaryNameFormats = new()
+        {
             {BuildOutputType.App, "{0}.app"},
             {BuildOutputType.XcodeProject, "{0}"},
         };
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.Standalone;
 
-        private const string _buildOutputTypeVariantId = "Build Output";
-        private const string _macOSArchitectureVariantId = "macOS Architecture";
+        private const string ArchitectureIntel64BitId = "Intel 64-bit";
+        private const string ArchitectureAppleSiliconId = "Apple silicon";
+        private const string ArchitectureUniversalId = "Intel 64-bit + Apple silicon";
 
         private enum BuildOutputType
         {
@@ -47,10 +49,11 @@ namespace SuperUnityBuild.BuildTool
             platformName = _name;
             targetGroup = _targetGroup;
 
-            if (architectures == null || architectures.Length == 0)
+            if (targets == null || targets.Length == 0)
             {
-                architectures = new BuildArchitecture[] {
-                    new BuildArchitecture(BuildTarget.StandaloneOSX, "macOS", true, _binaryNameFormats[0]),
+                targets = new BuildTarget[] {
+                    new(UnityEditor.BuildTarget.StandaloneOSX, PlayerName, true, _binaryNameFormats[0]),
+                    new(UnityEditor.BuildTarget.StandaloneOSX, ServerName, false, _binaryNameFormats[0], (int)StandaloneBuildSubtarget.Server),
                 };
             }
 
@@ -58,51 +61,48 @@ namespace SuperUnityBuild.BuildTool
             {
                 scriptingBackends = new BuildScriptingBackend[]
                 {
-                    new BuildScriptingBackend(ScriptingImplementation.Mono2x, true),
-                    new BuildScriptingBackend(ScriptingImplementation.IL2CPP, false),
+                    new(ScriptingImplementation.Mono2x, true),
+                    new(ScriptingImplementation.IL2CPP, false),
                 };
             }
 
             if (variants == null || variants.Length == 0)
             {
                 variants = new BuildVariant[] {
-                    new BuildVariant(_macOSArchitectureVariantId, EnumNamesToArray<MacOSArchitecture>(true), 0),
-                    new BuildVariant(_buildOutputTypeVariantId, EnumNamesToArray<BuildOutputType>(true), 0)
+                    new(ArchitectureVariantKey, new string[] { ArchitectureIntel64BitId, ArchitectureAppleSiliconId, ArchitectureUniversalId }, 0),
+                    new(BuildOutputVariantKey, EnumNamesToArray<BuildOutputType>(true), 0)
                 };
             }
         }
 
         public override void ApplyVariant()
         {
-            foreach (var variantOption in variants)
+            foreach (BuildVariant variantOption in variants)
             {
                 string key = variantOption.variantKey;
 
                 switch (variantOption.variantName)
                 {
-                    case _buildOutputTypeVariantId:
-                        SetBuildOutputType(key);
+                    case ArchitectureVariantKey:
+                        SetArchitecture(key);
                         break;
-                    case _macOSArchitectureVariantId:
-                        SetMacOSArchitecture(key);
+                    case BuildOutputVariantKey:
+                        SetBuildOutput(key);
                         break;
                 }
             }
         }
 
-        private void SetBuildOutputType(string key)
+        private void SetArchitecture(string key)
         {
-            BuildOutputType outputType = EnumValueFromKey<BuildOutputType>(key);
+            MacOSArchitecture architecture = key switch
+            {
+                ArchitectureIntel64BitId => MacOSArchitecture.Intelx64,
+                ArchitectureAppleSiliconId => MacOSArchitecture.AppleSilicon,
+                ArchitectureUniversalId or _ => MacOSArchitecture.Universal,
+            };
 
-#if UNITY_STANDALONE_OSX
-            UnityEditor.OSXStandalone.UserBuildSettings.createXcodeProject = outputType == BuildOutputType.XcodeProject;
-#endif
 
-            architectures[0].binaryNameFormat = _binaryNameFormats[outputType];
-        }
-
-        private void SetMacOSArchitecture(string key)
-        {
 #if UNITY_STANDALONE_OSX
             UnityEditor.OSXStandalone.UserBuildSettings.architecture =
 #if UNITY_2022_1_OR_NEWER
@@ -110,8 +110,19 @@ namespace SuperUnityBuild.BuildTool
 #else
                 (UnityEditor.OSXStandalone.MacOSArchitecture)
 #endif
-                    EnumValueFromKey<MacOSArchitecture>(key);
+                    architecture;
 #endif
+        }
+
+        private void SetBuildOutput(string key)
+        {
+            BuildOutputType outputType = EnumValueFromKey<BuildOutputType>(key);
+
+#if UNITY_STANDALONE_OSX
+            UnityEditor.OSXStandalone.UserBuildSettings.createXcodeProject = outputType == BuildOutputType.XcodeProject;
+#endif
+
+            targets[0].binaryNameFormat = _binaryNameFormats[outputType];
         }
     }
 }

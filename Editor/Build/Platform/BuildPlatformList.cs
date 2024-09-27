@@ -6,6 +6,6 @@ namespace SuperUnityBuild.BuildTool
     [Serializable]
     public class BuildPlatformList
     {
-        public List<BuildPlatform> platforms = new List<BuildPlatform>();
+        public List<BuildPlatform> platforms = new();
     }
 }

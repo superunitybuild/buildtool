@@ -14,7 +14,6 @@ namespace SuperUnityBuild.BuildTool
 
         private const string _deviceTypeVariantId = "Device Type";
         private const string _sdkVersionVariantId = "Target SDK";
-        private const string _buildConfigTypeVariantId = "Build Type";
 
         #endregion
 
@@ -29,10 +28,10 @@ namespace SuperUnityBuild.BuildTool
             platformName = _name;
             targetGroup = _targetGroup;
 
-            if (architectures == null || architectures.Length == 0)
+            if (targets == null || targets.Length == 0)
             {
-                architectures = new BuildArchitecture[] {
-                    new BuildArchitecture(BuildTarget.iOS, "iOS", true, _binaryNameFormat)
+                targets = new BuildTarget[] {
+                    new(UnityEditor.BuildTarget.iOS, PlayerName, true, _binaryNameFormat)
                 };
             }
 
@@ -40,30 +39,30 @@ namespace SuperUnityBuild.BuildTool
             {
                 scriptingBackends = new BuildScriptingBackend[]
                 {
-                    new BuildScriptingBackend(ScriptingImplementation.IL2CPP, true),
+                    new(ScriptingImplementation.IL2CPP, true),
                 };
             }
 
             if (variants == null || variants.Length == 0)
             {
                 variants = new BuildVariant[] {
-                    new BuildVariant(_deviceTypeVariantId, EnumNamesToArray<iOSTargetDevice>(), 0),
-                    new BuildVariant(_sdkVersionVariantId, EnumNamesToArray<iOSSdkVersion>(true), 0),
-                    new BuildVariant(_buildConfigTypeVariantId, EnumNamesToArray<XcodeBuildConfig>(), 0),
+                    new(_deviceTypeVariantId, EnumNamesToArray<iOSTargetDevice>(), 0),
+                    new(_sdkVersionVariantId, EnumNamesToArray<iOSSdkVersion>(true), 0),
+                    new(BuildTypeVariantKey, EnumNamesToArray<XcodeBuildConfig>(), 0),
                 };
             }
         }
 
         public override void ApplyVariant()
         {
-            foreach (var variantOption in variants)
+            foreach (BuildVariant variantOption in variants)
             {
                 string key = variantOption.variantKey;
 
                 switch (variantOption.variantName)
                 {
-                    case _buildConfigTypeVariantId:
-                        SetBuildConfigType(key);
+                    case BuildTypeVariantKey:
+                        SetBuildType(key);
                         break;
                     case _deviceTypeVariantId:
                         SetDeviceType(key);
@@ -75,7 +74,7 @@ namespace SuperUnityBuild.BuildTool
             }
         }
 
-        private void SetBuildConfigType(string key)
+        private void SetBuildType(string key)
         {
             EditorUserBuildSettings.iOSXcodeBuildConfig = EnumValueFromKey<XcodeBuildConfig>(key);
         }

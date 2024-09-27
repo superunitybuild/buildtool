@@ -9,14 +9,16 @@ namespace SuperUnityBuild.BuildTool
     {
         #region Constants
 
-        private const string _name = "PC";
-        private Dictionary<BuildOutputType, string> _binaryNameFormats = new Dictionary<BuildOutputType, string>{
+        private const string _name = "Windows";
+        private readonly Dictionary<BuildOutputType, string> _binaryNameFormats = new()
+        {
             {BuildOutputType.App, "{0}.exe"},
             {BuildOutputType.VisualStudioSolution, "{0}.sln"},
         };
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.Standalone;
 
-        private const string _buildOutputTypeVariantId = "Build Output";
+        private const string ArchitectureIntel64BitId = "Intel 64-bit";
+        private const string ArchitectureIntel32BitId = "Intel 32-bit";
 
         private enum BuildOutputType
         {
@@ -37,13 +39,11 @@ namespace SuperUnityBuild.BuildTool
             platformName = _name;
             targetGroup = _targetGroup;
 
-            if (architectures == null || architectures.Length == 0)
+            if (targets == null || targets.Length == 0)
             {
-                architectures = new BuildArchitecture[] {
-                    new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86", true, _binaryNameFormats[0]),
-                    new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64", false, _binaryNameFormats[0]),
-                    new BuildArchitecture(BuildTarget.StandaloneWindows, "Windows x86 Server", false, _binaryNameFormats[0], StandaloneBuildSubtarget.Server),
-                    new BuildArchitecture(BuildTarget.StandaloneWindows64, "Windows x64 Server", false, _binaryNameFormats[0], StandaloneBuildSubtarget.Server),
+                targets = new BuildTarget[] {
+                    new(UnityEditor.BuildTarget.StandaloneWindows64, PlayerName, true, _binaryNameFormats[0]),
+                    new(UnityEditor.BuildTarget.StandaloneWindows64, ServerName, false, _binaryNameFormats[0], (int)StandaloneBuildSubtarget.Server),
                 };
             }
 
@@ -51,35 +51,50 @@ namespace SuperUnityBuild.BuildTool
             {
                 scriptingBackends = new BuildScriptingBackend[]
                 {
-                    new BuildScriptingBackend(ScriptingImplementation.Mono2x, true),
-                    new BuildScriptingBackend(ScriptingImplementation.IL2CPP, false),
+                    new(ScriptingImplementation.Mono2x, true),
+                    new(ScriptingImplementation.IL2CPP, false),
                 };
             }
 
             if (variants == null || variants.Length == 0)
             {
                 variants = new BuildVariant[] {
-                    new BuildVariant(_buildOutputTypeVariantId, EnumNamesToArray<BuildOutputType>(true), 0)
+                    new(ArchitectureVariantKey, new string[] { ArchitectureIntel64BitId, ArchitectureIntel32BitId }, 0, false),
+                    new(BuildOutputVariantKey, EnumNamesToArray<BuildOutputType>(true), 0)
                 };
             }
         }
 
         public override void ApplyVariant()
         {
-            foreach (var variantOption in variants)
+            foreach (BuildVariant variantOption in variants)
             {
                 string key = variantOption.variantKey;
 
                 switch (variantOption.variantName)
                 {
-                    case _buildOutputTypeVariantId:
-                        SetBuildOutputType(key);
+                    case ArchitectureVariantKey:
+                        SetArchitecture(key);
+                        break;
+                    case BuildOutputVariantKey:
+                        SetBuildOutput(key);
                         break;
                 }
             }
         }
 
-        private void SetBuildOutputType(string key)
+        private void SetArchitecture(string key)
+        {
+            UnityEditor.BuildTarget target = key switch
+            {
+                ArchitectureIntel32BitId => UnityEditor.BuildTarget.StandaloneWindows,
+                ArchitectureIntel64BitId or _ => UnityEditor.BuildTarget.StandaloneWindows64,
+            };
+
+            _ = EditorUserBuildSettings.SwitchActiveBuildTarget(_targetGroup, target);
+        }
+
+        private void SetBuildOutput(string key)
         {
             BuildOutputType outputType = EnumValueFromKey<BuildOutputType>(key);
 
@@ -87,7 +102,7 @@ namespace SuperUnityBuild.BuildTool
             UnityEditor.WindowsStandalone.UserBuildSettings.createSolution = outputType == BuildOutputType.VisualStudioSolution;
 #endif
 
-            architectures[0].binaryNameFormat = _binaryNameFormats[outputType];
+            targets[0].binaryNameFormat = _binaryNameFormats[outputType];
         }
     }
 }

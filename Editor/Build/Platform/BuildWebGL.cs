@@ -25,10 +25,10 @@ namespace SuperUnityBuild.BuildTool
             platformName = _name;
             targetGroup = _targetGroup;
 
-            if (architectures == null || architectures.Length == 0)
+            if (targets == null || targets.Length == 0)
             {
-                architectures = new BuildArchitecture[] {
-                    new BuildArchitecture(BuildTarget.WebGL, "WebGL", true, _binaryNameFormat),
+                targets = new BuildTarget[] {
+                    new(UnityEditor.BuildTarget.WebGL, PlayerName, true, _binaryNameFormat),
                 };
             }
 
@@ -36,7 +36,7 @@ namespace SuperUnityBuild.BuildTool
             {
                 scriptingBackends = new BuildScriptingBackend[]
                 {
-                    new BuildScriptingBackend(ScriptingImplementation.IL2CPP, true),
+                    new(ScriptingImplementation.IL2CPP, true),
                 };
             }
         }

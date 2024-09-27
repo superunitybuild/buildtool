@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,7 +18,7 @@ namespace SuperUnityBuild.BuildTool
         public string note = string.Empty;
         public bool actionEnabled = true;
         [Tooltip("BuildAction should run when 'Configure Editor Environment' button is clicked")] public bool configureEditor = false;
-        public BuildFilter filter = new BuildFilter();
+        public BuildFilter filter = new();
 
         /// <summary>
         /// This will be exectued once before/after all players are built.
@@ -33,7 +33,7 @@ namespace SuperUnityBuild.BuildTool
         public virtual void PerBuildExecute(
             BuildReleaseType releaseType,
             BuildPlatform platform,
-            BuildArchitecture architecture,
+            BuildTarget target,
             BuildScriptingBackend scriptingBackend,
             BuildDistribution distribution,
             DateTime buildTime, ref BuildOptions options, string configKey, string buildPath)
@@ -50,10 +50,10 @@ namespace SuperUnityBuild.BuildTool
             return prototype;
         }
 
-        public static string ResolvePerBuildExecuteTokens(string prototype, BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime, string buildPath)
+        public static string ResolvePerBuildExecuteTokens(string prototype, BuildReleaseType releaseType, BuildPlatform platform, BuildTarget target, BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime buildTime, string buildPath)
         {
             prototype = TokensUtility.ResolveBuildOutputTokens(prototype, buildPath);
-            prototype = TokensUtility.ResolveBuildConfigurationTokens(prototype, releaseType, platform, architecture, scriptingBackend, distribution, buildTime);
+            prototype = TokensUtility.ResolveBuildConfigurationTokens(prototype, releaseType, platform, target, scriptingBackend, distribution, buildTime);
 
             return prototype;
         }
@@ -81,15 +81,15 @@ namespace SuperUnityBuild.BuildTool
                 actionType = (ActionType)EditorGUILayout.EnumPopup("Action Type", actionType);
 
             if (isPreBuildActionCanConfigureEditor)
-                EditorGUILayout.PropertyField(obj.FindProperty("configureEditor"));
+                _ = EditorGUILayout.PropertyField(obj.FindProperty("configureEditor"));
 
-            EditorGUILayout.PropertyField(obj.FindProperty("note"));
+            _ = EditorGUILayout.PropertyField(obj.FindProperty("note"));
 
             // Only Per-Build actions can be filtered
             if (actionType == ActionType.PerBuild)
-                EditorGUILayout.PropertyField(obj.FindProperty("filter"), GUILayout.Height(0));
+                _ = EditorGUILayout.PropertyField(obj.FindProperty("filter"), GUILayout.Height(0));
 
-            obj.ApplyModifiedProperties();
+            _ = obj.ApplyModifiedProperties();
         }
 
         public override string ToString()
@@ -109,12 +109,12 @@ namespace SuperUnityBuild.BuildTool
 
             while (!done && prop != null)
             {
-                if (prop.name == "actionName" ||
-                    prop.name == "actionType" ||
-                    prop.name == "note" ||
-                    prop.name == "actionEnabled" ||
-                    prop.name == "filter" ||
-                    prop.name == "configureEditor")
+                if (prop.name is "actionName" or
+                    "actionType" or
+                    "note" or
+                    "actionEnabled" or
+                    "filter" or
+                    "configureEditor")
                 {
                     // Already drawn these. Go to next, don't enter into object.
                     done = !prop.NextVisible(false);
@@ -134,7 +134,7 @@ namespace SuperUnityBuild.BuildTool
 
         protected virtual void DrawProperty(SerializedProperty prop)
         {
-            EditorGUILayout.PropertyField(prop);
+            _ = EditorGUILayout.PropertyField(prop);
         }
     }
 }
