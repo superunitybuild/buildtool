@@ -25,16 +25,7 @@ namespace SuperUnityBuild.BuildTool
             Type inspWndType = editorAsm.GetType("UnityEditor.InspectorWindow");
 
             // Get and show window.
-            UnityBuildWindow window;
-            if (inspWndType != null)
-            {
-                window = GetWindow<UnityBuildWindow>(inspWndType);
-            }
-            else
-            {
-                window = GetWindow<UnityBuildWindow>();
-            }
-
+            UnityBuildWindow window = inspWndType != null ? GetWindow<UnityBuildWindow>(inspWndType) : GetWindow<UnityBuildWindow>();
             window.Show();
         }
 
@@ -45,10 +36,9 @@ namespace SuperUnityBuild.BuildTool
         protected void OnEnable()
         {
             GUIContent icon = EditorGUIUtility.IconContent("Packages/com.github.superunitybuild.buildtool/Editor/Assets/Textures/icon.png");
-            GUIContent title = new GUIContent("SuperUnityBuild", icon.image);
+            GUIContent title = new("SuperUnityBuild", icon.image);
             titleContent = title;
 
-            BuildNotificationList.instance.InitializeErrors();
             currentBuildSettings = BuildSettings.instance;
 
             Undo.undoRedoPerformed += UndoHandler;
@@ -61,7 +51,7 @@ namespace SuperUnityBuild.BuildTool
 
         protected void OnGUI()
         {
-            EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
+            _ = EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
 
             DrawTitle();
 
@@ -91,10 +81,10 @@ namespace SuperUnityBuild.BuildTool
 
         #region Public Methods
 
-        public void RefreshSelectedBuildSettings()
+        public void UpdateCurrentBuildSettings()
         {
             currentBuildSettings = BuildSettings.instance;
-            settings = null;
+            Reset();
         }
 
         #endregion
@@ -102,14 +92,9 @@ namespace SuperUnityBuild.BuildTool
         #region Private Methods
         private void Init()
         {
-            if (go == null)
-            {
-                go = new SerializedObject(this);
-            }
-
             // Add field to switch the BuildSettings asset
-            EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
-            EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
+            _ = EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
+            _ = EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
             currentBuildSettings = EditorGUILayout.ObjectField("Build Settings", currentBuildSettings, typeof(BuildSettings), false) as BuildSettings;
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndVertical();
@@ -117,26 +102,32 @@ namespace SuperUnityBuild.BuildTool
             // Override a 'None' selection for the BuildSettings asset
             if (currentBuildSettings == null)
             {
-                RefreshSelectedBuildSettings();
+                UpdateCurrentBuildSettings();
             }
 
             if (currentBuildSettings != BuildSettings.instance)
             {
                 BuildSettings.instance = currentBuildSettings;
-                settings = null;
+                Reset();
             }
 
-            if (settings == null)
-            {
-                settings = new SerializedObject(BuildSettings.instance);
-            }
+            settings ??= new SerializedObject(BuildSettings.instance);
+            go ??= new SerializedObject(this);
 
             BuildSettings.Init();
         }
 
+        private void Reset()
+        {
+            notifications.Reset();
+
+            settings = null;
+            go = null;
+        }
+
         private void DrawTitle()
         {
-            EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
+            _ = EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
             EditorGUILayout.LabelField("SuperUnityBuild", UnityBuildGUIUtility.mainTitleStyle);
             GUILayout.Space(30);
             EditorGUILayout.EndVertical();
@@ -144,32 +135,30 @@ namespace SuperUnityBuild.BuildTool
 
         private void DrawProperties()
         {
-            EditorGUILayout.PropertyField(settings.FindProperty("_basicSettings"), GUILayout.MaxHeight(0));
-            EditorGUILayout.PropertyField(settings.FindProperty("_productParameters"), GUILayout.MaxHeight(10));
-            EditorGUILayout.PropertyField(settings.FindProperty("_releaseTypeList"), GUILayout.MaxHeight(10));
-            EditorGUILayout.PropertyField(settings.FindProperty("_platformList"), GUILayout.MaxHeight(10));
-            EditorGUILayout.PropertyField(settings.FindProperty("_preBuildActions"), new GUIContent("Pre-Build Actions"), GUILayout.MaxHeight(10));
-            EditorGUILayout.PropertyField(settings.FindProperty("_postBuildActions"), new GUIContent("Post-Build Actions"), GUILayout.MaxHeight(10));
+            _ = EditorGUILayout.PropertyField(settings.FindProperty("_basicSettings"), GUILayout.MaxHeight(0));
+            _ = EditorGUILayout.PropertyField(settings.FindProperty("_productParameters"), GUILayout.MaxHeight(10));
+            _ = EditorGUILayout.PropertyField(settings.FindProperty("_releaseTypeList"), GUILayout.MaxHeight(10));
+            _ = EditorGUILayout.PropertyField(settings.FindProperty("_platformList"), GUILayout.MaxHeight(10));
+            _ = EditorGUILayout.PropertyField(settings.FindProperty("_preBuildActions"), new GUIContent("Pre-Build Actions"), GUILayout.MaxHeight(10));
+            _ = EditorGUILayout.PropertyField(settings.FindProperty("_postBuildActions"), new GUIContent("Post-Build Actions"), GUILayout.MaxHeight(10));
 
             BuildSettings.projectConfigurations.Refresh();
-            EditorGUILayout.PropertyField(settings.FindProperty("_projectConfigurations"), GUILayout.MaxHeight(10));
 
-            EditorGUILayout.PropertyField(go.FindProperty("notifications"), GUILayout.MaxHeight(10));
+            _ = EditorGUILayout.PropertyField(settings.FindProperty("_projectConfigurations"), GUILayout.MaxHeight(10));
+            _ = EditorGUILayout.PropertyField(go.FindProperty("notifications"), GUILayout.MaxHeight(10));
 
-            settings.ApplyModifiedProperties();
+            _ = settings.ApplyModifiedProperties();
         }
 
         private void DrawBuildButtons()
         {
             int totalBuildCount = BuildSettings.projectConfigurations.GetEnabledBuildsCount();
 
-            EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
+            _ = EditorGUILayout.BeginVertical(EditorStyles.inspectorFullWidthMargins);
             EditorGUI.BeginDisabledGroup(totalBuildCount < 1);
 
             if (UnityBuildGUIUtility.BuildButton($"Perform All Enabled Builds ({totalBuildCount} Builds)", 30))
-            {
                 EditorApplication.delayCall += BuildProject.BuildAll;
-            }
 
             EditorGUI.EndDisabledGroup();
             EditorGUILayout.EndVertical();

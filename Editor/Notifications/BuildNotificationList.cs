@@ -29,6 +29,7 @@ namespace SuperUnityBuild.BuildTool
 
         public BuildNotificationList()
         {
+            InitializeErrors();
         }
 
         public void AddNotification(BuildNotification notification)
@@ -109,7 +110,12 @@ namespace SuperUnityBuild.BuildTool
             }
         }
 
-        public void InitializeErrors()
+        public void Reset()
+        {
+            _instance = null;
+        }
+
+        private void InitializeErrors()
         {
             AddNotification(new BuildNotification(
                 BuildNotification.Category.Error,
