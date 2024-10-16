@@ -19,6 +19,9 @@ namespace SuperUnityBuild.BuildTool
 
         private const string ArchitectureIntel64BitId = "Intel 64-bit";
         private const string ArchitectureIntel32BitId = "Intel 32-bit";
+#if UNITY_2023_1_OR_NEWER
+        private const string ArchitectureArm64BitId = "ARM 64-bit";
+#endif
 
         private enum BuildOutputType
         {
@@ -59,7 +62,12 @@ namespace SuperUnityBuild.BuildTool
             if (variants == null || variants.Length == 0)
             {
                 variants = new BuildVariant[] {
-                    new(ArchitectureVariantKey, new string[] { ArchitectureIntel64BitId, ArchitectureIntel32BitId }, 0, false),
+                    new(ArchitectureVariantKey, new string[] {
+                        ArchitectureIntel64BitId, ArchitectureIntel32BitId,
+#if UNITY_2023_1_OR_NEWER
+                        ArchitectureArm64BitId
+#endif
+                    }, 0, false),
                     new(BuildOutputVariantKey, EnumNamesToArray<BuildOutputType>(true), 0)
                 };
             }
@@ -90,6 +98,12 @@ namespace SuperUnityBuild.BuildTool
                 ArchitectureIntel32BitId => UnityEditor.BuildTarget.StandaloneWindows,
                 ArchitectureIntel64BitId or _ => UnityEditor.BuildTarget.StandaloneWindows64,
             };
+
+#if UNITY_STANDALONE_WIN && UNITY_2023_1_OR_NEWER
+            UnityEditor.WindowsStandalone.UserBuildSettings.architecture = key == ArchitectureArm64BitId ?
+                UnityEditor.Build.OSArchitecture.ARM64 :
+                UnityEditor.Build.OSArchitecture.x64;
+#endif
 
             _ = EditorUserBuildSettings.SwitchActiveBuildTarget(_targetGroup, target);
         }
