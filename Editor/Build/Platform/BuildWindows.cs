@@ -5,7 +5,7 @@ using UnityEditor;
 namespace SuperUnityBuild.BuildTool
 {
     [Serializable]
-    public class BuildPC : BuildPlatform
+    public class BuildWindows : BuildPlatform
     {
         #region Constants
 
@@ -31,7 +31,7 @@ namespace SuperUnityBuild.BuildTool
 
         #endregion
 
-        public BuildPC()
+        public BuildWindows()
         {
             enabled = false;
             Init();

@@ -5,7 +5,7 @@ using UnityEditor;
 namespace SuperUnityBuild.BuildTool
 {
     [Serializable]
-    public class BuildOSX : BuildPlatform
+    public class BuildMac : BuildPlatform
     {
         #region Constants
 
@@ -38,7 +38,7 @@ namespace SuperUnityBuild.BuildTool
 
         #endregion
 
-        public BuildOSX()
+        public BuildMac()
         {
             enabled = false;
             Init();
