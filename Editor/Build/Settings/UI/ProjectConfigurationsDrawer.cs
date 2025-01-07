@@ -24,9 +24,9 @@ namespace SuperUnityBuild.BuildTool
             treeView = property.FindPropertyRelative("treeView");
             selectedKeyChain = property.FindPropertyRelative("selectedKeyChain");
 
-            EditorGUI.BeginProperty(position, label, property);
+            _ = EditorGUI.BeginProperty(position, label, property);
 
-            EditorGUILayout.BeginHorizontal();
+            _ = EditorGUILayout.BeginHorizontal();
 
             show = property.isExpanded;
             UnityBuildGUIUtility.DropdownHeader("Build Configurations", ref show, false, GUILayout.ExpandWidth(true));
@@ -39,9 +39,9 @@ namespace SuperUnityBuild.BuildTool
 
             if (show)
             {
-                EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
+                _ = EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
-                EditorGUILayout.BeginHorizontal();
+                _ = EditorGUILayout.BeginHorizontal();
                 show = showViewOptions.isExpanded;
                 UnityBuildGUIUtility.DropdownHeader("View Options", ref show, false, GUILayout.ExpandWidth(true));
                 showViewOptions.isExpanded = show;
@@ -49,7 +49,7 @@ namespace SuperUnityBuild.BuildTool
 
                 if (show)
                 {
-                    EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
+                    _ = EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
                     hideDisabled.boolValue = EditorGUILayout.ToggleLeft("Hide disabled configurations", hideDisabled.boolValue);
                     treeView.boolValue = EditorGUILayout.ToggleLeft("Show full configurations tree", treeView.boolValue);
@@ -58,7 +58,7 @@ namespace SuperUnityBuild.BuildTool
                 }
 
                 GUILayout.Space(5);
-                EditorGUILayout.BeginHorizontal();
+                _ = EditorGUILayout.BeginHorizontal();
                 show = showConfigs.isExpanded;
                 UnityBuildGUIUtility.DropdownHeader("Configurations", ref show, false, GUILayout.ExpandWidth(true));
                 showConfigs.isExpanded = show;
@@ -66,7 +66,7 @@ namespace SuperUnityBuild.BuildTool
 
                 if (show)
                 {
-                    EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
+                    _ = EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
                     if (BuildSettings.projectConfigurations.configSet.Keys.Count > 0)
                     {
@@ -87,7 +87,7 @@ namespace SuperUnityBuild.BuildTool
                 }
 
                 GUILayout.Space(5);
-                EditorGUILayout.BeginHorizontal();
+                _ = EditorGUILayout.BeginHorizontal();
                 show = showBuildInfo.isExpanded;
                 UnityBuildGUIUtility.DropdownHeader("Selected Build Info", ref show, false, GUILayout.ExpandWidth(true));
                 showBuildInfo.isExpanded = show;
@@ -95,7 +95,7 @@ namespace SuperUnityBuild.BuildTool
 
                 if (show)
                 {
-                    EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
+                    _ = EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
                     if (string.IsNullOrEmpty(selectedKeyChain.stringValue))
                     {
@@ -103,19 +103,14 @@ namespace SuperUnityBuild.BuildTool
                     }
                     else
                     {
-                        BuildReleaseType releaseType;
-                        BuildPlatform platform;
-                        BuildArchitecture architecture;
-                        BuildDistribution distribution;
-                        BuildScriptingBackend scriptingBackend;
                         BuildOptions buildOptions = BuildOptions.None;
 
-                        bool parseSuccess = BuildSettings.projectConfigurations.ParseKeychain(selectedKeyChain.stringValue, out releaseType, out platform,
-                            out architecture, out scriptingBackend, out distribution);
+                        bool parseSuccess = BuildSettings.projectConfigurations.ParseKeychain(selectedKeyChain.stringValue, out BuildReleaseType releaseType, out BuildPlatform platform,
+                            out BuildTarget target, out BuildScriptingBackend scriptingBackend, out BuildDistribution distribution);
 
                         if (parseSuccess)
                         {
-                            string defines = BuildProject.GenerateDefaultDefines(releaseType, platform, architecture, scriptingBackend, distribution);
+                            string defines = BuildProject.GenerateDefaultDefines(releaseType, platform, target, scriptingBackend, distribution);
 
                             EditorGUILayout.LabelField("Misc Info", UnityBuildGUIUtility.midHeaderStyle);
                             EditorGUILayout.LabelField("Defines:");
@@ -139,10 +134,10 @@ namespace SuperUnityBuild.BuildTool
                                 EditorGUILayout.LabelField("Name:\t\t" + platform.platformName);
                             }
 
-                            if (architecture != null)
+                            if (target != null)
                             {
-                                EditorGUILayout.LabelField("Architecture", UnityBuildGUIUtility.midHeaderStyle);
-                                EditorGUILayout.LabelField("Name:\t\t" + architecture.name);
+                                EditorGUILayout.LabelField("Target", UnityBuildGUIUtility.midHeaderStyle);
+                                EditorGUILayout.LabelField("Name:\t\t" + target.name);
                             }
 
                             if (distribution != null)
@@ -200,7 +195,7 @@ namespace SuperUnityBuild.BuildTool
                     EditorGUILayout.EndVertical();
                 }
 
-                property.serializedObject.ApplyModifiedProperties();
+                _ = property.serializedObject.ApplyModifiedProperties();
 
                 EditorGUILayout.EndVertical();
             }
@@ -210,7 +205,7 @@ namespace SuperUnityBuild.BuildTool
 
         private void DisplayConfigTree(string key, Configuration config, int depth, bool enabled = true)
         {
-            EditorGUILayout.BeginHorizontal();
+            _ = EditorGUILayout.BeginHorizontal();
             EditorGUI.BeginDisabledGroup(!enabled);
 
             bool displayButton = depth >= 2 && (config.childKeys == null || config.childKeys.Length == 0);
@@ -230,7 +225,7 @@ namespace SuperUnityBuild.BuildTool
                 if (treeView.boolValue)
                 {
                     string[] split = key.Split('/');
-                    text = split[split.Length - 1];
+                    text = split[^1];
                 }
                 else
                 {

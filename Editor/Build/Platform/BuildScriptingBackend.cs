@@ -10,7 +10,7 @@ namespace SuperUnityBuild.BuildTool
     [Serializable]
     public class BuildScriptingBackend
     {
-        private static readonly Dictionary<ScriptingImplementation, string> scriptingImplementationNames = new Dictionary<ScriptingImplementation, string>()
+        private static readonly Dictionary<ScriptingImplementation, string> scriptingImplementationNames = new()
         {
             { ScriptingImplementation.Mono2x, "Mono" },
             { ScriptingImplementation.IL2CPP, "IL2CPP" },
@@ -42,7 +42,7 @@ namespace SuperUnityBuild.BuildTool
         /// </summary>
         /// <param name="Target">The build target.</param>
         /// <returns>True if the IL2CPP backend is installed for this target.</returns>
-        public static bool IsIL2CPPInstalled(BuildTargetGroup TargetGroup, BuildTarget Target)
+        public static bool IsIL2CPPInstalled(BuildTargetGroup TargetGroup, UnityEditor.BuildTarget Target)
         {
             MethodInfo[] Methods = typeof(BuildPipeline).GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
             MethodInfo GetPlaybackEngineDirectory = Methods.First((MethodInfo x) => x.Name == "GetPlaybackEngineDirectory"
@@ -71,7 +71,7 @@ namespace SuperUnityBuild.BuildTool
                 return false;
             }
 
-            if (PlayerPackage == null || PlayerPackage == "")
+            if (PlayerPackage is null or "")
             {
                 //If PlaybackEngineDirectory still doesn't exist, just return false
                 return false;
@@ -81,32 +81,27 @@ namespace SuperUnityBuild.BuildTool
 
             switch (Target)
             {
-                case BuildTarget.StandaloneWindows:
-                case BuildTarget.StandaloneWindows64:
+                case UnityEditor.BuildTarget.StandaloneWindows:
+                case UnityEditor.BuildTarget.StandaloneWindows64:
                     {
                         PlayerName = "UnityPlayer.dll";
 
-                        if (Target == BuildTarget.StandaloneWindows)
-                        {
-                            IL2CPPVariations = new string[]
+                        IL2CPPVariations = Target == UnityEditor.BuildTarget.StandaloneWindows
+                            ? (new string[]
                             {
                                "win32_development_il2cpp",
                                "win32_nondevelopment_il2cpp"
-                            };
-                        }
-                        else
-                        {
-                            IL2CPPVariations = new string[]
+                            })
+                            : (new string[]
                             {
                                "win64_development_il2cpp",
                                "win64_nondevelopment_il2cpp"
-                            };
-                        }
+                            });
 
                         break;
                     }
 
-                case BuildTarget.StandaloneLinux64:
+                case UnityEditor.BuildTarget.StandaloneLinux64:
                     {
                         PlayerName = "LinuxPlayer";
 
@@ -120,7 +115,7 @@ namespace SuperUnityBuild.BuildTool
 
                         break;
                     }
-                case BuildTarget.StandaloneOSX:
+                case UnityEditor.BuildTarget.StandaloneOSX:
                     {
                         PlayerName = "UnityPlayer.app/Contents/MacOS/UnityPlayer";
 
@@ -133,7 +128,7 @@ namespace SuperUnityBuild.BuildTool
                         break;
                     }
 
-                case BuildTarget.WSAPlayer:
+                case UnityEditor.BuildTarget.WSAPlayer:
                     {
                         PlayerName = "UnityPlayer.dll";
 
@@ -157,16 +152,11 @@ namespace SuperUnityBuild.BuildTool
                     return false;
             }
 
-            if (Target == BuildTarget.WSAPlayer)
-            {
-                return IL2CPPVariations.ToList().Exists((string x) =>
-                    File.Exists(Path.Combine(Path.Combine(PlayerPackage, "Players/UAP"), Path.Combine(x, PlayerName))));
-            }
-            else
-            {
-                return IL2CPPVariations.ToList().Exists((string x) =>
+            return Target == UnityEditor.BuildTarget.WSAPlayer
+                ? IL2CPPVariations.ToList().Exists((string x) =>
+                    File.Exists(Path.Combine(Path.Combine(PlayerPackage, "Players/UAP"), Path.Combine(x, PlayerName))))
+                : IL2CPPVariations.ToList().Exists((string x) =>
                     File.Exists(Path.Combine(Path.Combine(PlayerPackage, "Variations"), Path.Combine(x, PlayerName))));
-            }
         }
     }
 }

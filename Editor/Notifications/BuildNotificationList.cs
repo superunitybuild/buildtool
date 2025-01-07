@@ -14,8 +14,7 @@ namespace SuperUnityBuild.BuildTool
         {
             get
             {
-                if (_instance == null)
-                    _instance = new BuildNotificationList();
+                _instance ??= new BuildNotificationList();
 
                 return _instance;
             }
@@ -23,17 +22,18 @@ namespace SuperUnityBuild.BuildTool
 
         #endregion
 
-        public List<BuildNotification> notifications = new List<BuildNotification>();
-        public List<BuildNotification> warnings = new List<BuildNotification>();
-        public List<BuildNotification> errors = new List<BuildNotification>();
+        public List<BuildNotification> notifications = new();
+        public List<BuildNotification> warnings = new();
+        public List<BuildNotification> errors = new();
 
         public BuildNotificationList()
         {
+            InitializeErrors();
         }
 
         public void AddNotification(BuildNotification notification)
         {
-            BuildNotification entry = null;
+            BuildNotification entry;
             switch (notification.cat)
             {
                 case BuildNotification.Category.Error:
@@ -86,30 +86,39 @@ namespace SuperUnityBuild.BuildTool
 
         public void Remove(BuildNotification notification)
         {
-            BuildNotification entry = null;
+            BuildNotification entry;
             switch (notification.cat)
             {
                 case BuildNotification.Category.Error:
                     entry = FindDuplicate(notification, errors);
                     if (entry != null)
-                        errors.Remove(entry);
+                        _ = errors.Remove(entry);
                     break;
 
                 case BuildNotification.Category.Warning:
                     entry = FindDuplicate(notification, warnings);
                     if (entry != null)
-                        warnings.Remove(entry);
+                        _ = warnings.Remove(entry);
                     break;
 
                 case BuildNotification.Category.Notification:
                     entry = FindDuplicate(notification, notifications);
                     if (entry != null)
-                        notifications.Remove(entry);
+                        _ = notifications.Remove(entry);
                     break;
             }
         }
 
-        public void InitializeErrors()
+        public void Reset()
+        {
+            notifications.Clear();
+            warnings.Clear();
+            errors.Clear();
+
+            _instance = null;
+        }
+
+        private void InitializeErrors()
         {
             AddNotification(new BuildNotification(
                 BuildNotification.Category.Error,
@@ -121,7 +130,7 @@ namespace SuperUnityBuild.BuildTool
             AddNotification(new BuildNotification(
                 BuildNotification.Category.Error,
                 "No Build Platform Found",
-                "At least one Build Platform with one enabled Architecture is required to perform a build.",
+                "At least one Build Platform with one enabled Target is required to perform a build.",
                 false,
                 () =>
                 {
@@ -133,7 +142,7 @@ namespace SuperUnityBuild.BuildTool
                         for (int i = 0; i < platformCount; i++)
                         {
                             BuildPlatform platform = BuildSettings.platformList.platforms[i];
-                            if (platform.enabled && platform.atLeastOneArch && platform.atLeastOneBackend)
+                            if (platform.enabled && platform.atLeastOneTarget && platform.atLeastOneBackend)
                             {
                                 validError = false;
                                 break;

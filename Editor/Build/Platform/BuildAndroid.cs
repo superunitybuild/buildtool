@@ -11,7 +11,8 @@ namespace SuperUnityBuild.BuildTool
         #region Constants
 
         private const string _name = "Android";
-        private readonly Dictionary<BinaryType, string> _binaryNameFormats = new Dictionary<BinaryType, string>{
+        private readonly Dictionary<BinaryType, string> _binaryNameFormats = new()
+        {
             {BinaryType.APK, "{0}.apk"},
             {BinaryType.SplitAPK, "{0}"},
             {BinaryType.AAB, "{0}.aab"},
@@ -19,10 +20,8 @@ namespace SuperUnityBuild.BuildTool
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.Android;
 
         private const string _apkExpansionFilesTypeVariantId = "APK Expansion Type";
-        private const string _buildOutputTypeVariantId = "Build Output";
         private const string _binaryTypeVariantId = "Binary Type";
         private const string _createSymbolsVariantId = "Create symbols.zip";
-        private const string _deviceTypeVariantId = "Device Type";
         private const string _textureCompressionVariantId = "Texture Compression";
         private const string _minSdkVersionVariantId = "Min SDK Version";
         private const string _targetSdkVersionVariantId = "Target SDK Version";
@@ -61,10 +60,10 @@ namespace SuperUnityBuild.BuildTool
             platformName = _name;
             targetGroup = _targetGroup;
 
-            if (architectures == null || architectures.Length == 0)
+            if (targets == null || targets.Length == 0)
             {
-                architectures = new BuildArchitecture[] {
-                    new BuildArchitecture(BuildTarget.Android, "Android", true, _binaryNameFormats[0])
+                targets = new BuildTarget[] {
+                    new(UnityEditor.BuildTarget.Android, PlayerName, true, _binaryNameFormats[0])
                 };
             }
 
@@ -72,8 +71,8 @@ namespace SuperUnityBuild.BuildTool
             {
                 scriptingBackends = new BuildScriptingBackend[]
                 {
-                    new BuildScriptingBackend(ScriptingImplementation.Mono2x, false),
-                    new BuildScriptingBackend(ScriptingImplementation.IL2CPP, true),
+                    new(ScriptingImplementation.Mono2x, false),
+                    new(ScriptingImplementation.IL2CPP, true),
                 };
             }
 
@@ -83,33 +82,28 @@ namespace SuperUnityBuild.BuildTool
                     .Select(i => i.Replace(_androidApiLevelEnumPrefix, ""))
                     .ToArray();
 
-                string[] createSymbolsOptions =
-#if UNITY_2021_1_OR_NEWER
-                    EnumNamesToArray<AndroidCreateSymbols>().ToArray();
-#else
-                    new string[] { "Disabled", "Enabled" };
-#endif
+                string[] createSymbolsOptions = EnumNamesToArray<AndroidCreateSymbols>().ToArray();
 
                 variants = new BuildVariant[] {
-                    new BuildVariant(_deviceTypeVariantId, EnumNamesToArray<AndroidArchitecture>()
+                    new(ArchitectureVariantKey, EnumNamesToArray<AndroidArchitecture>()
                         .Skip(1)
                         .SkipLast()
                         .ToArray(),
-                    0, true),
-                    new BuildVariant(_textureCompressionVariantId, EnumNamesToArray<MobileTextureSubtarget>(), 0),
-                    new BuildVariant(_buildOutputTypeVariantId, EnumNamesToArray<BuildOutputType>(true), 0),
-                    new BuildVariant(_binaryTypeVariantId, EnumNamesToArray<BinaryType>(true), 0),
-                    new BuildVariant(_apkExpansionFilesTypeVariantId, EnumNamesToArray<ApkExpansionFilesType>(true), 0),
-                    new BuildVariant(_minSdkVersionVariantId, androidSdkVersionStrings, 0),
-                    new BuildVariant(_targetSdkVersionVariantId, androidSdkVersionStrings, 0),
-                    new BuildVariant(_createSymbolsVariantId, createSymbolsOptions, 0),
+                    3, true),
+                    new(_textureCompressionVariantId, EnumNamesToArray<MobileTextureSubtarget>(), 0),
+                    new(BuildOutputVariantKey, EnumNamesToArray<BuildOutputType>(true), 0),
+                    new(_binaryTypeVariantId, EnumNamesToArray<BinaryType>(true), 0),
+                    new(_apkExpansionFilesTypeVariantId, EnumNamesToArray<ApkExpansionFilesType>(true), 0),
+                    new(_minSdkVersionVariantId, androidSdkVersionStrings, 0),
+                    new(_targetSdkVersionVariantId, androidSdkVersionStrings, 0),
+                    new(_createSymbolsVariantId, createSymbolsOptions, 0),
                 };
             }
         }
 
         public override void ApplyVariant()
         {
-            foreach (var variantOption in variants)
+            foreach (BuildVariant variantOption in variants)
             {
                 string key = variantOption.variantKey;
 
@@ -118,17 +112,17 @@ namespace SuperUnityBuild.BuildTool
                     case _apkExpansionFilesTypeVariantId:
                         SetApkExpansionFilesType(key);
                         break;
+                    case ArchitectureVariantKey:
+                        SetArchitecture(key);
+                        break;
                     case _binaryTypeVariantId:
                         SetBinaryType(key);
                         break;
-                    case _buildOutputTypeVariantId:
-                        SetBuildOutputType(key);
+                    case BuildOutputVariantKey:
+                        SetBuildOutput(key);
                         break;
                     case _createSymbolsVariantId:
                         SetCreateSymbols(key);
-                        break;
-                    case _deviceTypeVariantId:
-                        SetDeviceType(key);
                         break;
                     case _textureCompressionVariantId:
                         SetTextureCompression(key);
@@ -159,6 +153,11 @@ namespace SuperUnityBuild.BuildTool
 #endif
         }
 
+        private void SetArchitecture(string key)
+        {
+            PlayerSettings.Android.targetArchitectures = EnumFlagValueFromKey<AndroidArchitecture>(key);
+        }
+
         private void SetBinaryType(string key)
         {
             BinaryType binaryType = EnumValueFromKey<BinaryType>(key);
@@ -169,10 +168,10 @@ namespace SuperUnityBuild.BuildTool
             EditorUserBuildSettings.buildAppBundle = buildAppBundle;
             PlayerSettings.Android.buildApkPerCpuArchitecture = splitAPK && !buildAppBundle;
 
-            architectures[0].binaryNameFormat = _binaryNameFormats[binaryType];
+            targets[0].binaryNameFormat = _binaryNameFormats[binaryType];
         }
 
-        private void SetBuildOutputType(string key)
+        private void SetBuildOutput(string key)
         {
             BuildOutputType outputType = EnumValueFromKey<BuildOutputType>(key);
 
@@ -182,21 +181,12 @@ namespace SuperUnityBuild.BuildTool
 
             // Override binary name format set by Binary Type variant if exporting Gradle project
             if (exportProject)
-                architectures[0].binaryNameFormat = "{0}";
+                targets[0].binaryNameFormat = "{0}";
         }
 
         private void SetCreateSymbols(string key)
         {
-#if UNITY_2021_1_OR_NEWER
             EditorUserBuildSettings.androidCreateSymbols = EnumValueFromKey<AndroidCreateSymbols>(key);
-#else
-            EditorUserBuildSettings.androidCreateSymbolsZip = key != "Disabled";
-#endif
-        }
-
-        private void SetDeviceType(string key)
-        {
-            PlayerSettings.Android.targetArchitectures = EnumFlagValueFromKey<AndroidArchitecture>(key);
         }
 
         private void SetMinSdkVersion(string key)

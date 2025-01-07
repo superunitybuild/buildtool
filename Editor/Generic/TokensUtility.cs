@@ -8,26 +8,26 @@ namespace SuperUnityBuild.BuildTool
 {
     public static class TokensUtility
     {
-        public static string ResolveBuildConfigurationTokens(string prototype, BuildReleaseType releaseType, BuildPlatform platform, BuildArchitecture architecture, BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime? buildTime)
+        public static string ResolveBuildConfigurationTokens(string prototype, BuildReleaseType releaseType, BuildPlatform platform, BuildTarget target, BuildScriptingBackend scriptingBackend, BuildDistribution distribution, DateTime? buildTime)
         {
             prototype = ResolveBuildVersionTokens(prototype);
 
             if (buildTime != null)
                 prototype = ResolveBuildTimeTokens(prototype, (DateTime)buildTime);
 
-            StringBuilder sb = new StringBuilder(prototype);
+            StringBuilder sb = new(prototype);
 
             string variants = "";
             if (platform.variants != null && platform.variants.Length > 0)
                 variants = platform.variantKey.Replace(",", ", ");
 
-            sb.Replace("$RELEASE_TYPE", releaseType?.typeName.SanitizeFolderName());
-            sb.Replace("$PLATFORM", platform?.platformName.SanitizeFolderName());
-            sb.Replace("$ARCHITECTURE", architecture?.name.SanitizeFolderName());
-            sb.Replace("$VARIANTS", variants.SanitizeFolderName());
-            sb.Replace("$DISTRIBUTION", distribution?.distributionName.SanitizeFolderName());
-            sb.Replace("$PRODUCT_NAME", releaseType?.productName.SanitizeFolderName());
-            sb.Replace("$SCRIPTING_BACKEND", scriptingBackend?.name.SanitizeFolderName());
+            _ = sb.Replace("$RELEASE_TYPE", releaseType?.typeName.SanitizeFolderName());
+            _ = sb.Replace("$PLATFORM", platform?.platformName.SanitizeFolderName());
+            _ = sb.Replace("$TARGET", target?.name.SanitizeFolderName());
+            _ = sb.Replace("$VARIANTS", variants.SanitizeFolderName());
+            _ = sb.Replace("$DISTRIBUTION", distribution?.distributionName.SanitizeFolderName());
+            _ = sb.Replace("$PRODUCT_NAME", releaseType?.productName.SanitizeFolderName());
+            _ = sb.Replace("$SCRIPTING_BACKEND", scriptingBackend?.name.SanitizeFolderName());
 
             return sb.ToString();
         }
@@ -56,7 +56,7 @@ namespace SuperUnityBuild.BuildTool
 
         public static string ResolveBuildTimeUtilityTokens(string prototype, DateTime buildTime)
         {
-            StringBuilder sb = new StringBuilder(prototype ?? "");
+            StringBuilder sb = new(prototype ?? "");
 
             // Regex = (?:\$DAYSSINCE\(")([^"]*)(?:"\))
             Match match = Regex.Match(prototype, "(?:\\$DAYSSINCE\\(\")([^\"]*)(?:\"\\))");
@@ -66,11 +66,11 @@ namespace SuperUnityBuild.BuildTool
                     buildTime.Subtract(parsedTime).Days :
                     0;
 
-                sb.Replace(match.Captures[0].Value, daysSince.ToString());
+                _ = sb.Replace(match.Captures[0].Value, daysSince.ToString());
                 match = match.NextMatch();
             }
 
-            sb.Replace("$SECONDS", (buildTime.TimeOfDay.TotalSeconds / 15f).ToString("F0"));
+            _ = sb.Replace("$SECONDS", (buildTime.TimeOfDay.TotalSeconds / 15f).ToString("F0"));
 
             return sb.ToString();
         }
@@ -113,13 +113,13 @@ namespace SuperUnityBuild.BuildTool
                 {
                     string[] lines = textAsset.text.Split("\n");
                     int index = prototype.IndexOf(token, 0);
-                    StringBuilder sb = new StringBuilder(prototype);
+                    StringBuilder sb = new(prototype);
 
                     while (index > -1)
                     {
                         string noun = lines[UnityEngine.Random.Range(0, lines.Length - 1)].ToUpperInvariant();
 
-                        sb.Replace(token, noun, index, token.Length);
+                        _ = sb.Replace(token, noun, index, token.Length);
 
                         prototype = sb.ToString();
                         index = prototype.IndexOf(token, index + 1);

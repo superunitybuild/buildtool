@@ -20,11 +20,11 @@ namespace SuperUnityBuild.BuildTool
             char[] separatorChars = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
             for (int i = 0; i < fileSearchResults.Length; i++)
             {
-                var thisFilePath = fileSearchResults[i];
-                var thisFilePathSplit = thisFilePath.Split(separatorChars);
+                string thisFilePath = fileSearchResults[i];
+                string[] thisFilePathSplit = thisFilePath.Split(separatorChars);
                 if (thisFilePathSplit.Length > 0)
                 {
-                    if (thisFilePathSplit[thisFilePathSplit.Length - 1].Equals(FileName))
+                    if (thisFilePathSplit[^1].Equals(FileName))
                     {
                         filePath = thisFilePath;
                         break;
@@ -43,27 +43,19 @@ namespace SuperUnityBuild.BuildTool
             BuildReleaseType currentReleaseType = null,
             BuildPlatform currentBuildPlatform = null,
             BuildScriptingBackend currentScriptingBackend = null,
-            BuildArchitecture currentBuildArchitecture = null,
+            BuildTarget currentBuildTarget = null,
             BuildDistribution currentBuildDistribution = null)
         {
             // Find the BuildConstants file.
             string currentFilePath = FindFile();
-            string finalFileLocation;
-            if (string.IsNullOrEmpty(currentFilePath))
-            {
-                finalFileLocation = Path.Combine(filePath, FileName);
-            }
-            else
-            {
-                finalFileLocation = currentFilePath;
-            }
+            string finalFileLocation = string.IsNullOrEmpty(currentFilePath) ? Path.Combine(filePath, FileName) : currentFilePath;
 
             // Generate strings
             string versionString = currentVersion;
             string releaseTypeString = currentReleaseType == null ? NONE : SanitizeString(currentReleaseType.typeName);
             string platformString = currentBuildPlatform == null ? NONE : SanitizeString(currentBuildPlatform.platformName);
             string scriptingBackendString = currentScriptingBackend == null ? NONE : SanitizeString(currentScriptingBackend.name);
-            string architectureString = currentBuildArchitecture == null ? NONE : SanitizeString(currentBuildArchitecture.name);
+            string targetString = currentBuildTarget == null ? NONE : SanitizeString(currentBuildTarget.name);
             string distributionString = currentBuildDistribution == null ? NONE : SanitizeString(currentBuildDistribution.distributionName);
 
             if (File.Exists(finalFileLocation))
@@ -74,17 +66,17 @@ namespace SuperUnityBuild.BuildTool
             else
             {
                 // Ensure desired path exists if generating for the first time.
-                var fileInfo = new FileInfo(finalFileLocation);
+                FileInfo fileInfo = new(finalFileLocation);
                 if (!fileInfo.Directory.Exists)
                 {
-                    Directory.CreateDirectory(fileInfo.Directory.FullName);
+                    _ = Directory.CreateDirectory(fileInfo.Directory.FullName);
                 }
             }
 
             // Create a buffer that we'll use to check for any duplicated names.
-            List<string> enumBuffer = new List<string>();
+            List<string> enumBuffer = new();
 
-            using (StreamWriter writer = new StreamWriter(finalFileLocation))
+            using (StreamWriter writer = new(finalFileLocation))
             {
                 // Start of file
                 writer.WriteLine("using System;");
@@ -168,9 +160,9 @@ namespace SuperUnityBuild.BuildTool
                 if (!enumBuffer.Contains(scriptingBackendString))
                     scriptingBackendString = NONE;
 
-                // Write Architecture enum.
+                // Write Target enum.
                 enumBuffer.Clear();
-                writer.WriteLine("    public enum Architecture");
+                writer.WriteLine("    public enum Target");
                 writer.WriteLine("    {");
                 writer.WriteLine("        {0},", NONE);
                 enumBuffer.Add(NONE);
@@ -178,11 +170,11 @@ namespace SuperUnityBuild.BuildTool
                 {
                     if (platform.enabled)
                     {
-                        foreach (BuildArchitecture arch in platform.architectures)
+                        foreach (BuildTarget target in platform.targets)
                         {
-                            string addedString = SanitizeString(arch.name);
+                            string addedString = SanitizeString(target.name);
 
-                            if (arch.enabled && !enumBuffer.Contains(addedString))
+                            if (target.enabled && !enumBuffer.Contains(addedString))
                             {
                                 enumBuffer.Add(addedString);
                                 writer.WriteLine("        {0},", addedString);
@@ -193,9 +185,9 @@ namespace SuperUnityBuild.BuildTool
                 writer.WriteLine("    }");
                 writer.WriteLine();
 
-                // Validate Architecture string.
-                if (!enumBuffer.Contains(architectureString))
-                    architectureString = NONE;
+                // Validate Target string.
+                if (!enumBuffer.Contains(targetString))
+                    targetString = NONE;
 
                 // Write Distribution enum.
                 enumBuffer.Clear();
@@ -237,7 +229,7 @@ namespace SuperUnityBuild.BuildTool
                 writer.WriteLine("        public const ReleaseType releaseType = ReleaseType.{0};", releaseTypeString);
                 writer.WriteLine("        public const Platform platform = Platform.{0};", platformString);
                 writer.WriteLine("        public const ScriptingBackend scriptingBackend = ScriptingBackend.{0};", scriptingBackendString);
-                writer.WriteLine("        public const Architecture architecture = Architecture.{0};", architectureString);
+                writer.WriteLine("        public const Target target = Target.{0};", targetString);
                 writer.WriteLine("        public const Distribution distribution = Distribution.{0};", distributionString);
 
                 // End of class.

@@ -36,19 +36,19 @@ namespace SuperUnityBuild.BuildTool
         #region Variables
 
         [SerializeField]
-        private BasicSettings _basicSettings = new BasicSettings();
+        private BasicSettings _basicSettings = new();
         [SerializeField]
-        private ProductParameters _productParameters = new ProductParameters();
+        private ProductParameters _productParameters = new();
         [SerializeField]
-        private BuildReleaseTypeList _releaseTypeList = new BuildReleaseTypeList();
+        private BuildReleaseTypeList _releaseTypeList = new();
         [SerializeField]
-        private BuildPlatformList _platformList = new BuildPlatformList();
+        private BuildPlatformList _platformList = new();
         [SerializeField]
-        private ProjectConfigurations _projectConfigurations = new ProjectConfigurations();
+        private ProjectConfigurations _projectConfigurations = new();
         [SerializeField]
-        private BuildActionList _preBuildActions = new BuildActionList();
+        private BuildActionList _preBuildActions = new();
         [SerializeField]
-        private BuildActionList _postBuildActions = new BuildActionList();
+        private BuildActionList _postBuildActions = new();
 
         #endregion
 
@@ -56,24 +56,22 @@ namespace SuperUnityBuild.BuildTool
 
         public static void Init()
         {
-            if (_instance._preBuildActions == null)
-                _instance._preBuildActions = new BuildActionList();
+            _instance._preBuildActions ??= new BuildActionList();
 
-            if (_instance._postBuildActions == null)
-                _instance._postBuildActions = new BuildActionList();
+            _instance._postBuildActions ??= new BuildActionList();
         }
 
         #endregion
 
         #region Properties
 
-        public static BasicSettings basicSettings { get => instance._basicSettings; }
-        public static ProductParameters productParameters { get => instance._productParameters; }
-        public static BuildReleaseTypeList releaseTypeList { get => instance._releaseTypeList; }
-        public static BuildPlatformList platformList { get => instance._platformList; }
-        public static ProjectConfigurations projectConfigurations { get => instance._projectConfigurations; }
-        public static BuildActionList preBuildActions { get => instance._preBuildActions; }
-        public static BuildActionList postBuildActions { get => instance._postBuildActions; }
+        public static BasicSettings basicSettings => instance._basicSettings;
+        public static ProductParameters productParameters => instance._productParameters;
+        public static BuildReleaseTypeList releaseTypeList => instance._releaseTypeList;
+        public static BuildPlatformList platformList => instance._platformList;
+        public static ProjectConfigurations projectConfigurations => instance._projectConfigurations;
+        public static BuildActionList preBuildActions => instance._preBuildActions;
+        public static BuildActionList postBuildActions => instance._postBuildActions;
 
         #endregion
 
@@ -82,14 +80,14 @@ namespace SuperUnityBuild.BuildTool
         [OnOpenAssetAttribute(1)]
         public static bool HandleOpenAsset(int instanceID, int line)
         {
-            var assetPath = AssetDatabase.GetAssetPath(instanceID);
-            if(assetPath == null)
+            string assetPath = AssetDatabase.GetAssetPath(instanceID);
+            if (assetPath == null)
             {
                 //Asset did not exist
                 return false;
             }
-            var asset = AssetDatabase.LoadAssetAtPath<BuildSettings>(assetPath);
-            if(asset == null)
+            BuildSettings asset = AssetDatabase.LoadAssetAtPath<BuildSettings>(assetPath);
+            if (asset == null)
             {
                 //Not the right type
                 return false;
@@ -104,7 +102,7 @@ namespace SuperUnityBuild.BuildTool
         {
             //Show the window using the same process as pressing the menu button
             UnityBuildWindow.ShowWindow();
-            var thisWindow = EditorWindow.GetWindow<UnityBuildWindow>();
+            UnityBuildWindow thisWindow = EditorWindow.GetWindow<UnityBuildWindow>();
             if (thisWindow != null)
             {
                 //If the window exists
@@ -113,7 +111,7 @@ namespace SuperUnityBuild.BuildTool
                 BuildSettings.instance = this;
 
                 //Tell the window to use the new settings 
-                thisWindow.RefreshSelectedBuildSettings();
+                thisWindow.UpdateCurrentBuildSettings();
             }
 
         }

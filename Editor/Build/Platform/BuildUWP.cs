@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using UnityEditor;
 
@@ -13,11 +13,6 @@ namespace SuperUnityBuild.BuildTool
         private const string _binaryNameFormat = "";
         private const BuildTargetGroup _targetGroup = BuildTargetGroup.WSA;
 
-        private const string _architectureVariantId = "Architecture";
-        private const string _buildTypeVariantId = "Build Type";
-#if !UNITY_2021_2_OR_NEWER
-        private const string _targetDeviceVariantId = "Target Device";
-#endif
         #endregion
 
         public BuildUWP()
@@ -31,10 +26,10 @@ namespace SuperUnityBuild.BuildTool
             platformName = _name;
             targetGroup = _targetGroup;
 
-            if (architectures == null || architectures.Length == 0)
+            if (targets == null || targets.Length == 0)
             {
-                architectures = new BuildArchitecture[] {
-                    new BuildArchitecture(BuildTarget.WSAPlayer, "UWP", true, _binaryNameFormat),
+                targets = new BuildTarget[] {
+                    new(UnityEditor.BuildTarget.WSAPlayer, PlayerName, true, _binaryNameFormat),
                 };
             }
 
@@ -42,41 +37,33 @@ namespace SuperUnityBuild.BuildTool
             {
                 scriptingBackends = new BuildScriptingBackend[]
                 {
-                    new BuildScriptingBackend(ScriptingImplementation.IL2CPP, true),
+                    new(ScriptingImplementation.IL2CPP, true),
                 };
             }
 
             if (variants == null || variants.Length == 0)
             {
                 variants = new BuildVariant[] {
-#if !UNITY_2021_2_OR_NEWER
-                    new BuildVariant(_targetDeviceVariantId, EnumNamesToArray<WSASubtarget>(true).ToArray(), 0),
-#endif
-                    new BuildVariant(_architectureVariantId, new string[] { "x86", "x64", "ARM", "ARM64" }, 0),
-                    new BuildVariant(_buildTypeVariantId, EnumNamesToArray<WSAUWPBuildType>(true).ToArray(), 0)
+                    new(ArchitectureVariantKey, new string[] { "x86", "x64", "ARM", "ARM64" }, 0),
+                    new(BuildOutputVariantKey, EnumNamesToArray<WSAUWPBuildType>(true).ToArray(), 0)
                 };
             }
         }
 
         public override void ApplyVariant()
         {
-            foreach (var variantOption in variants)
+            foreach (BuildVariant variantOption in variants)
             {
                 string key = variantOption.variantKey;
 
                 switch (variantOption.variantName)
                 {
-                    case _architectureVariantId:
+                    case ArchitectureVariantKey:
                         SetArchitecture(key);
                         break;
-                    case _buildTypeVariantId:
-                        SetBuildType(key);
+                    case BuildOutputVariantKey:
+                        SetBuildOutput(key);
                         break;
-#if !UNITY_2021_2_OR_NEWER
-                    case _targetDeviceVariantId:
-                        SetTargetDevice(key);
-                        break;
-#endif
                 }
             }
         }
@@ -86,16 +73,9 @@ namespace SuperUnityBuild.BuildTool
             EditorUserBuildSettings.wsaArchitecture = key;
         }
 
-        private void SetBuildType(string key)
+        private void SetBuildOutput(string key)
         {
             EditorUserBuildSettings.wsaUWPBuildType = EnumValueFromKey<WSAUWPBuildType>(key);
         }
-
-#if !UNITY_2021_2_OR_NEWER
-        private void SetTargetDevice(string key)
-        {
-            EditorUserBuildSettings.wsaSubtarget = EnumValueFromKey<WSASubtarget>(key);
-        }
-#endif
     }
 }

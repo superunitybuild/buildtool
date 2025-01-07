@@ -13,14 +13,14 @@ namespace SuperUnityBuild.BuildTool
         private SerializedProperty list = null;
         private BuildPlatformList platformList = null;
 
-        private List<string> availablePlatformNameList = new List<string>();
-        private List<Type> availablePlatformTypeList = new List<Type>();
+        private readonly List<string> availablePlatformNameList = new();
+        private readonly List<Type> availablePlatformTypeList = new();
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            EditorGUI.BeginProperty(position, label, property);
+            _ = EditorGUI.BeginProperty(position, label, property);
 
-            EditorGUILayout.BeginHorizontal();
+            _ = EditorGUILayout.BeginHorizontal();
             property.serializedObject.Update();
 
             bool show = property.isExpanded;
@@ -37,7 +37,7 @@ namespace SuperUnityBuild.BuildTool
 
             if (show)
             {
-                EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
+                _ = EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
                 DrawPlatforms(property);
 
@@ -57,7 +57,7 @@ namespace SuperUnityBuild.BuildTool
                     AssetDatabase.AddObjectToAsset(addedBuildPlatform, BuildSettings.instance);
                     AssetDatabaseUtility.ImportAsset(AssetDatabase.GetAssetPath(BuildSettings.instance));
 
-                    platformList.platforms[platformList.platforms.Count - 1].enabled = true;
+                    platformList.platforms[^1].enabled = true;
 
                     for (int i = platformList.platforms.Count - 1; i >= 0; i--)
                     {
@@ -88,9 +88,9 @@ namespace SuperUnityBuild.BuildTool
                     continue;
                 }
 
-                SerializedObject serializedBuildPlatform = new SerializedObject(platform);
+                SerializedObject serializedBuildPlatform = new(platform);
 
-                EditorGUILayout.BeginHorizontal();
+                _ = EditorGUILayout.BeginHorizontal();
                 bool show = listEntry.isExpanded;
                 string tooltip = platform.ToString();
                 string text = UnityBuildGUIUtility.ToLabel(tooltip);
@@ -116,7 +116,7 @@ namespace SuperUnityBuild.BuildTool
 
                 if (show && platform.enabled)
                 {
-                    EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
+                    _ = EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
                     platform.Draw(serializedBuildPlatform);
                     EditorGUILayout.EndVertical();
                 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -9,9 +9,20 @@ namespace SuperUnityBuild.BuildTool
     [Serializable]
     public class BuildPlatform : ScriptableObject
     {
+        #region Constants
+
+        protected const string PlayerName = "Player";
+        protected const string ServerName = "Dedicated Server";
+
+        protected const string ArchitectureVariantKey = "Architecture";
+        protected const string BuildOutputVariantKey = "Build Output";
+        protected const string BuildTypeVariantKey = "Build Type";
+
+        #endregion
+
         public bool enabled = false;
-        public BuildDistributionList distributionList = new BuildDistributionList();
-        public BuildArchitecture[] architectures = new BuildArchitecture[0];
+        public BuildDistributionList distributionList = new();
+        public BuildTarget[] targets = new BuildTarget[0];
         public BuildVariant[] variants = new BuildVariant[0];
         public BuildScriptingBackend[] scriptingBackends = new BuildScriptingBackend[0];
 
@@ -28,17 +39,17 @@ namespace SuperUnityBuild.BuildTool
 
         #region Public Properties
 
-        public bool atLeastOneArch
+        public bool atLeastOneTarget
         {
             get
             {
-                bool atLeastOneArch = false;
-                for (int i = 0; i < architectures.Length && !atLeastOneArch; i++)
+                bool atLeastOneTarget = false;
+                for (int i = 0; i < targets.Length && !atLeastOneTarget; i++)
                 {
-                    atLeastOneArch |= architectures[i].enabled;
+                    atLeastOneTarget |= targets[i].enabled;
                 }
 
-                return atLeastOneArch;
+                return atLeastOneTarget;
             }
         }
 
@@ -75,6 +86,8 @@ namespace SuperUnityBuild.BuildTool
             }
         }
 
+        public virtual bool hasAdditionalOptions => false;
+
         public string variantKey
         {
             get
@@ -84,13 +97,13 @@ namespace SuperUnityBuild.BuildTool
                 // Build key string.
                 if (variants != null && variants.Length > 0)
                 {
-                    foreach (var variant in variants)
+                    foreach (BuildVariant variant in variants)
                         retVal += variant.variantKey + ",";
                 }
 
                 // Remove trailing delimiter.
                 if (retVal.Length > 0)
-                    retVal = retVal.Substring(0, retVal.Length - 1);
+                    retVal = retVal[..^1];
 
                 return retVal;
             }
@@ -100,21 +113,21 @@ namespace SuperUnityBuild.BuildTool
 
         public void Draw(SerializedObject obj)
         {
-            EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
+            _ = EditorGUILayout.BeginVertical(UnityBuildGUIUtility.dropdownContentStyle);
 
-            SerializedProperty archList = obj.FindProperty("architectures");
+            SerializedProperty targets = obj.FindProperty("targets");
 
-            if (archList.arraySize > 1)
+            if (targets.arraySize > 1)
             {
-                GUILayout.Label("Architectures", UnityBuildGUIUtility.midHeaderStyle);
-                for (int i = 0; i < archList.arraySize; i++)
+                GUILayout.Label("Targets", UnityBuildGUIUtility.midHeaderStyle);
+                for (int i = 0; i < targets.arraySize; i++)
                 {
-                    SerializedProperty archProperty = archList.GetArrayElementAtIndex(i);
-                    SerializedProperty archName = archProperty.FindPropertyRelative("name");
-                    SerializedProperty archEnabled = archProperty.FindPropertyRelative("enabled");
+                    SerializedProperty targetProperty = targets.GetArrayElementAtIndex(i);
+                    SerializedProperty targetName = targetProperty.FindPropertyRelative("name");
+                    SerializedProperty targetEnabled = targetProperty.FindPropertyRelative("enabled");
 
-                    archEnabled.boolValue = GUILayout.Toggle(archEnabled.boolValue, archName.stringValue);
-                    archProperty.serializedObject.ApplyModifiedProperties();
+                    targetEnabled.boolValue = GUILayout.Toggle(targetEnabled.boolValue, targetName.stringValue);
+                    _ = targetProperty.serializedObject.ApplyModifiedProperties();
                 }
             }
 
@@ -130,7 +143,7 @@ namespace SuperUnityBuild.BuildTool
                     SerializedProperty scriptEnabled = scriptProperty.FindPropertyRelative("enabled");
 
                     scriptEnabled.boolValue = GUILayout.Toggle(scriptEnabled.boolValue, scriptName.stringValue);
-                    scriptProperty.serializedObject.ApplyModifiedProperties();
+                    _ = scriptProperty.serializedObject.ApplyModifiedProperties();
                 }
             }
 
@@ -148,7 +161,7 @@ namespace SuperUnityBuild.BuildTool
                     SerializedProperty selectedVariantIndex = variantProperty.FindPropertyRelative("selectedIndex");
                     SerializedProperty isFlag = variantProperty.FindPropertyRelative("isFlag");
 
-                    List<string> valueNames = new List<string>(variantValues.arraySize);
+                    List<string> valueNames = new(variantValues.arraySize);
                     for (int j = 0; j < variantValues.arraySize; j++)
                     {
                         valueNames.Add(variantValues.GetArrayElementAtIndex(j).stringValue);
@@ -176,6 +189,13 @@ namespace SuperUnityBuild.BuildTool
                 }
             }
 
+            if (hasAdditionalOptions)
+            {
+                GUILayout.Label("Additional Options", UnityBuildGUIUtility.midHeaderStyle);
+
+                DrawAdditionalOptions();
+            }
+
             SerializedProperty distList = obj.FindProperty("distributionList.distributions");
 
             if (distList.arraySize > 0)
@@ -196,7 +216,7 @@ namespace SuperUnityBuild.BuildTool
                     if (UnityBuildGUIUtility.DeleteButton())
                         distList.SafeDeleteArrayElementAtIndex(i);
 
-                    dist.serializedObject.ApplyModifiedProperties();
+                    _ = dist.serializedObject.ApplyModifiedProperties();
 
                     GUILayout.EndHorizontal();
                 }
@@ -214,37 +234,43 @@ namespace SuperUnityBuild.BuildTool
                 addedProperty.FindPropertyRelative("enabled").boolValue = true;
                 addedProperty.FindPropertyRelative("distributionName").stringValue = "DistributionName";
 
-                addedProperty.serializedObject.ApplyModifiedProperties();
-                distList.serializedObject.ApplyModifiedProperties();
+                _ = addedProperty.serializedObject.ApplyModifiedProperties();
+                _ = distList.serializedObject.ApplyModifiedProperties();
                 GUIUtility.keyboardControl = 0;
             }
             GUILayout.EndVertical();
 
             EditorGUILayout.EndVertical();
 
-            obj.ApplyModifiedProperties();
+            _ = obj.ApplyModifiedProperties();
+        }
+
+        public virtual void DrawAdditionalOptions()
+        {
+            /// Override this method to draw additional options for the platform
+            /// Requires overriding <see cref="hasAdditionalOptions"/> to return true
         }
 
         public override string ToString()
         {
             string name = platformName;
 
-            IEnumerable<BuildArchitecture> enabledArchitectures = architectures.Where(item => item.enabled);
-            IEnumerable<BuildScriptingBackend> enabledscriptingBackends = scriptingBackends.Where(item => item.enabled);
+            IEnumerable<BuildTarget> enabledTargets = targets.Where(item => item.enabled);
+            IEnumerable<BuildScriptingBackend> enabledScriptingBackends = scriptingBackends.Where(item => item.enabled);
 
-            List<string> architecturesAndVariants = new List<string>();
+            List<string> targetsAndVariants = new();
 
-            if (architectures.Length > 1 && enabledArchitectures.Count() > 0)
-                architecturesAndVariants.AddRange(enabledArchitectures.Select(item => item.ToString()));
+            if (targets.Length > 1 && enabledTargets.Count() > 0)
+                targetsAndVariants.AddRange(enabledTargets.Select(item => item.ToString()));
 
-            if (scriptingBackends.Length > 1 && enabledscriptingBackends.Count() > 0)
-                architecturesAndVariants.AddRange(enabledscriptingBackends.Select(item => item.ToString()));
+            if (scriptingBackends.Length > 1 && enabledScriptingBackends.Count() > 0)
+                targetsAndVariants.AddRange(enabledScriptingBackends.Select(item => item.ToString()));
 
             if (variants.Length > 0)
-                architecturesAndVariants.AddRange(variants.Select(item => item.ToString()));
+                targetsAndVariants.AddRange(variants.Select(item => item.ToString()));
 
-            name += architecturesAndVariants.Count > 0 ?
-                " (" + string.Join(", ", architecturesAndVariants) + ")" :
+            name += targetsAndVariants.Count > 0 ?
+                " (" + string.Join(", ", targetsAndVariants) + ")" :
                 "";
 
             return name;
