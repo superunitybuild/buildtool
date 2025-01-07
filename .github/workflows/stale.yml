@@ -24,5 +24,5 @@ jobs:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         stale-issue-label: 'stale'
         stale-pr-label: 'stale'
-        exempt-issue-labels: 'bug,defect,enhancement,hacktoberfest,help wanted'
+        exempt-issue-labels: 'bug,defect,enhancement,hacktoberfest,help wanted,question'
         exempt-pr-labels: 'bug,defect,enhancement,hacktoberfest,help wanted'
