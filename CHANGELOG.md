@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+<!-- ## [Unreleased] -->
+
+## [8.0.0-pre.1] - 2025-01-07
 
 ### Added
 
@@ -280,7 +282,8 @@ This release includes all changes from 1.0.0 pre-releases ([1.0.0-pre.1](#100-pr
 - Fixed issue in Linux build name moving `binaryName` to `BuildArchitecture`. [PR #41](https://github.com/superunitybuild/buildtool/pull/41)
 - Fixed an issue where custom defines were overwrite when build was finished. [Issue #36](https://github.com/superunitybuild/buildtool/issues/36)
 
-[unreleased]: https://github.com/superunitybuild/buildtool/compare/v7.0.0...HEAD
+[unreleased]: https://github.com/superunitybuild/buildtool/compare/v8.0.0-pre.1...HEAD
+[8.0.0-pre.1]: https://github.com/superunitybuild/buildtool/compare/v8.0.0...v8.0.0-pre.1
 [7.0.0]: https://github.com/superunitybuild/buildtool/compare/v6.0.1...v7.0.0
 [6.0.1]: https://github.com/superunitybuild/buildtool/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/superunitybuild/buildtool/compare/v5.0.4...v6.0.0
