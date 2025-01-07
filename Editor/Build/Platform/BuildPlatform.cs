@@ -86,6 +86,8 @@ namespace SuperUnityBuild.BuildTool
             }
         }
 
+        public virtual bool hasAdditionalOptions => false;
+
         public string variantKey
         {
             get
@@ -187,6 +189,13 @@ namespace SuperUnityBuild.BuildTool
                 }
             }
 
+            if (hasAdditionalOptions)
+            {
+                GUILayout.Label("Additional Options", UnityBuildGUIUtility.midHeaderStyle);
+
+                DrawAdditionalOptions();
+            }
+
             SerializedProperty distList = obj.FindProperty("distributionList.distributions");
 
             if (distList.arraySize > 0)
@@ -234,6 +243,12 @@ namespace SuperUnityBuild.BuildTool
             EditorGUILayout.EndVertical();
 
             _ = obj.ApplyModifiedProperties();
+        }
+
+        public virtual void DrawAdditionalOptions()
+        {
+            /// Override this method to draw additional options for the platform
+            /// Requires overriding <see cref="hasAdditionalOptions"/> to return true
         }
 
         public override string ToString()

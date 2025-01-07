@@ -12,12 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `BuildConstants.buildCounter` constant (by [@magicjar](https://github.com/magicjar))
 - Added Dedicated Server support for Windows, Mac and Linux. (with contribution from [@firdiar-mita](https://github.com/firdiar-mita))
 - Added support for building for ARM64 on Windows in Unity 2023.1+
+- Added support for `BuildPlatform`s to draw additional option properties in `BuildPlatformListDrawer`
 
 ### Changed
 
 - **Breaking change:** Solution for setting Android API levels that `UnityEditor.AndroidSdkVersions` does not include, which was preventing building Meta Quest Store-compatible apps in certain Unity versions.
 - **Breaking change:** Raised minimum supported Unity version to Unity 2021.3 LTS.
-- **Breaking change:** Refactored `BuildPlatforms` and renamed `BuildPC` to `BuildWindows` and `BuildOSX` to `BuildMac` to match Unity platform naming conventions.
+- **Breaking change:** Refactored `BuildPlatform`s and renamed `BuildPC` to `BuildWindows` and `BuildOSX` to `BuildMac` to match Unity platform naming conventions.
 
 ### Fixed
 
